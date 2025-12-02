@@ -167,6 +167,21 @@
             opacity: 0.6;
         }
 
+        /* Accordion Animation */
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        details[open] summary ~ * {
+            animation: sweep .3s ease-in-out;
+        }
+        @keyframes sweep {
+            0%    {opacity: 0; transform: translateY(-10px)}
+            100%  {opacity: 1; transform: translateY(0)}
+        }
+
     </style>
 </head>
 <body class="text-stone-900 font-sans antialiased overflow-x-hidden">
@@ -179,10 +194,11 @@
                     <span class="font-display font-bold text-xl tracking-tight hover:text-brand-primary transition-colors">@donalleniii</span>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-8">
+                <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
                     <a href="#about" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">About</a>
+                    <a href="#work" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Work</a>
                     <a href="#services" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Consulting</a>
-                    <a href="#book" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Book</a>
+                    <a href="#podcast" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Podcast</a>
                     <a href="#keynotes" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Keynotes</a>
                 </div>
 
@@ -204,8 +220,10 @@
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-stone-100 absolute w-full">
             <div class="px-4 pt-2 pb-6 space-y-1">
                 <a href="#about" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">About</a>
+                <a href="#work" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Work</a>
                 <a href="#services" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Consulting</a>
-                <a href="#book" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Book</a>
+                <a href="#podcast" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Podcast</a>
+                <a href="#keynotes" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Keynotes</a>
                 <div class="mt-4 px-3">
                     <button onclick="openModal()" class="block w-full text-center bg-brand-dark text-white px-5 py-3 rounded-lg text-base font-bold">Work With Don</button>
                 </div>
@@ -213,8 +231,8 @@
         </div>
     </nav>
 
-    <!-- Hero Section with Animated Background -->
-    <section id="about" class="relative pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden">
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden">
         <canvas id="particles-canvas"></canvas>
         
         <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob pointer-events-none"></div>
@@ -253,16 +271,18 @@
                     <a href="#keynotes" class="block relative aspect-[4/5] lg:aspect-square max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl group cursor-pointer transform hover:scale-[1.02] transition-all duration-500">
                         <div class="absolute inset-0 bg-stone-900">
                              <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/80 to-orange-600/50 mix-blend-overlay"></div>
-                             <img src="https://img.youtube.com/vi/l_QruJ0Kv9U/maxresdefault.jpg" class="w-full h-full object-cover opacity-60">
+                             <!-- UPDATED THUMBNAIL -->
+                             <img src="https://img.youtube.com/vi/yaeazIA5np8/maxresdefault.jpg" class="w-full h-full object-cover opacity-60">
                         </div>
                         
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                         
                         <div class="absolute bottom-0 left-0 p-8 w-full text-white z-10">
                             <div class="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-3">
-                                Keynote Highlight
+                                Featured Appearance
                             </div>
-                            <h3 class="text-xl lg:text-2xl font-bold leading-tight mb-2">Don Allen Stevenson III on stage with Mark Zuckerberg announcing a new AI product</h3>
+                            <!-- UPDATED TITLE -->
+                            <h3 class="text-xl lg:text-2xl font-bold leading-tight mb-2">On Stage with Zuckerberg: The Future of Creator AI</h3>
                             <div class="flex items-center text-stone-300 text-sm group-hover:text-white transition-colors">
                                 <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center mr-3 pl-1">
                                     <i class="fas fa-play text-xs"></i>
@@ -281,6 +301,7 @@
         <div class="max-w-7xl mx-auto px-4 mb-4">
              <p class="text-center text-xs font-bold uppercase tracking-widest text-stone-400">Trusted Advisor and Collaborator with</p>
         </div>
+        
         <div class="relative flex overflow-x-hidden group">
             <div class="animate-marquee whitespace-nowrap flex space-x-16 items-center">
                 <span class="text-2xl font-display font-bold text-stone-400 hover:text-stone-800 transition-colors">Apple</span>
@@ -324,6 +345,152 @@
         </div>
     </section>
 
+    <!-- NEW: TESTIMONIALS SECTION (Updated) -->
+    <section id="testimonials" class="py-20 bg-white border-b border-stone-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex overflow-x-auto pb-8 gap-6 snap-x md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0 no-scrollbar">
+                <!-- Testimonial 1: MIT Technology Review -->
+                <div class="service-card bg-white p-8 rounded-2xl border border-stone-100 shadow-sm flex-shrink-0 w-[85vw] md:w-auto snap-center flex flex-col">
+                    <i class="fas fa-quote-left text-brand-accent text-2xl mb-4 opacity-50"></i>
+                    <p class="text-stone-600 mb-6 flex-grow text-lg">“Don is known for sharing his futuristic visions with a creative community of more than 100,000 people.”</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-stone-100 rounded-full mr-3 flex items-center justify-center text-stone-600 text-sm font-bold">
+                             MIT
+                        </div>
+                        <div>
+                            <div class="font-bold text-stone-900">MIT Tech Review</div>
+                            <div class="text-xs text-stone-500 font-medium uppercase tracking-wide">Editorial Team</div>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Testimonial 2: Worklife.vc -->
+                 <div class="service-card bg-white p-8 rounded-2xl border border-stone-100 shadow-sm flex-shrink-0 w-[85vw] md:w-auto snap-center flex flex-col">
+                    <i class="fas fa-quote-left text-brand-accent text-2xl mb-4 opacity-50"></i>
+                    <p class="text-stone-600 mb-6 flex-grow text-lg">“Don Allen Stevenson III has really embraced the idea of being an AI artist online.”</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-stone-100 rounded-full mr-3 flex items-center justify-center text-stone-600 text-sm font-bold">
+                             WL
+                        </div>
+                        <div>
+                            <div class="font-bold text-stone-900">Worklife.vc</div>
+                            <div class="text-xs text-stone-500 font-medium uppercase tracking-wide">Editorial Team</div>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Testimonial 3: Artist and the Machine -->
+                 <div class="service-card bg-white p-8 rounded-2xl border border-stone-100 shadow-sm flex-shrink-0 w-[85vw] md:w-auto snap-center flex flex-col">
+                    <i class="fas fa-quote-left text-brand-accent text-2xl mb-4 opacity-50"></i>
+                    <p class="text-stone-600 mb-6 flex-grow text-lg">“There’s no denying it — Don Allen Stevenson III is one of our all‑time favorite speakers.”</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-stone-100 rounded-full mr-3 flex items-center justify-center text-stone-600 text-sm font-bold">
+                             AM
+                        </div>
+                        <div>
+                            <div class="font-bold text-stone-900">Artist and the Machine</div>
+                            <div class="text-xs text-stone-500 font-medium uppercase tracking-wide">Event Series</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: ABOUT SECTION -->
+    <section id="about" class="py-24 bg-brand-surface">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col-reverse md:flex-row items-center gap-12 lg:gap-20">
+                <div class="w-full md:w-1/2 relative">
+                    <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-lg bg-stone-200">
+                        <img src="https://placehold.co/600x750/e5e7eb/a3a3a3?text=Don+Allen+III" alt="Don Allen III" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-brand-primary rounded-full opacity-20 blur-2xl"></div>
+                </div>
+                <div class="w-full md:w-1/2 space-y-6">
+                    <div class="inline-block px-3 py-1 bg-white rounded text-xs font-bold tracking-widest text-stone-500 mb-2 border border-stone-200">
+                        THE STORY
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900">
+                        From Feature Animation to the Future of AI
+                    </h2>
+                    <div class="space-y-4 text-lg text-stone-600 leading-relaxed">
+                        <p>
+                            My journey began in the world of feature animation at DreamWorks, where I learned the art of storytelling and world-building. But as technology evolved, so did my canvas. I transitioned from traditional VFX to the cutting edge of Augmented Reality and Artificial Intelligence.
+                        </p>
+                        <p>
+                            Today, I work at the intersection of creativity and code. My philosophy is simple: emerging technology shouldn't be feared; it should be accessible. I help brands and creators unlock their potential by demystifying these powerful tools.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 pt-4">
+                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">10+ Years in Creative Tech</span>
+                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">Fortune 500 Advisor</span>
+                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">245k+ Community</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: CASE STUDIES / OUTCOMES SECTION -->
+    <section id="work" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4">Selected Work</h2>
+                <p class="text-stone-600">Delivering strategic impact and creative innovation.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-48 bg-blue-900 relative overflow-hidden">
+                         <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-900 opacity-90"></div>
+                         <div class="absolute bottom-4 left-4 text-white font-bold text-xl">Meta AI Studio</div>
+                    </div>
+                    <div class="p-6 bg-white">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                             <span class="px-2 py-1 bg-stone-100 text-brand-accent text-[10px] font-bold uppercase rounded">AI Strategy</span>
+                             <span class="px-2 py-1 bg-stone-100 text-brand-accent text-[10px] font-bold uppercase rounded">Product Launch</span>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-2"><strong>Challenge:</strong> Humanizing AI interactions for a global audience.</p>
+                        <p class="text-sm text-stone-600 mb-4"><strong>Outcome:</strong> Developed behavioral models for the world's first AI video calling feature.</p>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-48 bg-stone-800 relative overflow-hidden">
+                         <div class="absolute inset-0 bg-gradient-to-br from-stone-700 to-stone-900 opacity-90"></div>
+                         <div class="absolute bottom-4 left-4 text-white font-bold text-xl">Enterprise AI Training</div>
+                    </div>
+                    <div class="p-6 bg-white">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                             <span class="px-2 py-1 bg-stone-100 text-brand-accent text-[10px] font-bold uppercase rounded">Education</span>
+                             <span class="px-2 py-1 bg-stone-100 text-brand-accent text-[10px] font-bold uppercase rounded">Workflows</span>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-2"><strong>Challenge:</strong> Upskilling creative teams on Generative AI tools.</p>
+                        <p class="text-sm text-stone-600 mb-4"><strong>Outcome:</strong> Custom curriculum adoption across multiple Fortune 500 creative departments.</p>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300">
+                    <div class="h-48 bg-red-800 relative overflow-hidden">
+                         <div class="absolute inset-0 bg-gradient-to-br from-red-600 to-red-900 opacity-90"></div>
+                         <div class="absolute bottom-4 left-4 text-white font-bold text-xl">TED 2025</div>
+                    </div>
+                    <div class="p-6 bg-white">
+                         <div class="flex flex-wrap gap-2 mb-4">
+                             <span class="px-2 py-1 bg-stone-100 text-brand-accent text-[10px] font-bold uppercase rounded">Creative Direction</span>
+                             <span class="px-2 py-1 bg-stone-100 text-brand-accent text-[10px] font-bold uppercase rounded">Animation</span>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-2"><strong>Challenge:</strong> Visualizing the abstract theme of the conference.</p>
+                        <p class="text-sm text-stone-600 mb-4"><strong>Outcome:</strong> Directed the opening animation sequence, setting the tone for the global event.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Services Section -->
     <section id="services" class="py-24 bg-brand-surface">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -333,8 +500,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                <!-- Card 1: Masterclass -->
+                <!-- Card 1 -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
                     <div class="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-brand-primary text-2xl mb-6">
                         <i class="fas fa-graduation-cap"></i>
@@ -349,7 +515,7 @@
                     </a>
                 </div>
 
-                <!-- Card 2: Consulting -->
+                <!-- Card 2 -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-stone-100 rounded-bl-full -mr-10 -mt-10"></div>
                     <div class="w-14 h-14 rounded-full bg-stone-100 flex items-center justify-center text-brand-dark text-2xl mb-6 relative z-10">
@@ -364,7 +530,7 @@
                     </button>
                 </div>
 
-                <!-- Card 3: Speaking -->
+                <!-- Card 3 -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
                     <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-brand-accent text-2xl mb-6">
                         <i class="fas fa-microphone-alt"></i>
@@ -378,17 +544,77 @@
                         <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
-
             </div>
         </div>
     </section>
 
-    <!-- Keynote Highlights -->
+    <!-- NEW: FAQ SECTION -->
+    <section id="faq" class="py-24 bg-white border-t border-stone-100">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-display font-bold text-stone-900 mb-10 text-center">Frequently Asked Questions</h2>
+            
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <details class="group border border-stone-200 rounded-lg bg-white open:border-brand-primary/30 transition-all duration-300">
+                    <summary class="flex cursor-pointer list-none items-center justify-between p-6 font-medium text-stone-900">
+                        <span>What types of companies do you work with?</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-stone-400"></i>
+                        </span>
+                    </summary>
+                    <div class="text-stone-600 px-6 pb-6 text-sm leading-relaxed">
+                        I primarily advise Fortune 500 companies, innovative startups, and creative agencies looking to integrate Generative AI and Spatial Computing into their workflows and products.
+                    </div>
+                </details>
+
+                <!-- FAQ Item 2 -->
+                <details class="group border border-stone-200 rounded-lg bg-white open:border-brand-primary/30 transition-all duration-300">
+                    <summary class="flex cursor-pointer list-none items-center justify-between p-6 font-medium text-stone-900">
+                        <span>What does a typical consulting engagement look like?</span>
+                        <span class="transition group-open:rotate-180">
+                             <i class="fas fa-chevron-down text-stone-400"></i>
+                        </span>
+                    </summary>
+                    <div class="text-stone-600 px-6 pb-6 text-sm leading-relaxed">
+                        Engagements range from strategic advisory retainers to project-based creative direction. We usually start with a discovery session to identify high-impact opportunities for AI integration.
+                    </div>
+                </details>
+
+                <!-- FAQ Item 3 -->
+                <details class="group border border-stone-200 rounded-lg bg-white open:border-brand-primary/30 transition-all duration-300">
+                    <summary class="flex cursor-pointer list-none items-center justify-between p-6 font-medium text-stone-900">
+                        <span>Do you offer workshops or team training?</span>
+                        <span class="transition group-open:rotate-180">
+                             <i class="fas fa-chevron-down text-stone-400"></i>
+                        </span>
+                    </summary>
+                    <div class="text-stone-600 px-6 pb-6 text-sm leading-relaxed">
+                        Yes. I offer specialized workshops like "Camp Future Proof" designed to upskill creative teams on the latest AI tools and workflows.
+                    </div>
+                </details>
+                
+                 <!-- FAQ Item 4 -->
+                 <details class="group border border-stone-200 rounded-lg bg-white open:border-brand-primary/30 transition-all duration-300">
+                    <summary class="flex cursor-pointer list-none items-center justify-between p-6 font-medium text-stone-900">
+                        <span>How do I book you for speaking?</span>
+                        <span class="transition group-open:rotate-180">
+                             <i class="fas fa-chevron-down text-stone-400"></i>
+                        </span>
+                    </summary>
+                    <div class="text-stone-600 px-6 pb-6 text-sm leading-relaxed">
+                        You can email me directly at <a href="mailto:donallenthethird@gmail.com" class="text-brand-primary underline">donallenthethird@gmail.com</a> to discuss your event, date, and budget.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Keynote Highlights (Featured Appearance) -->
     <section id="keynotes" class="py-24 bg-brand-dark text-white relative overflow-hidden">
         <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-stone-800 to-transparent opacity-50"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-2xl mx-auto mb-20">
-                <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">Keynote Highlights</h2>
+                <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">Featured Appearance</h2>
                 <p class="text-stone-400 text-lg leading-relaxed">
                     From the main stage of Meta Connect to the creative halls of SxSW.
                 </p>
@@ -400,7 +626,7 @@
                     <div class="inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-brand-accent mb-6 border border-stone-700">
                         META CONNECT
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-display font-bold mb-6">Architecting the Next Era of Digital Presence</h2>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold mb-6">On Stage with Zuckerberg: The Future of Creator AI</h2>
                     <p class="text-stone-400 text-lg leading-relaxed mb-8">
                         For six months, I worked alongside Meta’s teams to help build the behavioral models for <strong>AI Studio</strong>. This culminated in a live keynote with Mark Zuckerberg, unveiling the world's first AI video calling feature.
                     </p>
@@ -411,7 +637,8 @@
                 <div class="w-full lg:w-1/2">
                     <div class="relative rounded-xl overflow-hidden border border-stone-700 shadow-2xl bg-black">
                         <div class="aspect-video">
-                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/l_QruJ0Kv9U?si=IMRUPC3dnWPRhRz8&amp;start=305&rel=0" title="Meta Keynote" frameborder="0" allowfullscreen></iframe>
+                            <!-- Updated YouTube Embed for TEDx -->
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/yaeazIA5np8?si=IMRUPC3dnWPRhRz8&amp;start=27&rel=0" title="Featured Video" frameborder="0" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
@@ -456,6 +683,7 @@
                 </p>
             </div>
 
+            <!-- Instagram Grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
                 <!-- Reel 1 -->
                 <a href="https://www.instagram.com/donalleniii/" target="_blank" class="group relative aspect-[9/16] bg-stone-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -641,6 +869,21 @@
         </div>
     </section>
 
+    <!-- NEW: MEDIA / PRESS SECTION -->
+    <section class="py-16 bg-white border-t border-stone-100">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-xs font-bold uppercase tracking-widest text-stone-400 mb-8">As Seen In</p>
+            <div class="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                <!-- Placeholders for Press Logos -->
+                 <span class="text-2xl font-display font-bold text-stone-800">Forbes</span>
+                 <span class="text-2xl font-display font-bold text-stone-800">TechCrunch</span>
+                 <span class="text-2xl font-display font-bold text-stone-800">TheVerge</span>
+                 <span class="text-2xl font-display font-bold text-stone-800">Wired</span>
+                 <span class="text-2xl font-display font-bold text-stone-800">AdWeek</span>
+            </div>
+         </div>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-white py-12 border-t border-stone-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
@@ -649,10 +892,16 @@
             </div>
             <div class="flex flex-wrap justify-center gap-6 text-sm text-stone-500 mb-6">
                 <a href="#about" class="hover:text-brand-dark">About</a>
+                <a href="#work" class="hover:text-brand-dark">Work</a>
                 <a href="#services" class="hover:text-brand-dark">Consulting</a>
+                <a href="#podcast" class="hover:text-brand-dark">Podcast</a>
                 <a href="#book" class="hover:text-brand-dark">Book</a>
-                <a href="#keynotes" class="hover:text-brand-dark">Keynotes</a>
                 <button onclick="openModal()" class="hover:text-brand-dark">Contact</button>
+            </div>
+            <div class="flex gap-6 text-xl text-stone-400 mb-6">
+                <a href="https://x.com/DonAllenIII" target="_blank" class="hover:text-brand-primary transition-colors"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/donalleniii" target="_blank" class="hover:text-brand-accent transition-colors"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com/in/donalleniii/" target="_blank" class="hover:text-blue-700 transition-colors"><i class="fab fa-linkedin"></i></a>
             </div>
             <p class="text-xs text-stone-400">© 2025 Don Allen Stevenson III. All rights reserved.</p>
         </div>
@@ -694,10 +943,12 @@
         });
 
         function resizeCanvas() {
-            const section = document.getElementById('about');
-            canvas.width = section.offsetWidth;
-            canvas.height = section.offsetHeight;
-            init();
+            const section = document.getElementById('home');
+            if(section) {
+                canvas.width = section.offsetWidth;
+                canvas.height = section.offsetHeight;
+                init();
+            }
         }
         
         window.addEventListener('resize', resizeCanvas);
@@ -798,10 +1049,11 @@
             }
         }
 
-        window.addEventListener('load', () => {
+        // Init on load and resize
+        window.onload = function() {
              resizeCanvas();
              animate();
-        });
+        }
         
         const modal = document.getElementById('contactModal');
         function openModal() {
