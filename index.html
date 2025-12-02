@@ -87,14 +87,10 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1C1917 0%, #44403c 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            padding: 20px;
-            text-align: center;
+            /* Book cover image */
+            background-image: url('https://m.media-amazon.com/images/I/61lFig5DKjL._SL1491_.jpg');
+            background-size: cover;
+            background-position: center;
             border-radius: 2px 5px 5px 2px;
             z-index: 2;
         }
@@ -129,7 +125,7 @@
                 <div class="hidden md:block">
                     <!-- Trigger Modal -->
                     <button onclick="openModal()" class="bg-stone-900 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-stone-800 transition-all shadow-lg hover:shadow-stone-900/20">
-                        Work With Me
+                        Work With Don
                     </button>
                 </div>
 
@@ -148,7 +144,7 @@
                 <a href="#services" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-stone-50">Consulting</a>
                 <a href="#book" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-stone-50">Book</a>
                 <div class="mt-4 px-3">
-                    <button onclick="openModal()" class="block w-full text-center bg-stone-900 text-white px-5 py-3 rounded-lg text-base font-bold">Work With Me</button>
+                    <button onclick="openModal()" class="block w-full text-center bg-stone-900 text-white px-5 py-3 rounded-lg text-base font-bold">Work With Don</button>
                 </div>
             </div>
         </div>
@@ -163,10 +159,10 @@
             <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                 
                 <div class="w-full lg:w-1/2 space-y-8 animate-fade-up">
-                    <div class="inline-flex items-center px-3 py-1 rounded-full border border-orange-200 bg-orange-50 text-orange-700 text-xs font-bold tracking-wide uppercase">
+                    <a href="https://www.instagram.com/reel/DO_hCvLEf2W/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="inline-flex items-center px-3 py-1 rounded-full border border-orange-200 bg-orange-50 text-orange-700 text-xs font-bold tracking-wide uppercase hover:bg-orange-100 transition-colors cursor-pointer">
                         <span class="w-2 h-2 rounded-full bg-orange-500 mr-2 animate-pulse"></span>
                         Latest: TED 2025 Opening Animation
-                    </div>
+                    </a>
                     
                     <h1 class="text-5xl lg:text-6xl font-display font-bold leading-tight text-stone-900">
                         Navigating the Future of <br class="hidden lg:block" />
@@ -249,20 +245,23 @@
     <section id="services" class="py-24 bg-stone-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-16">
-                <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4">How We Can Collaborate</h2>
+                <!-- UPDATED SECTION TITLE -->
+                <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4">Work with Don</h2>
                 <p class="text-stone-600">Strategic guidance for the world's most innovative companies.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 
-                <!-- Card 1: Masterclass -->
+                <!-- Card 1: Masterclass (UPDATED) -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
                     <div class="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-2xl mb-6">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-stone-900 mb-3">Learn AI/XR</h3>
+                    <!-- Updated Title -->
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Start With My MasterClass</h3>
+                    <!-- Updated Text -->
                     <p class="text-stone-600 mb-8 flex-grow leading-relaxed">
-                        Master the tools of tomorrow. Join my official Masterclass on Generative AI.
+                        If you want an easy way to learn from me, begin with my official MasterClass on Generative AI. It’s a full walkthrough of how to start creating with AI right away — the same approach I teach to teams at Meta, Apple, and Google.
                     </p>
                     <a href="https://www.masterclass.com/classes/achieve-more-with-gen-ai?utm_campaign=Share&utm_medium=Copy&utm_source=class_guest_next" target="_blank" class="inline-flex items-center text-orange-600 font-bold hover:text-orange-700 transition-colors group">
                         Take the Course 
@@ -270,15 +269,17 @@
                     </a>
                 </div>
 
-                <!-- Card 2: Consulting -->
+                <!-- Card 2: Consulting (UPDATED) -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-bl-full -mr-10 -mt-10"></div>
                     <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl mb-6 relative z-10">
                         <i class="fas fa-briefcase"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-stone-900 mb-3">Strategic Consulting</h3>
+                    <!-- Updated Title -->
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Work With Me Directly</h3>
+                    <!-- Updated Text -->
                     <p class="text-stone-600 mb-8 flex-grow leading-relaxed">
-                        I advise <strong>Apple's</strong> hardware developers, <strong>Google's</strong> executives, and product teams at <strong>Instagram & WhatsApp</strong> on AI integration.
+                        If you want to skip the intro stuff and get straight to it, this is the path. I work with teams at Apple, Google, Instagram, and WhatsApp on creative technologies and workflows — how to use them in ways that actually help your product and your people. Book a session and we’ll dig into your project fast.
                     </p>
                     <button onclick="openModal()" class="inline-flex items-center text-blue-600 font-bold hover:text-blue-700 transition-colors group">
                         Book Consultation 
@@ -286,26 +287,29 @@
                     </button>
                 </div>
 
-                <!-- Card 3: Speaking -->
+                <!-- Card 3: Speaking (UPDATED) -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
                     <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-2xl mb-6">
                         <i class="fas fa-microphone-alt"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-stone-900 mb-3">Speaking & Direction</h3>
+                    <!-- Updated Title -->
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Bring Me In To Speak</h3>
+                    <!-- Updated Text -->
                     <p class="text-stone-600 mb-8 flex-grow leading-relaxed">
-                        From directing the <strong>TED 2025</strong> opening animation to keynote stages worldwide. I bring the future into focus.
+                        If you want someone who can energize your team — devs, execs, or a whole room — this is where I show up best. I speak at internal and public events worldwide, breaking down the future of creative tech in a way people actually remember. I also help shape sessions, direct visuals, and inspire teams toward what’s coming next.
                     </p>
-                    <button onclick="openModal()" class="inline-flex items-center text-purple-600 font-bold hover:text-purple-700 transition-colors group">
-                        Contact for Speaking 
+                    <!-- Updated Button to Mailto with Subject Line -->
+                    <a href="mailto:donallenthethird@gmail.com?subject=Speaking%20Inquiry" class="inline-flex items-center text-purple-600 font-bold hover:text-purple-700 transition-colors group">
+                        Email Me 
                         <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
-                    </button>
+                    </a>
                 </div>
 
             </div>
         </div>
     </section>
 
-    <!-- Featured Case Study (Meta Connect) with Real Video -->
+    <!-- Featured Case Study (Meta Connect) with Updated Copy -->
     <section id="meta-video" class="py-24 bg-stone-900 text-white relative overflow-hidden">
         <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-stone-800 to-transparent opacity-50"></div>
         
@@ -315,9 +319,9 @@
                     <div class="inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-stone-400 mb-6 border border-stone-700">
                         FEATURED MOMENT
                     </div>
-                    <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">Redefining Connection with Meta</h2>
+                    <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">Architecting the Next Era of Digital Presence</h2>
                     <p class="text-stone-400 text-lg leading-relaxed mb-8">
-                        I joined Mark Zuckerberg on stage to help announce a new AI video calling product. We framed the AI model not just as a tool, but as a creative partner.
+                        For six months, I worked alongside Meta’s teams to help build the behavioral models for <strong>AI Studio</strong>. This culminated in a live keynote with Mark Zuckerberg, unveiling the world's first AI video calling feature—proving that digital presence can be scalable, interactive, and authentically human.
                     </p>
                     
                     <button onclick="openModal()" class="bg-white text-stone-900 px-8 py-3 rounded-lg font-bold hover:bg-stone-200 transition-colors">
@@ -354,11 +358,8 @@
                 <div class="w-full md:w-1/2 flex justify-center order-2 md:order-1">
                     <div class="book-container">
                         <div class="book">
-                            <div class="book-cover">
-                                <h4 class="text-2xl font-display font-bold">MAKE A SEAT</h4>
-                                <p class="text-xs mt-2 text-stone-300">Discovering Opportunities</p>
-                                <div class="mt-8 text-xs font-mono text-stone-500">Don Allen III</div>
-                            </div>
+                            <!-- Book cover is now an image -->
+                            <div class="book-cover"></div>
                             <div class="book-spine"></div>
                         </div>
                     </div>
