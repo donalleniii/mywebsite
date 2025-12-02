@@ -71,13 +71,12 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         
-        /* Hide scrollbar for horizontal scrolling areas */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
         .no-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         /* --- CSS 3D Book Effect --- */
@@ -156,6 +155,17 @@
             transform: rotateY(90deg) translateZ(calc(var(--book-width) - (var(--book-thickness) / 2)));
             transform-origin: left;
         }
+        
+        #particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+        }
 
     </style>
 </head>
@@ -203,30 +213,32 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Animated Background -->
     <section id="about" class="relative pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden">
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div class="absolute top-0 left-0 -ml-20 -mt-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <canvas id="particles-canvas"></canvas>
+        
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob pointer-events-none"></div>
+        <div class="absolute top-0 left-0 -ml-20 -mt-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 pointer-events-none"></div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                 
                 <div class="w-full lg:w-1/2 space-y-8 animate-fade-up">
-                    <a href="https://www.instagram.com/reel/DO_hCvLEf2W/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="inline-flex items-center px-3 py-1 rounded-full border border-purple-200 bg-purple-50 text-brand-accent text-xs font-bold tracking-wide uppercase hover:bg-purple-100 transition-colors cursor-pointer">
+                    <a href="https://www.instagram.com/reel/DO_hCvLEf2W/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="inline-flex items-center px-3 py-1 rounded-full border border-purple-200 bg-purple-50/80 backdrop-blur-sm text-brand-accent text-xs font-bold tracking-wide uppercase hover:bg-purple-100 transition-colors cursor-pointer z-20 relative">
                         <span class="w-2 h-2 rounded-full bg-brand-accent mr-2 animate-pulse"></span>
                         Latest: TED 2025 Opening Animation
                     </a>
                     
-                    <h1 class="text-5xl lg:text-6xl font-display font-bold leading-tight text-stone-900">
+                    <h1 class="text-5xl lg:text-6xl font-display font-bold leading-tight text-stone-900 relative z-20">
                         Navigating the Future of <br class="hidden lg:block" />
                         <span class="gradient-text">Spatial Computing & AI</span>
                     </h1>
                     
-                    <p class="text-xl text-stone-600 leading-relaxed max-w-lg">
+                    <p class="text-xl text-stone-600 leading-relaxed max-w-lg relative z-20">
                         I bridge the gap between complex emerging tech and human creativity. Advising executives at <strong>Google</strong> and hardware teams at <strong>Apple</strong> to define the next era.
                     </p>
                     
-                    <div class="flex flex-wrap gap-4 pt-2">
+                    <div class="flex flex-wrap gap-4 pt-2 relative z-20">
                         <button onclick="openModal()" class="bg-brand-dark text-white px-8 py-4 rounded-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center">
                             Work With Don
                             <i class="fas fa-arrow-right ml-2 text-sm"></i>
@@ -237,7 +249,7 @@
                     </div>
                 </div>
 
-                <div class="w-full lg:w-1/2 relative">
+                <div class="w-full lg:w-1/2 relative z-20">
                     <a href="#keynotes" class="block relative aspect-[4/5] lg:aspect-square max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl group cursor-pointer transform hover:scale-[1.02] transition-all duration-500">
                         <div class="absolute inset-0 bg-stone-900">
                              <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/80 to-orange-600/50 mix-blend-overlay"></div>
@@ -250,7 +262,6 @@
                             <div class="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-3">
                                 Keynote Highlight
                             </div>
-                            <!-- UPDATED TEXT HERE -->
                             <h3 class="text-xl lg:text-2xl font-bold leading-tight mb-2">Don Allen Stevenson III on stage with Mark Zuckerberg announcing a new AI product</h3>
                             <div class="flex items-center text-stone-300 text-sm group-hover:text-white transition-colors">
                                 <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center mr-3 pl-1">
@@ -322,6 +333,8 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Card 1: Masterclass -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
                     <div class="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-brand-primary text-2xl mb-6">
                         <i class="fas fa-graduation-cap"></i>
@@ -336,6 +349,7 @@
                     </a>
                 </div>
 
+                <!-- Card 2: Consulting -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-stone-100 rounded-bl-full -mr-10 -mt-10"></div>
                     <div class="w-14 h-14 rounded-full bg-stone-100 flex items-center justify-center text-brand-dark text-2xl mb-6 relative z-10">
@@ -350,6 +364,7 @@
                     </button>
                 </div>
 
+                <!-- Card 3: Speaking -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
                     <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-brand-accent text-2xl mb-6">
                         <i class="fas fa-microphone-alt"></i>
@@ -363,6 +378,7 @@
                         <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
+
             </div>
         </div>
     </section>
@@ -427,7 +443,7 @@
         </div>
     </section>
 
-    <!-- NEW: THE DAILY FEED (Instagram Section) -->
+    <!-- THE DAILY FEED -->
     <section id="daily-feed" class="py-24 bg-white border-t border-stone-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
              <div class="text-center mb-16">
@@ -440,7 +456,6 @@
                 </p>
             </div>
 
-            <!-- Instagram Grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
                 <!-- Reel 1 -->
                 <a href="https://www.instagram.com/donalleniii/" target="_blank" class="group relative aspect-[9/16] bg-stone-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -457,7 +472,6 @@
                          </div>
                     </div>
                 </a>
-
                 <!-- Reel 2 -->
                 <a href="https://www.instagram.com/donalleniii/" target="_blank" class="group relative aspect-[9/16] bg-stone-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                     <div class="absolute inset-0 bg-stone-300 animate-pulse" style="animation-delay: 0.1s"></div>
@@ -468,7 +482,6 @@
                         </div>
                     </div>
                 </a>
-
                 <!-- Reel 3 -->
                 <a href="https://www.instagram.com/donalleniii/" target="_blank" class="group relative aspect-[9/16] bg-stone-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                      <div class="absolute inset-0 bg-stone-200 animate-pulse" style="animation-delay: 0.2s"></div>
@@ -479,7 +492,6 @@
                         </div>
                     </div>
                 </a>
-
                 <!-- Reel 4 -->
                 <a href="https://www.instagram.com/donalleniii/" target="_blank" class="group relative aspect-[9/16] bg-stone-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                      <div class="absolute inset-0 bg-stone-300 animate-pulse" style="animation-delay: 0.3s"></div>
@@ -493,7 +505,6 @@
             </div>
 
             <div class="text-center">
-                <!-- Updated Follower Count -->
                 <a href="https://www.instagram.com/donalleniii/" target="_blank" class="inline-flex items-center text-brand-dark font-bold hover:text-brand-primary transition-colors text-lg">
                     <i class="fab fa-instagram mr-2"></i> Join 130k+ on Instagram
                 </a>
@@ -536,7 +547,7 @@
         </div>
     </section>
 
-    <!-- Substack Section: UPDATED LAYOUT -->
+    <!-- Substack Section -->
     <section id="substack" class="py-24 bg-white border-t border-stone-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -549,8 +560,7 @@
                 </p>
             </div>
 
-            <!-- UPDATED GRID: Horizontal Scroll on Mobile, Grid on Desktop -->
-            <div class="flex overflow-x-auto pb-8 gap-6 snap-x md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0 no-scrollbar mb-8">
+            <div class="flex overflow-x-auto pb-8 gap-6 snap-x md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0 no-scrollbar mb-12">
                 
                 <!-- Article 1 -->
                 <a href="https://donalleniii.substack.com/p/when-screens-go-quiet" target="_blank" class="service-card group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md block flex-shrink-0 w-[85vw] md:w-auto h-auto flex flex-col snap-center">
@@ -624,25 +634,27 @@
             </div>
 
             <div class="flex justify-center space-x-8 text-2xl text-stone-400 mt-16">
-                <a href="https://www.instagram.com/donalleniii" target="_blank" class="hover:text-brand-primary transition-colors"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="hover:text-brand-accent transition-colors"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="hover:text-blue-700 transition-colors"><i class="fab fa-linkedin"></i></a>
+                <a href="https://x.com/DonAllenIII" target="_blank" class="hover:text-brand-primary transition-colors"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/donalleniii" target="_blank" class="hover:text-brand-accent transition-colors"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com/in/donalleniii/" target="_blank" class="hover:text-blue-700 transition-colors"><i class="fab fa-linkedin"></i></a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="bg-white py-12 border-t border-stone-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-            <div class="mb-4 md:mb-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
+            <div class="mb-6">
                 <span class="font-display font-bold text-xl tracking-tight hover:text-brand-primary transition-colors">@donalleniii</span>
-                <p class="text-xs text-stone-500 mt-1">© 2025 Don Allen III. All rights reserved.</p>
             </div>
-            <div class="flex space-x-6 text-sm text-stone-500">
-                <a href="#" class="hover:text-brand-dark">Work</a>
-                <a href="#" class="hover:text-brand-dark">Book</a>
+            <div class="flex flex-wrap justify-center gap-6 text-sm text-stone-500 mb-6">
+                <a href="#about" class="hover:text-brand-dark">About</a>
+                <a href="#services" class="hover:text-brand-dark">Consulting</a>
+                <a href="#book" class="hover:text-brand-dark">Book</a>
+                <a href="#keynotes" class="hover:text-brand-dark">Keynotes</a>
                 <button onclick="openModal()" class="hover:text-brand-dark">Contact</button>
             </div>
+            <p class="text-xs text-stone-400">© 2025 Don Allen Stevenson III. All rights reserved.</p>
         </div>
     </footer>
 
@@ -665,6 +677,132 @@
     </div>
 
     <script>
+        // Particle Animation Logic
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let particlesArray;
+        let mouse = {
+            x: null,
+            y: null,
+            radius: 100
+        };
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        function resizeCanvas() {
+            const section = document.getElementById('about');
+            canvas.width = section.offsetWidth;
+            canvas.height = section.offsetHeight;
+            init();
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                // Mouse Interaction
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+                if (distance < mouse.radius + this.size){
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10){
+                        this.x += 2; // Push right
+                    }
+                    if (mouse.x > this.x && this.x > this.size * 10){
+                        this.x -= 2; // Push left
+                    }
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10){
+                        this.y += 2;
+                    }
+                    if (mouse.y > this.y && this.y > this.size * 10){
+                        this.y -= 2;
+                    }
+                }
+
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 12000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((canvas.width - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((canvas.height - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 0.4) - 0.2;
+                let directionY = (Math.random() * 0.4) - 0.2;
+                let colors = ['rgba(249, 115, 22, 0.4)', 'rgba(168, 85, 247, 0.4)', 'rgba(200, 200, 200, 0.3)'];
+                let color = colors[Math.floor(Math.random() * colors.length)];
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
+                    + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    if (distance < (canvas.width/9) * (canvas.height/9)) {
+                        opacityValue = 1 - (distance/10000);
+                        ctx.strokeStyle = 'rgba(200, 200, 200,' + opacityValue + ')'; 
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('load', () => {
+             resizeCanvas();
+             animate();
+        });
+        
         const modal = document.getElementById('contactModal');
         function openModal() {
             modal.classList.remove('hidden');
