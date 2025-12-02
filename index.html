@@ -70,6 +70,15 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
+        
+        /* Hide scrollbar for horizontal scrolling areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
 
         /* --- CSS 3D Book Effect --- */
         :root {
@@ -241,7 +250,8 @@
                             <div class="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-3">
                                 Keynote Highlight
                             </div>
-                            <h3 class="text-2xl lg:text-3xl font-bold leading-tight mb-2">Backstage at Moon Valley with Zuckerberg</h3>
+                            <!-- UPDATED TEXT HERE -->
+                            <h3 class="text-xl lg:text-2xl font-bold leading-tight mb-2">Don Allen Stevenson III on stage with Mark Zuckerberg announcing a new AI product</h3>
                             <div class="flex items-center text-stone-300 text-sm group-hover:text-white transition-colors">
                                 <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center mr-3 pl-1">
                                     <i class="fas fa-play text-xs"></i>
@@ -255,7 +265,7 @@
         </div>
     </section>
 
-    <!-- Trusted By -->
+    <!-- Trusted By / Marquee Section -->
     <section class="py-10 bg-white border-t border-b border-stone-100 overflow-hidden relative">
         <div class="max-w-7xl mx-auto px-4 mb-4">
              <p class="text-center text-xs font-bold uppercase tracking-widest text-stone-400">Trusted Advisor and Collaborator with</p>
@@ -435,14 +445,12 @@
                 <!-- Reel 1 -->
                 <a href="https://www.instagram.com/donalleniii/" target="_blank" class="group relative aspect-[9/16] bg-stone-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                     <div class="absolute inset-0 bg-stone-200 animate-pulse"></div>
-                    <!-- Simulated Reel Content -->
                     <div class="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90 group-hover:opacity-100 transition-opacity">
                         <div class="text-white font-bold text-sm md:text-base leading-tight mb-1">Meta Ray-Ban Updates</div>
                         <div class="text-stone-300 text-xs flex items-center">
                             <i class="fas fa-play mr-1"></i> 125k views
                         </div>
                     </div>
-                    <!-- Play Icon Overlay -->
                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                          <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
                              <i class="fas fa-play text-white"></i>
@@ -485,8 +493,9 @@
             </div>
 
             <div class="text-center">
+                <!-- Updated Follower Count -->
                 <a href="https://www.instagram.com/donalleniii/" target="_blank" class="inline-flex items-center text-brand-dark font-bold hover:text-brand-primary transition-colors text-lg">
-                    <i class="fab fa-instagram mr-2"></i> Join 50k+ on Instagram
+                    <i class="fab fa-instagram mr-2"></i> Join 130k+ on Instagram
                 </a>
             </div>
         </div>
@@ -527,10 +536,10 @@
         </div>
     </section>
 
-    <!-- Substack Section -->
+    <!-- Substack Section: UPDATED LAYOUT -->
     <section id="substack" class="py-24 bg-white border-t border-stone-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
+            <div class="text-center mb-12">
                 <div class="w-16 h-16 bg-brand-primary rounded-xl mx-auto mb-6 flex items-center justify-center text-white text-2xl shadow-lg shadow-orange-200">
                     <i class="fas fa-newspaper"></i>
                 </div>
@@ -540,11 +549,11 @@
                 </p>
             </div>
 
-            <!-- Article Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <!-- UPDATED GRID: Horizontal Scroll on Mobile, Grid on Desktop -->
+            <div class="flex overflow-x-auto pb-8 gap-6 snap-x md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0 no-scrollbar mb-8">
                 
                 <!-- Article 1 -->
-                <a href="https://donalleniii.substack.com/p/when-screens-go-quiet" target="_blank" class="service-card group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md block h-full flex flex-col">
+                <a href="https://donalleniii.substack.com/p/when-screens-go-quiet" target="_blank" class="service-card group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md block flex-shrink-0 w-[85vw] md:w-auto h-auto flex flex-col snap-center">
                     <div class="h-40 bg-gradient-to-br from-orange-100 to-orange-50 w-full relative overflow-hidden">
                         <div class="absolute -right-6 -bottom-6 text-orange-200 opacity-50 transform rotate-12">
                             <i class="fas fa-glasses text-9xl"></i>
@@ -565,7 +574,7 @@
                 </a>
 
                 <!-- Article 2 -->
-                <a href="https://donalleniii.substack.com/p/the-ai-spell-book" target="_blank" class="service-card group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md block h-full flex flex-col">
+                <a href="https://donalleniii.substack.com/p/the-ai-spell-book" target="_blank" class="service-card group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md block flex-shrink-0 w-[85vw] md:w-auto h-auto flex flex-col snap-center">
                     <div class="h-40 bg-gradient-to-br from-purple-100 to-purple-50 w-full relative overflow-hidden">
                         <div class="absolute -right-6 -bottom-6 text-purple-200 opacity-50 transform -rotate-6">
                             <i class="fas fa-mobile-alt text-9xl"></i>
@@ -586,7 +595,7 @@
                 </a>
 
                 <!-- Article 3 -->
-                <a href="https://donalleniii.substack.com/p/why-your-ai-keeps-giving-different" target="_blank" class="service-card group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md block h-full flex flex-col">
+                <a href="https://donalleniii.substack.com/p/why-your-ai-keeps-giving-different" target="_blank" class="service-card group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md block flex-shrink-0 w-[85vw] md:w-auto h-auto flex flex-col snap-center">
                     <div class="h-40 bg-gradient-to-br from-stone-100 to-stone-200 w-full relative overflow-hidden">
                         <div class="absolute -right-6 -bottom-6 text-stone-300 opacity-50 transform rotate-6">
                             <i class="fas fa-question-circle text-9xl"></i>
