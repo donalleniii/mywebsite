@@ -277,6 +277,7 @@
                     <a href="#keynotes" class="block relative aspect-[4/5] lg:aspect-square max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl group cursor-pointer transform hover:scale-[1.02] transition-all duration-500">
                         <div class="absolute inset-0 bg-stone-900">
                              <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/80 to-orange-600/50 mix-blend-overlay"></div>
+                             <!-- UPDATED THUMBNAIL -->
                              <img src="https://img.youtube.com/vi/yaeazIA5np8/maxresdefault.jpg" class="w-full h-full object-cover opacity-60">
                         </div>
                         
@@ -286,6 +287,7 @@
                             <div class="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-3">
                                 Featured Appearance
                             </div>
+                            <!-- UPDATED TITLE -->
                             <h3 class="text-xl lg:text-2xl font-bold leading-tight mb-2">On Stage with Zuckerberg: The Future of Creator AI</h3>
                             <div class="flex items-center text-stone-300 text-sm group-hover:text-white transition-colors">
                                 <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center mr-3 pl-1">
@@ -352,7 +354,7 @@
     <!-- TESTIMONIALS SECTION -->
     <section id="testimonials" class="py-20 bg-white border-b border-stone-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex overflow-x-auto pb-8 gap-6 snap-x md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0 no-scrollbar">
+            <div id="testimonial-scroll" class="flex overflow-x-auto pb-8 gap-6 snap-x md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0 no-scrollbar">
                 <!-- Testimonial 1: MIT Technology Review -->
                 <div class="service-card bg-white p-8 rounded-2xl border border-stone-100 shadow-sm flex-shrink-0 w-[85vw] md:w-auto snap-center flex flex-col">
                     <i class="fas fa-quote-left text-brand-accent text-2xl mb-4 opacity-50"></i>
@@ -396,10 +398,18 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Mobile Dots Indicator -->
+            <div id="carousel-dots" class="flex justify-center gap-2 mt-4 md:hidden">
+                <div class="w-2 h-2 rounded-full bg-stone-800 dot active"></div>
+                <div class="w-2 h-2 rounded-full bg-stone-300 dot"></div>
+                <div class="w-2 h-2 rounded-full bg-stone-300 dot"></div>
+            </div>
+            
         </div>
     </section>
 
-    <!-- ABOUT SECTION (UPDATED with Chart) -->
+    <!-- ABOUT SECTION (UPDATED with Read More) -->
     <section id="about" class="py-24 bg-brand-surface">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col-reverse md:flex-row items-start gap-12 lg:gap-20">
@@ -437,17 +447,18 @@
                         Read full story <i class="fas fa-chevron-down ml-2"></i>
                     </button>
                     
+                    <!-- UPDATED STATS ROW -->
                     <div class="flex flex-wrap gap-3 pt-4">
                         <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">10+ Years in Creative Tech</span>
                         <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">Fortune 500 Advisor</span>
                         <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">245k+ Community</span>
+                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">AR/XR Expert</span>
+                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">Published Author</span>
                     </div>
 
-                    <!-- NEW: Time Chart Component -->
+                    <!-- Time Chart Component -->
                     <div class="mt-8 pt-8 border-t border-stone-100">
                         <h3 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-4">How I Actually Spend My Time</h3>
-                        
-                        <!-- Stacked Bar -->
                         <div class="flex w-full h-4 rounded-full overflow-hidden cursor-pointer shadow-inner bg-stone-100">
                             <div class="chart-segment bg-stone-900 h-full transition-all duration-300 relative group" style="width: 40%" onclick="document.getElementById('work').scrollIntoView({behavior: 'smooth'})">
                                 <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 bg-stone-900 text-white text-xs p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 text-center">
@@ -465,15 +476,12 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Legend -->
                         <div class="flex justify-between text-xs text-stone-500 mt-3 font-medium">
                             <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-stone-900 mr-2"></span>Advisory (40%)</span>
                             <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-brand-primary mr-2"></span>Teaching (35%)</span>
                             <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-brand-accent mr-2"></span>Making (25%)</span>
                         </div>
                     </div>
-                    <!-- End Time Chart -->
 
                 </div>
             </div>
@@ -531,7 +539,7 @@
         </div>
     </section>
 
-    <!-- Services Section -->
+    <!-- Services Section (UPDATED MASTERCLASS ICON) -->
     <section id="services" class="py-24 bg-brand-surface">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-16">
@@ -540,9 +548,9 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Card 1 -->
+                <!-- Card 1: Masterclass (Updated Color) -->
                 <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
-                    <div class="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center text-brand-primary text-2xl mb-6">
+                    <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white text-2xl mb-6">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
                     <h3 class="text-xl font-bold text-stone-900 mb-3">Start With My MasterClass</h3>
