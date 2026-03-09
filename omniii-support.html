@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMNIII — Support</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background: #0a0a0a;
+      color: #d4d4d4;
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ff8a00;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .logo a { color: inherit; text-decoration: none; }
+    .logo a:hover { text-decoration: none; opacity: 0.85; }
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 48px;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+    .tagline {
+      font-size: 15px;
+      color: #888;
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ff8a00;
+      margin: 36px 0 12px;
+    }
+    p {
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    .highlight {
+      background: rgba(255, 138, 0, 0.08);
+      border-left: 3px solid #ff8a00;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+    .highlight p { margin-bottom: 0; }
+    a { color: #ff8a00; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .faq-item {
+      margin-bottom: 24px;
+    }
+    .faq-item h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .faq-item p {
+      color: #b0b0b0;
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+    .contact-card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .contact-card p {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .contact-card p:last-child { margin-bottom: 0; }
+    .contact-btn {
+      display: inline-block;
+      background: #ff8a00;
+      color: #0a0a0a;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .contact-btn:hover { opacity: 0.85; text-decoration: none; }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+    .footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid #1a1a1a;
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><a href="https://donalleniii.me/#omniii">OMNIII</a></div>
+    <div class="subtitle">Voice-First AI Orchestrator</div>
+
+    <h1>Support</h1>
+    <p class="tagline">Having trouble? Here are the most common questions and how to get help.</p>
+
+    <div class="highlight">
+      <p><strong>Quick tip:</strong> Most issues are solved by making sure you have a valid API key entered in Settings and that your device is connected to the internet for cloud AI features.</p>
+    </div>
+
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <h3>How do I get started?</h3>
+      <p>Open OMNIII, grant microphone access, and tap the record button. Your voice is transcribed on-device. To use cloud AI features, go to Settings and enter your OpenRouter API key.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Where do I get an API key?</h3>
+      <p>Sign up at <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a>, add credits, and copy your API key. Paste it into OMNIII Settings. Your key is stored securely in the iOS Keychain — it never leaves your device except to authenticate with OpenRouter.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Why did my AI response fail?</h3>
+      <p>Common causes: expired or invalid API key, insufficient OpenRouter credits, or no internet connection. Check your key in Settings and verify your credit balance at <a href="https://openrouter.ai/credits" target="_blank" rel="noopener">openrouter.ai/credits</a>.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Is my audio sent to the cloud?</h3>
+      <p>No. Audio is transcribed on-device using WhisperKit. Only the resulting text is sent to AI services when you explicitly request a response. You can also use local LLMs to keep everything fully offline.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>How does OmniConsensus work?</h3>
+      <p>OmniConsensus sends your transcript to multiple AI models in parallel, then synthesizes the best answer from all responses. This gives you a more balanced, well-rounded result than any single model alone.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Can I use OMNIII completely offline?</h3>
+      <p>Yes. Download a local LLM in Settings (powered by llama.cpp) and use on-device WhisperKit transcription. No internet required — nothing leaves your device.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>How do I restore my Pro purchase?</h3>
+      <p>Open OMNIII Settings and tap "Restore Purchases." This uses Apple's StoreKit to verify your subscription. No OMNIII account is needed.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>How do I delete my data?</h3>
+      <p>Swipe left on any memo in History to delete it. To remove all data, uninstall the app — everything is stored locally and will be permanently erased.</p>
+    </div>
+
+    <h2>Contact Support</h2>
+    <p>If your question isn't answered above, reach out directly:</p>
+
+    <div class="contact-card">
+      <p><strong>Instagram</strong></p>
+      <p>DM <a href="https://instagram.com/donalleniii" target="_blank" rel="noopener">@donalleniii</a> — usually the fastest way to get a reply.</p>
+    </div>
+
+    <div class="contact-card">
+      <p><strong>Website</strong></p>
+      <p>Submit a message via the <a href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" rel="noopener">contact form</a> on <a href="https://donalleniii.me" target="_blank" rel="noopener">donalleniii.me</a>.</p>
+    </div>
+
+    <div class="nav-links">
+      <a href="omniii-privacy.html">Privacy Policy</a>
+      <a href="https://donalleniii.me/#omniii">Back to OMNIII</a>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2026 Don Allen Stevenson III. All rights reserved.</p>
+      <p>OMNIII — Voice-First AI Orchestrator</p>
+    </div>
+  </div>
+</body>
+</html>
