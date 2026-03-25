@@ -303,56 +303,8 @@
         </div>
     </section>
 
-    <!-- OMNIII App Section -->
-    <section id="omniii" class="py-24 bg-brand-surface border-t border-stone-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-5xl mx-auto">
-                <div class="inline-flex items-center px-3 py-1 rounded-full border border-orange-200 bg-orange-50 text-brand-primary text-xs font-bold tracking-wide uppercase">
-                    New App
-                </div>
-                <h2 class="mt-6 text-4xl lg:text-5xl font-display font-bold leading-tight text-stone-900">
-                    OMNIII. One voice.<br class="hidden sm:block">Every model. Your answer.
-                </h2>
-                <p class="mt-6 text-lg text-stone-600 leading-relaxed max-w-3xl">
-                    Lift your phone. Talk. Lower it. Your transcript is ready on your clipboard.
-                    Then OMNIII routes your prompt to the best model and gives you one clear answer.
-                </p>
-                <div class="mt-10 grid md:grid-cols-3 gap-4">
-                    <div class="bg-white border border-stone-200 rounded-2xl p-5">
-                        <p class="text-xs font-bold uppercase tracking-wider text-brand-primary">Step 1</p>
-                        <h3 class="mt-2 text-xl font-bold text-stone-900">Speak naturally</h3>
-                        <p class="mt-2 text-stone-600">Voice-first capture with fast, on-device transcription.</p>
-                    </div>
-                    <div class="bg-white border border-stone-200 rounded-2xl p-5">
-                        <p class="text-xs font-bold uppercase tracking-wider text-brand-primary">Step 2</p>
-                        <h3 class="mt-2 text-xl font-bold text-stone-900">Paste anywhere</h3>
-                        <p class="mt-2 text-stone-600">Your text is copied and ready across your Apple workflow.</p>
-                    </div>
-                    <div class="bg-white border border-stone-200 rounded-2xl p-5">
-                        <p class="text-xs font-bold uppercase tracking-wider text-brand-primary">Step 3</p>
-                        <h3 class="mt-2 text-xl font-bold text-stone-900">Get the best answer</h3>
-                        <p class="mt-2 text-stone-600">Use multi-model debate and optional local LLMs for privacy-first AI.</p>
-                    </div>
-                </div>
-                <div class="mt-10 flex flex-wrap gap-4">
-                    <a href="https://apps.apple.com/app/id0000000000" target="_blank" class="bg-brand-dark text-white px-8 py-4 rounded-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all inline-flex items-center">
-                        Download OMNIII on iOS
-                        <i class="fas fa-arrow-right ml-2 text-sm"></i>
-                    </a>
-                    <a href="omniii-support.html" class="bg-white text-stone-900 border border-stone-200 px-8 py-4 rounded-lg font-bold hover:bg-stone-50 transition-all inline-flex items-center">
-                        <i class="fas fa-life-ring mr-2 text-brand-primary"></i>
-                        Support
-                    </a>
-                    <a href="omniii-privacy.html" class="bg-white text-stone-900 border border-stone-200 px-8 py-4 rounded-lg font-bold hover:bg-stone-50 transition-all">
-                        Privacy Policy
-                    </a>
-                    <a href="omniii-terms.html" class="bg-white text-stone-900 border border-stone-200 px-8 py-4 rounded-lg font-bold hover:bg-stone-50 transition-all">
-                        Terms of Service
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- OMNIII links kept for support/privacy/terms pages -->
+    <div id="omniii" style="display:none"></div>
 
     <!-- Trusted By / Marquee Section (Seamless Loop) -->
     <section class="py-10 bg-white border-t border-b border-stone-100 overflow-hidden relative">
@@ -563,7 +515,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
              <div class="text-center max-w-2xl mx-auto mb-16">
                 <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4">Apps & Tools</h2>
-                <p class="text-stone-600">Web apps I've built and shipped. Try them live.</p>
+                <p class="text-stone-600">Things I've built and shipped.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -605,6 +557,55 @@
                         </div>
                     </div>
                 </a>
+
+                <!-- OMNIII — iOS App (In Review) -->
+                <div class="md:col-span-2 group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300">
+                    <div class="flex flex-col md:flex-row">
+                        <!-- Left: Visual -->
+                        <div class="h-64 md:h-auto md:w-1/2 bg-stone-950 relative overflow-hidden flex items-center justify-center">
+                            <div class="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-950 to-black"></div>
+                            <!-- Subtle animated circles -->
+                            <canvas id="omniiPreview" class="absolute inset-0 w-full h-full" style="opacity:0.25"></canvas>
+                            <div class="relative text-center px-8 z-10">
+                                <div class="text-5xl md:text-6xl font-display font-bold text-white tracking-tight mb-3">OMNIII</div>
+                                <p class="text-stone-400 text-sm tracking-widest uppercase">One voice. Every model. Your answer.</p>
+                            </div>
+                        </div>
+                        <!-- Right: Info -->
+                        <div class="p-8 md:p-10 bg-white flex flex-col md:w-1/2">
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-3 py-1 bg-stone-100 text-brand-accent text-xs font-bold uppercase rounded">iOS App</span>
+                                <span class="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-bold uppercase rounded border border-amber-200 inline-flex items-center">
+                                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-1.5 animate-pulse"></span>
+                                    In Review
+                                </span>
+                            </div>
+                            <p class="text-stone-600 mb-4 text-lg">Speak naturally. OMNIII captures your voice, transcribes on-device, and routes your prompt to the best AI model for one clear answer.</p>
+                            <div class="grid grid-cols-3 gap-3 mb-6">
+                                <div class="text-center p-3 bg-stone-50 rounded-xl">
+                                    <div class="text-brand-primary text-lg mb-1"><i class="fas fa-microphone"></i></div>
+                                    <div class="text-xs text-stone-500 font-medium">Voice-first</div>
+                                </div>
+                                <div class="text-center p-3 bg-stone-50 rounded-xl">
+                                    <div class="text-brand-primary text-lg mb-1"><i class="fas fa-clipboard"></i></div>
+                                    <div class="text-xs text-stone-500 font-medium">Auto-copy</div>
+                                </div>
+                                <div class="text-center p-3 bg-stone-50 rounded-xl">
+                                    <div class="text-brand-primary text-lg mb-1"><i class="fas fa-brain"></i></div>
+                                    <div class="text-xs text-stone-500 font-medium">Multi-model</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-3 mt-auto">
+                                <span class="inline-flex items-center bg-stone-100 text-stone-500 px-6 py-3 rounded-lg font-bold text-sm cursor-default">
+                                    <i class="fab fa-apple mr-2"></i> Coming to the App Store
+                                </span>
+                                <a href="omniii-support.html" class="text-stone-400 hover:text-stone-600 text-sm font-medium self-center transition-colors">Support</a>
+                                <a href="omniii-privacy.html" class="text-stone-400 hover:text-stone-600 text-sm font-medium self-center transition-colors">Privacy</a>
+                                <a href="omniii-terms.html" class="text-stone-400 hover:text-stone-600 text-sm font-medium self-center transition-colors">Terms</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -1347,6 +1348,47 @@
       function next() { goTo((current + 1) % quotes.length); }
       function resetTimer() { clearInterval(timer); timer = setInterval(next, 5000); }
       resetTimer();
+    })();
+    </script>
+
+    <!-- OMNIII Preview — subtle pulsing rings -->
+    <script>
+    (function() {
+      const cvs = document.getElementById('omniiPreview');
+      if (!cvs) return;
+      const ctx = cvs.getContext('2d');
+      let running = false, frame = 0;
+
+      function draw() {
+        const dpr = window.devicePixelRatio || 1;
+        const dw = cvs.offsetWidth, dh = cvs.offsetHeight;
+        cvs.width = dw * dpr; cvs.height = dh * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, dw, dh);
+
+        const cx = dw / 2, cy = dh / 2;
+        const maxR = Math.max(dw, dh) * 0.6;
+        const t = frame * 0.015;
+
+        for (let i = 0; i < 6; i++) {
+          const r = (maxR * 0.15) + (i * maxR * 0.14) + Math.sin(t + i * 0.8) * 8;
+          const alpha = 0.08 + Math.sin(t + i * 1.2) * 0.04;
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(249, 115, 22, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        frame++;
+        if (running) requestAnimationFrame(draw);
+      }
+
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting && !running) { running = true; draw(); }
+        else if (!e.isIntersecting) { running = false; }
+      }, { threshold: 0.1 });
+      obs.observe(cvs);
     })();
     </script>
 </body>
