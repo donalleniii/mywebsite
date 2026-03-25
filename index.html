@@ -683,7 +683,7 @@
                 <a href="https://donalleniii.github.io/glyph/" target="_blank" class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block">
                     <div class="h-64 bg-gray-900 relative overflow-hidden">
                          <div class="absolute inset-0 bg-gradient-to-br from-violet-600 to-gray-900 opacity-90"></div>
-                         <canvas id="glyphPreview" class="absolute inset-0 w-full h-full" style="opacity:0.3; mix-blend-mode:screen"></canvas>
+                         <canvas id="glyphPreview" class="absolute inset-0 w-full h-full" style="opacity:0.85; mix-blend-mode:screen"></canvas>
                          <div class="absolute bottom-6 left-6 text-white font-bold text-2xl w-10/12">GLYPH</div>
                          <div class="absolute top-6 right-6 text-white/20 text-7xl"><i class="fas fa-terminal"></i></div>
                     </div>
@@ -1179,58 +1179,96 @@
         });
     </script>
 
-    <!-- GLYPH Preview Animation -->
+    <!-- GLYPH Preview Animation — mimics the real app's colorful ASCII look -->
     <script>
     (function() {
       const cvs = document.getElementById('glyphPreview');
       if (!cvs) return;
       const ctx = cvs.getContext('2d');
-      let running = false, angle = 0;
-      const chars = '@#%&*+=-:. ';
+      let running = false, angle = 0, frame = 0;
+      const chars = '@#$%&WBMRXoahkbdpqwmZOQ8062ESLCJUYX/|()[]{}?!;:,.*^~-_+=<> ';
+      // Rainbow palette matching GLYPH's default
+      const palette = [
+        '#ff4444','#ff6b35','#ffa500','#ffcc00','#ffe44d',
+        '#88dd44','#44bb44','#22ccaa','#22aadd','#4488ff',
+        '#6655ff','#8844ee','#aa44cc','#cc44aa','#ff4488'
+      ];
 
       function project(x, y, z) {
-        const s = 4 / (4 + z);
+        const s = 3.5 / (3.5 + z);
         return [x * s, y * s, s];
       }
 
       function draw() {
-        cvs.width = cvs.offsetWidth;
-        cvs.height = cvs.offsetHeight;
-        const w = cvs.width, h = cvs.height;
+        const dpr = window.devicePixelRatio || 1;
+        const displayW = cvs.offsetWidth, displayH = cvs.offsetHeight;
+        cvs.width = displayW * dpr;
+        cvs.height = displayH * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const w = displayW, h = displayH;
         ctx.clearRect(0, 0, w, h);
-        ctx.font = '10px monospace';
+
+        const fontSize = Math.max(9, Math.floor(w / 55));
+        ctx.font = `bold ${fontSize}px "Courier New", monospace`;
         ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
 
+        // --- Rotating 3D shape (torus) rendered as colorful ASCII ---
         const cos = Math.cos(angle), sin = Math.sin(angle);
-        const cy = Math.cos(angle * 0.7), sy = Math.sin(angle * 0.7);
-        const edges = [
-          [-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],
-          [-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]
-        ];
-        const lines = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+        const cy = Math.cos(angle * 0.6), sy = Math.sin(angle * 0.6);
+        const R = 1.2, r = 0.5;
+        const ringSegs = 28, tubeSegs = 16;
+        const points = [];
 
-        const pts = edges.map(([x, y, z]) => {
-          let x1 = x*cos - z*sin, z1 = x*sin + z*cos;
-          let y1 = y*cy - z1*sy, z2 = y*sy + z1*cy;
-          const [px, py] = project(x1, y1, z2);
-          return [w/2 + px * w * 0.18, h/2 + py * h * 0.25, z2];
-        });
-
-        lines.forEach(([a, b]) => {
-          const [x1,y1] = pts[a], [x2,y2] = pts[b];
-          const steps = Math.floor(Math.hypot(x2-x1, y2-y1) / 8);
-          for (let i = 0; i <= steps; i++) {
-            const t = i / steps;
-            const x = x1 + (x2-x1)*t, y = y1 + (y2-y1)*t;
-            const depth = pts[a][2] + (pts[b][2]-pts[a][2])*t;
-            const ci = Math.floor((1 - (depth+1.5)/3) * (chars.length-1));
-            const alpha = 0.4 + 0.6 * (1 - (depth+1.5)/3);
-            ctx.fillStyle = `rgba(167,139,250,${alpha})`;
-            ctx.fillText(chars[Math.max(0,Math.min(ci, chars.length-1))], x, y);
+        for (let i = 0; i < ringSegs; i++) {
+          const theta = (i / ringSegs) * Math.PI * 2;
+          for (let j = 0; j < tubeSegs; j++) {
+            const phi = (j / tubeSegs) * Math.PI * 2;
+            let x = (R + r * Math.cos(phi)) * Math.cos(theta);
+            let y = (R + r * Math.cos(phi)) * Math.sin(theta);
+            let z = r * Math.sin(phi);
+            // Rotate Y
+            let x1 = x * cos - z * sin, z1 = x * sin + z * cos;
+            // Rotate X
+            let y1 = y * cy - z1 * sy, z2 = y * sy + z1 * cy;
+            const [px, py] = project(x1, y1, z2);
+            const screenX = w * 0.5 + px * w * 0.22;
+            const screenY = h * 0.45 + py * h * 0.3;
+            const brightness = (1 - (z2 + 1.8) / 3.6);
+            points.push({ x: screenX, y: screenY, z: z2, brightness, theta, phi });
           }
+        }
+
+        // Sort back-to-front
+        points.sort((a, b) => a.z - b.z);
+
+        points.forEach(p => {
+          if (p.x < -10 || p.x > w + 10 || p.y < -10 || p.y > h + 10) return;
+          const ci = Math.floor(p.brightness * (chars.length - 2));
+          const ch = chars[Math.max(0, Math.min(ci, chars.length - 2))];
+          // Color based on angle around the torus + time
+          const hueIdx = Math.floor((p.theta / (Math.PI * 2) + frame * 0.003) * palette.length) % palette.length;
+          const color = palette[Math.abs(hueIdx) % palette.length];
+          const alpha = 0.3 + 0.7 * p.brightness;
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = color;
+          ctx.fillText(ch, p.x, p.y);
         });
 
-        angle += 0.012;
+        // --- Scattered ambient ASCII characters (background texture) ---
+        ctx.globalAlpha = 0.12;
+        const seed = 42;
+        for (let i = 0; i < 80; i++) {
+          const sx = ((i * 7919 + seed) % 1000) / 1000 * w;
+          const sy2 = ((i * 6271 + seed) % 1000) / 1000 * h;
+          const ch = chars[(i * 31 + Math.floor(frame * 0.3)) % (chars.length - 1)];
+          ctx.fillStyle = palette[i % palette.length];
+          ctx.fillText(ch, sx, sy2);
+        }
+
+        ctx.globalAlpha = 1;
+        angle += 0.008;
+        frame++;
         if (running) requestAnimationFrame(draw);
       }
 
