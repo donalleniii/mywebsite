@@ -679,6 +679,25 @@
                     </div>
                 </a>
 
+                <!-- Project 3: GLYPH ASCII Art Engine -->
+                <a href="https://donalleniii.github.io/glyph/" target="_blank" class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block">
+                    <div class="h-64 bg-gray-900 relative overflow-hidden">
+                         <div class="absolute inset-0 bg-gradient-to-br from-violet-600 to-gray-900 opacity-90"></div>
+                         <canvas id="glyphPreview" class="absolute inset-0 w-full h-full" style="opacity:0.3; mix-blend-mode:screen"></canvas>
+                         <div class="absolute bottom-6 left-6 text-white font-bold text-2xl w-10/12">GLYPH</div>
+                         <div class="absolute top-6 right-6 text-white/20 text-7xl"><i class="fas fa-terminal"></i></div>
+                    </div>
+                    <div class="p-8 bg-white h-full flex flex-col">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                             <span class="px-3 py-1 bg-stone-100 text-brand-accent text-xs font-bold uppercase rounded">Interactive Tool</span>
+                        </div>
+                        <p class="text-stone-600 mb-6 text-lg">A real‑time ASCII art engine. Transform your camera, images, and 3D shapes into living text art.</p>
+                        <div class="text-brand-primary font-bold flex items-center mt-auto">
+                            Launch GLYPH <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </a>
+
             </div>
         </div>
     </section>
@@ -1158,6 +1177,69 @@
         btn.addEventListener('click', () => {
             menu.classList.toggle('hidden');
         });
+    </script>
+
+    <!-- GLYPH Preview Animation -->
+    <script>
+    (function() {
+      const cvs = document.getElementById('glyphPreview');
+      if (!cvs) return;
+      const ctx = cvs.getContext('2d');
+      let running = false, angle = 0;
+      const chars = '@#%&*+=-:. ';
+
+      function project(x, y, z) {
+        const s = 4 / (4 + z);
+        return [x * s, y * s, s];
+      }
+
+      function draw() {
+        cvs.width = cvs.offsetWidth;
+        cvs.height = cvs.offsetHeight;
+        const w = cvs.width, h = cvs.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.font = '10px monospace';
+        ctx.textBaseline = 'middle';
+
+        const cos = Math.cos(angle), sin = Math.sin(angle);
+        const cy = Math.cos(angle * 0.7), sy = Math.sin(angle * 0.7);
+        const edges = [
+          [-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],
+          [-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]
+        ];
+        const lines = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+
+        const pts = edges.map(([x, y, z]) => {
+          let x1 = x*cos - z*sin, z1 = x*sin + z*cos;
+          let y1 = y*cy - z1*sy, z2 = y*sy + z1*cy;
+          const [px, py] = project(x1, y1, z2);
+          return [w/2 + px * w * 0.18, h/2 + py * h * 0.25, z2];
+        });
+
+        lines.forEach(([a, b]) => {
+          const [x1,y1] = pts[a], [x2,y2] = pts[b];
+          const steps = Math.floor(Math.hypot(x2-x1, y2-y1) / 8);
+          for (let i = 0; i <= steps; i++) {
+            const t = i / steps;
+            const x = x1 + (x2-x1)*t, y = y1 + (y2-y1)*t;
+            const depth = pts[a][2] + (pts[b][2]-pts[a][2])*t;
+            const ci = Math.floor((1 - (depth+1.5)/3) * (chars.length-1));
+            const alpha = 0.4 + 0.6 * (1 - (depth+1.5)/3);
+            ctx.fillStyle = `rgba(167,139,250,${alpha})`;
+            ctx.fillText(chars[Math.max(0,Math.min(ci, chars.length-1))], x, y);
+          }
+        });
+
+        angle += 0.012;
+        if (running) requestAnimationFrame(draw);
+      }
+
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting && !running) { running = true; draw(); }
+        else if (!e.isIntersecting) { running = false; }
+      }, { threshold: 0.1 });
+      obs.observe(cvs);
+    })();
     </script>
 </body>
 </html>
