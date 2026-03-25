@@ -698,6 +698,25 @@
                     </div>
                 </a>
 
+                <!-- Project 4: G-Splat -->
+                <a href="https://donalleniii.github.io/gsplat-frontend/" target="_blank" class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block">
+                    <div class="h-64 bg-gray-950 relative overflow-hidden">
+                         <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-slate-950 to-gray-950"></div>
+                         <canvas id="gsplatPreview" class="absolute inset-0 w-full h-full"></canvas>
+                         <div class="absolute bottom-6 left-6 text-white font-bold text-2xl w-10/12">G-Splat</div>
+                         <div class="absolute top-6 right-6 text-white/10 text-7xl"><i class="fas fa-cubes"></i></div>
+                    </div>
+                    <div class="p-8 bg-white h-full flex flex-col">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                             <span class="px-3 py-1 bg-stone-100 text-brand-accent text-xs font-bold uppercase rounded">Interactive Tool</span>
+                        </div>
+                        <p class="text-stone-600 mb-6 text-lg">Mesh to Gaussian Splat Converter. Transform 3D meshes into Gaussian splat point clouds in the browser.</p>
+                        <div class="text-brand-primary font-bold flex items-center mt-auto">
+                            Launch G-Splat <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </a>
+
             </div>
         </div>
     </section>
@@ -1270,6 +1289,85 @@
 
         ctx.globalAlpha = 1;
         angle += 0.008;
+        frame++;
+        if (running) requestAnimationFrame(draw);
+      }
+
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting && !running) { running = true; draw(); }
+        else if (!e.isIntersecting) { running = false; }
+      }, { threshold: 0.1 });
+      obs.observe(cvs);
+    })();
+    </script>
+
+    <!-- G-Splat Preview Animation — floating Gaussian splat particles -->
+    <script>
+    (function() {
+      const cvs = document.getElementById('gsplatPreview');
+      if (!cvs) return;
+      const ctx = cvs.getContext('2d');
+      let running = false, frame = 0;
+
+      // Generate particles once
+      const particles = [];
+      const count = 220;
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random(), y: Math.random(),
+          z: Math.random() * 0.8 + 0.2,
+          vx: (Math.random() - 0.5) * 0.0003,
+          vy: (Math.random() - 0.5) * 0.0002,
+          hue: 240 + Math.random() * 40, // blue-violet range
+          sat: 30 + Math.random() * 40,
+          lum: 50 + Math.random() * 30,
+          size: Math.random() * 0.6 + 0.3
+        });
+      }
+
+      function draw() {
+        const dpr = window.devicePixelRatio || 1;
+        const displayW = cvs.offsetWidth, displayH = cvs.offsetHeight;
+        cvs.width = displayW * dpr;
+        cvs.height = displayH * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const w = displayW, h = displayH;
+        ctx.clearRect(0, 0, w, h);
+
+        // Sort by z for depth
+        particles.sort((a, b) => a.z - b.z);
+
+        particles.forEach(p => {
+          // Drift
+          p.x += p.vx;
+          p.y += p.vy;
+          // Wrap
+          if (p.x < -0.05) p.x = 1.05;
+          if (p.x > 1.05) p.x = -0.05;
+          if (p.y < -0.05) p.y = 1.05;
+          if (p.y > 1.05) p.y = -0.05;
+
+          const px = p.x * w, py = p.y * h;
+          const r = p.size * p.z * 4;
+          const alpha = p.z * 0.6;
+
+          // Gaussian-like glow
+          const grad = ctx.createRadialGradient(px, py, 0, px, py, r * 3);
+          grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.lum}%, ${alpha})`);
+          grad.addColorStop(0.4, `hsla(${p.hue}, ${p.sat}%, ${p.lum}%, ${alpha * 0.4})`);
+          grad.addColorStop(1, `hsla(${p.hue}, ${p.sat}%, ${p.lum}%, 0)`);
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(px, py, r * 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Bright core
+          ctx.fillStyle = `hsla(${p.hue}, ${p.sat - 10}%, ${p.lum + 20}%, ${alpha * 0.9})`;
+          ctx.beginPath();
+          ctx.arc(px, py, r * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
         frame++;
         if (running) requestAnimationFrame(draw);
       }
