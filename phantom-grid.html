@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phantom Grid — @donalleniii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.15);
+    --text: #f0ede8;
+    --text-muted: #888880;
+    --text-dim: #444440;
+    --accent: #e8ff47;
+    --accent-dim: rgba(232,255,71,0.12);
+    --accent-dim2: rgba(232,255,71,0.05);
+    --red: #ff4747;
+    --node-a: #a78bfa;
+    --node-b: #38bdf8;
+    --mono: 'Space Mono', monospace;
+    --display: 'DM Sans', sans-serif;
+    --headline: 'Barlow Condensed', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: var(--mono); font-size: 13px; color: var(--text-muted);
+    text-decoration: none; letter-spacing: 0.05em;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    font-size: 13px; color: var(--text-muted); text-decoration: none;
+    letter-spacing: 0.04em; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    font-family: var(--mono); font-size: 12px; color: var(--bg);
+    background: var(--text); padding: 0.5rem 1.2rem;
+    border-radius: 2px; text-decoration: none; letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 10rem 2.5rem 5rem;
+    max-width: 1100px; margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    color: var(--accent); text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.6rem; margin-bottom: 2rem;
+  }
+  .hero-label::before {
+    content: '';
+    display: inline-block; width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  h1 {
+    font-family: var(--headline);
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 900; line-height: 0.92;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  h1 em { font-style: normal; color: var(--text-muted); }
+
+  .hero-desc {
+    max-width: 560px;
+    font-size: 1.05rem; line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+  }
+  .hero-desc strong { color: var(--text); font-weight: 600; }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex; gap: 0; 
+    border: 1px solid var(--border);
+    border-radius: 4px; overflow: hidden;
+    max-width: 560px;
+    margin-bottom: 5rem;
+  }
+  .stat {
+    flex: 1; padding: 1rem 1.25rem;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: var(--mono); font-size: 1.4rem; font-weight: 700;
+    color: var(--text); margin-bottom: 0.2rem;
+  }
+  .stat-num.live { color: var(--accent); }
+  .stat-label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+    color: var(--text-dim); text-transform: uppercase;
+  }
+
+  /* ── EXPLAINER STRIP ── */
+  .explainer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2.5rem;
+    margin-bottom: 5rem;
+  }
+  .explainer-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .explainer-col h3 {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--accent); text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .explainer-col p {
+    font-size: 0.9rem; line-height: 1.65; color: var(--text-muted);
+  }
+  .explainer-col p strong { color: var(--text); font-weight: 600; }
+
+  /* ── NODE PILLS ── */
+  .node-pills {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    max-width: 1100px; margin: 0 auto 2rem;
+    padding: 0 2.5rem;
+  }
+  .node-pill {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+    padding: 0.3rem 0.8rem; border-radius: 2px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.4rem;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    background: transparent;
+    color: var(--text-muted);
+  }
+  .node-pill:hover, .node-pill.active {
+    border-color: var(--border-hover); background: var(--surface);
+    color: var(--text);
+  }
+  .node-pill .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+  }
+  .dot-a { background: var(--node-a); }
+  .dot-b { background: var(--node-b); }
+  .dot-all { background: var(--accent); }
+
+  /* ── GRID ── */
+  .grid-section {
+    max-width: 1100px; margin: 0 auto;
+    padding: 0 2.5rem 6rem;
+  }
+  .grid-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  .grid-title {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--text-dim); text-transform: uppercase;
+  }
+  .grid-count {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .output-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .output-card {
+    background: var(--bg);
+    padding: 1.5rem;
+    transition: background 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+  }
+  .output-card:hover { background: var(--surface); }
+  .output-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .output-card:hover::after { transform: scaleX(1); }
+
+  .card-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .card-node {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;
+  }
+  .card-node.heavy { color: var(--node-a); }
+  .card-node.speed { color: var(--node-b); }
+  .card-date {
+    font-family: var(--mono); font-size: 10px; color: var(--text-dim);
+  }
+
+  .card-title {
+    font-family: var(--headline);
+    font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem;
+    line-height: 1.15; letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+  .card-desc {
+    font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-tag {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .card-arrow {
+    font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+    transition: color 0.2s, transform 0.2s;
+  }
+  .output-card:hover .card-arrow {
+    color: var(--accent); transform: translate(3px, -3px);
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    grid-column: 1 / -1;
+    padding: 5rem 2rem; text-align: center;
+  }
+  .empty-state .mono-label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--text-dim); text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .empty-state p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+
+  /* ── LOADING SKELETON ── */
+  .skeleton-card {
+    background: var(--bg); padding: 1.5rem;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+  .skel-line {
+    background: var(--surface2); border-radius: 2px; margin-bottom: 0.75rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1100px; margin: 0 auto;
+  }
+  footer p {
+    font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  footer a { color: var(--text-muted); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.25rem 3rem; }
+    .explainer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .explainer { padding: 2.5rem 1.25rem; }
+    .node-pills { padding: 0 1.25rem; }
+    .grid-section { padding: 0 1.25rem 4rem; }
+    footer { padding: 1.5rem 1.25rem; flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://donalleniii.me" class="nav-logo">@donalleniii <span>/ phantom grid</span></a>
+  <div class="nav-links">
+    <a href="https://donalleniii.me/#about">About</a>
+    <a href="https://donalleniii.me/#work">Apps</a>
+    <a href="https://donalleniii.me/#consulting">Consulting</a>
+  </div>
+  <a href="https://donalleniii.me/#consulting" class="nav-cta">Work With Don</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">Phantom Grid — Dark Factory Experiments</div>
+  <h1>Machines<br>building<br><em>in the dark.</em></h1>
+  <p class="hero-desc">
+    This is my public window into a <strong>dark factory</strong> — a private cluster of AI-powered machines that generate code, apps, and tools autonomously. No hand-holding. No manual uploads. They build, publish, and send me the link.<br><br>
+    Everything here was created with <strong>minimal human direction</strong>. Consider it a live experiment in what happens when you let local AI run.
+  </p>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num live" id="stat-total">—</div>
+      <div class="stat-label">Outputs</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-nodes">2</div>
+      <div class="stat-label">Active Nodes</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-latest">—</div>
+      <div class="stat-label">Last Build</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLAINER STRIP -->
+<div class="explainer">
+  <div class="explainer-inner">
+    <div class="explainer-col">
+      <h3>What is this?</h3>
+      <p>A collection of apps, tools, games, and experiments generated by <strong>two autonomous AI nodes</strong> running local language models — no cloud, no oversight on the build itself. I give them a task via Telegram. They build. They ship.</p>
+    </div>
+    <div class="explainer-col">
+      <h3>How is it different?</h3>
+      <p>My other apps — GLYPH, G-Splat, OMNIII — are built <strong>with direct creative oversight</strong>: I design, I direct, I decide. Phantom Grid outputs are the machines' best guess at what I asked for. The gap between the two is the interesting part.</p>
+    </div>
+    <div class="explainer-col">
+      <h3>Why public?</h3>
+      <p>Because the experiment is more interesting with witnesses. You're watching <strong>autonomous local AI</strong> build real things in real time. Some will be great. Some won't. That's the point.</p>
+    </div>
+  </div>
+</div>
+
+<!-- NODE FILTER -->
+<div class="node-pills">
+  <button class="node-pill active" data-filter="all" onclick="filterCards('all', this)">
+    <span class="dot dot-all"></span> All outputs
+  </button>
+  <button class="node-pill" data-filter="heavy-thinker" onclick="filterCards('heavy-thinker', this)">
+    <span class="dot dot-a"></span> Heavy Thinker
+  </button>
+  <button class="node-pill" data-filter="speed-demon" onclick="filterCards('speed-demon', this)">
+    <span class="dot dot-b"></span> Speed Demon
+  </button>
+</div>
+
+<!-- OUTPUT GRID -->
+<section class="grid-section">
+  <div class="grid-header">
+    <span class="grid-title">Factory outputs</span>
+    <span class="grid-count" id="grid-count">Loading...</span>
+  </div>
+  <div class="output-grid" id="output-grid">
+    <!-- skeleton -->
+    <div class="skeleton-card">
+      <div class="skel-line" style="width:40%;height:10px;"></div>
+      <div class="skel-line" style="width:75%;height:18px;margin-top:1rem;"></div>
+      <div class="skel-line" style="width:90%;height:12px;"></div>
+      <div class="skel-line" style="width:60%;height:12px;"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skel-line" style="width:35%;height:10px;"></div>
+      <div class="skel-line" style="width:65%;height:18px;margin-top:1rem;"></div>
+      <div class="skel-line" style="width:85%;height:12px;"></div>
+      <div class="skel-line" style="width:50%;height:12px;"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skel-line" style="width:45%;height:10px;"></div>
+      <div class="skel-line" style="width:70%;height:18px;margin-top:1rem;"></div>
+      <div class="skel-line" style="width:80%;height:12px;"></div>
+      <div class="skel-line" style="width:55%;height:12px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Phantom Grid is part of <a href="https://donalleniii.me">donalleniii.me</a></p>
+  <p>Built by machines. Watched by one human. — <a href="https://donalleniii.me/#consulting">Work with Don →</a></p>
+</footer>
+
+<script>
+const MANIFEST_URL = 'https://donalleniii.github.io/phantom-grid/manifest.json';
+
+let allOutputs = [];
+
+function nodeLabel(node) {
+  if (node === 'heavy-thinker') return 'Heavy Thinker';
+  if (node === 'speed-demon') return 'Speed Demon';
+  return node;
+}
+
+function nodeClass(node) {
+  if (node === 'heavy-thinker') return 'heavy';
+  if (node === 'speed-demon') return 'speed';
+  return '';
+}
+
+function formatDate(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch { return iso; }
+}
+
+function timeAgo(iso) {
+  try {
+    const diff = Date.now() - new Date(iso).getTime();
+    const days = Math.floor(diff / 86400000);
+    if (days === 0) return 'Today';
+    if (days === 1) return '1d ago';
+    if (days < 30) return days + 'd ago';
+    return Math.floor(days / 30) + 'mo ago';
+  } catch { return ''; }
+}
+
+function renderCards(outputs) {
+  const grid = document.getElementById('output-grid');
+  const count = document.getElementById('grid-count');
+
+  if (!outputs || outputs.length === 0) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="mono-label">No outputs yet</div>
+      <p>The machines are warming up.<br>First build incoming.</p>
+    </div>`;
+    count.textContent = '0 outputs';
+    return;
+  }
+
+  count.textContent = outputs.length + ' output' + (outputs.length !== 1 ? 's' : '');
+
+  grid.innerHTML = outputs.map(item => `
+    <a class="output-card" href="${item.url}" target="_blank" rel="noopener" data-node="${item.node}">
+      <div class="card-meta">
+        <span class="card-node ${nodeClass(item.node)}">
+          <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;"></span>
+          ${nodeLabel(item.node)}
+        </span>
+        <span class="card-date">${formatDate(item.date)}</span>
+      </div>
+      <div class="card-title">${item.title}</div>
+      <div class="card-desc">${item.description || 'Built by the dark factory.'}</div>
+      <div class="card-footer">
+        <span class="card-tag">${item.type || 'app'}</span>
+        <span class="card-arrow">↗</span>
+      </div>
+    </a>
+  `).join('');
+}
+
+function filterCards(filter, btn) {
+  document.querySelectorAll('.node-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+
+  const filtered = filter === 'all'
+    ? allOutputs
+    : allOutputs.filter(o => o.node === filter);
+
+  renderCards(filtered);
+}
+
+async function loadManifest() {
+  try {
+    const res = await fetch(MANIFEST_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('No manifest yet');
+    const data = await res.json();
+    allOutputs = (data.outputs || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    document.getElementById('stat-total').textContent = allOutputs.length;
+    document.getElementById('stat-latest').textContent = allOutputs.length
+      ? timeAgo(allOutputs[0].date)
+      : '—';
+
+    renderCards(allOutputs);
+  } catch (e) {
+    allOutputs = [];
+    document.getElementById('stat-total').textContent = '0';
+    document.getElementById('stat-latest').textContent = '—';
+    renderCards([]);
+  }
+}
+
+loadManifest();
+</script>
+</body>
+</html>
