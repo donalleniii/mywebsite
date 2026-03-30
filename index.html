@@ -186,7 +186,8 @@
             transform: scaleY(1.1);
         }
 
-    </style>
+    @keyframes dfBlink{0%,100%{opacity:1}50%{opacity:0}}
+</style>
 </head>
 <body class="text-stone-900 font-sans antialiased overflow-x-hidden">
 
@@ -560,11 +561,13 @@
 
                 <!-- Phantom Grid — Dark Factory Experiment -->
                 <a href="./phantom-grid.html" class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block">
-                    <div class="h-64 bg-gray-950 relative overflow-hidden">
-                         <div class="absolute inset-0 bg-gradient-to-br from-gray-950 via-stone-950 to-black"></div>
-                         <div class="absolute bottom-6 left-6 text-white font-bold text-2xl w-10/12">Phantom Grid</div>
-                         <div class="absolute top-6 right-6 text-white/10 text-7xl"><i class="fas fa-robot"></i></div>
-                         <div class="absolute top-6 left-6 text-xs font-mono tracking-widest uppercase" style="color:#e8ff47">DARK FACTORY EXPERIMENT</div>
+                    <div class="h-64 bg-black relative overflow-hidden">
+                         <canvas id="darkFactoryPreview" class="absolute inset-0 w-full h-full"></canvas>
+                         <div class="absolute inset-0 pointer-events-none" style="background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.22) 4px);z-index:2"></div>
+                         <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.7) 100%);z-index:3"></div>
+                         <div class="absolute bottom-6 left-6 text-white font-bold text-2xl w-10/12" style="z-index:4;text-shadow:0 0 12px rgba(74,222,128,0.4)">Phantom Grid</div>
+                         <div class="absolute top-6 left-6 text-xs font-mono tracking-widest uppercase" style="color:#4ade80;z-index:4;text-shadow:0 0 8px rgba(74,222,128,0.8)">DARK FACTORY EXPERIMENT</div>
+                         <div class="absolute top-6 right-6 font-mono text-sm" style="color:#4ade80;z-index:4;text-shadow:0 0 8px rgba(74,222,128,0.9);animation:dfBlink 1s step-end infinite">█</div>
                     </div>
                     <div class="p-8 bg-white h-full flex flex-col">
                         <div class="flex flex-wrap gap-2 mb-4">
@@ -1410,5 +1413,83 @@
       obs.observe(cvs);
     })();
     </script>
+
+<script>
+(()=>{
+  const cvs=document.getElementById('darkFactoryPreview');
+  if(!cvs)return;
+  const ctx=cvs.getContext('2d');
+  let running=false,frame=0;
+  const CHARS='01アイウエオカキクケコサシスセソタチツテトナニヌネノABCDEFGHIJKLMNOPQRSTUVWXYZ#@%&*<>/\\|[]{}';
+  const LINES=[
+    '> INITIALIZING DARK FACTORY...',
+    '> CONNECTING TO AUTONOMOUS NODE_02',
+    '> LOADING PHANTOM GRID v4.1.7...',
+    '> AUTH: ████████ [BYPASSED]',
+    '> STATUS: 2 MACHINES ACTIVE',
+    '> OUTPUT STREAM: LIVE',
+    '> HUMAN OVERSIGHT: NONE',
+    '> DEPLOYING ARTIFACTS...',
+    '> COMMIT a3f9b12 — AUTO',
+    '> PUBLISH OK [00:00:03]',
+    '> NEXT CYCLE IN 00:04:17',
+    '> WARNING: UNSUPERVISED AI',
+    '> FACTORY RUNNING...',
+  ];
+  const FONT_SIZE=11;
+  let COLS,ROWS,drops,speeds;
+  let termLines=[],nextLineIdx=0,lineTimer=0;
+  const LINE_INTERVAL=28;
+  function resize(){
+    cvs.width=cvs.offsetWidth||300;
+    cvs.height=cvs.offsetHeight||256;
+    COLS=Math.floor(cvs.width/FONT_SIZE);
+    ROWS=Math.floor(cvs.height/FONT_SIZE);
+    drops=Array.from({length:COLS},()=>Math.random()*ROWS*-1);
+    speeds=Array.from({length:COLS},()=>0.18+Math.random()*0.22);
+  }
+  function draw(){
+    if(!running)return;
+    frame++;
+    ctx.fillStyle='rgba(0,0,0,0.18)';
+    ctx.fillRect(0,0,cvs.width,cvs.height);
+    ctx.font=FONT_SIZE+'px monospace';
+    for(let i=0;i<COLS;i++){
+      const ch=CHARS[Math.floor(Math.random()*CHARS.length)];
+      const alpha=0.15+Math.random()*0.55;
+      ctx.fillStyle=`rgba(74,222,128,${alpha})`;
+      ctx.fillText(ch,i*FONT_SIZE,Math.floor(drops[i])*FONT_SIZE);
+      drops[i]+=speeds[i];
+      if(drops[i]>ROWS+2)drops[i]=Math.random()*-10;
+    }
+    // terminal log overlay
+    if(frame%LINE_INTERVAL===0&&nextLineIdx<LINES.length){
+      termLines.push(LINES[nextLineIdx++]);
+      if(termLines.length>6)termLines.shift();
+    }
+    const lineH=FONT_SIZE+3;
+    const startY=cvs.height-termLines.length*lineH-8;
+    ctx.font='bold '+FONT_SIZE+'px monospace';
+    termLines.forEach((ln,i)=>{
+      ctx.fillStyle='rgba(0,0,0,0.72)';
+      ctx.fillRect(6,startY+i*lineH-FONT_SIZE+2,cvs.width-12,lineH);
+      ctx.fillStyle='rgba(74,222,128,0.92)';
+      ctx.fillText(ln,8,startY+i*lineH);
+    });
+    // cursor blink
+    if(Math.floor(frame/15)%2===0){
+      const lastY=startY+(termLines.length-1)*lineH;
+      ctx.fillStyle='rgba(74,222,128,0.9)';
+      ctx.fillText('█',8+(termLines.length?ctx.measureText(termLines[termLines.length-1]).width:0),lastY);
+    }
+    requestAnimationFrame(draw);
+  }
+  const obs=new IntersectionObserver(([e])=>{
+    if(e.isIntersecting&&!running){running=true;resize();draw();}
+    else if(!e.isIntersecting){running=false;}
+  },{threshold:0.1});
+  obs.observe(cvs);
+})();
+</script>
 </body>
 </html>
