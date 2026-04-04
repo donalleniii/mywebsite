@@ -1590,158 +1590,104 @@
 })();
 </script>
 
-<!-- anime.js v4 -->
-<script src="https://cdn.jsdelivr.net/npm/animejs@4.0.0/lib/anime.min.js"></script>
-
-<!-- Scroll-triggered animations -->
+<!-- Scroll-triggered animations (CSS transitions + IntersectionObserver) -->
+<style>
+[class*="anim-"]{transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1);}
+.anim-hero-badge{transform:translateY(-20px)}.anim-hero-title,.anim-hero-text{transform:translateY(30px)}
+.anim-hero-cta{transform:translateY(20px)}.anim-hero-image{transform:scale(0.95)}
+.anim-about-title,.anim-about-text{transform:translateY(20px)}.anim-about-tag{transform:translateX(-15px)}
+.anim-work-header,.anim-services-header{transform:translateY(20px)}
+.anim-service-card{transform:translateY(30px)}.anim-faq-item{transform:translateY(15px)}.anim-faq-title{transform:translateY(15px)}
+.anim-kn-title,.anim-kn-text{transform:translateY(20px)}.anim-kn-video{transform:scale(0.97)}
+.anim-feed-icon{transform:scale(0.5)}.anim-feed-title,.anim-feed-cta{transform:translateY(20px)}
+.anim-book-visual{transform:translateX(-40px)}.anim-book-title{transform:translateY(20px)}
+.anim-sub-icon{transform:scale(0.5)}.anim-sub-embed{transform:translateY(20px)}
+.anim-visible{opacity:1!important;transform:none!important;}
+.anim-chart-segment{transition:width 1.2s cubic-bezier(0.16,1,0.3,1);}
+</style>
 <script>
 (function(){
-  // Utility: animate elements when they scroll into view (once)
-  function animateOnScroll(selector, animationCallback, options) {
-    var els = document.querySelectorAll(selector);
-    if (!els.length) return;
-    var opts = options || {};
-    var threshold = opts.threshold || 0.15;
-    var rootMargin = opts.rootMargin || '0px 0px -50px 0px';
-    els.forEach(function(el) {
-      var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            animationCallback(entry.target);
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: threshold, rootMargin: rootMargin });
-      observer.observe(el);
+  function reveal(el){if(el)el.classList.add('anim-visible');}
+  function staggerReveal(els,baseDelay,stagger){els.forEach(function(el,i){setTimeout(function(){reveal(el);},baseDelay+i*stagger);});}
+  function onScroll(selector,callback,opts){
+    var els=document.querySelectorAll(selector);if(!els.length)return;var o=opts||{};
+    els.forEach(function(el){
+      var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){
+        if(e.isIntersecting){callback(e.target);obs.unobserve(e.target);}
+      });},{threshold:o.threshold||0.15,rootMargin:o.rootMargin||'0px 0px -50px 0px'});
+      obs.observe(el);
     });
   }
 
-  // === ANIMATION 1: HERO SECTION (runs on page load) ===
-  anime({
-    targets: '.anim-hero-badge',
-    opacity: [0, 1],
-    translateY: [-20, 0],
-    duration: 600,
-    easing: 'easeOutExpo'
-  });
-  anime({
-    targets: '.anim-hero-title',
-    opacity: [0, 1],
-    translateY: [30, 0],
-    duration: 800,
-    easing: 'easeOutExpo',
-    delay: 200
-  });
-  anime({
-    targets: '.anim-hero-text',
-    opacity: [0, 1],
-    translateY: [30, 0],
-    duration: 800,
-    easing: 'easeOutExpo',
-    delay: 400
-  });
-  anime({
-    targets: '.anim-hero-cta',
-    opacity: [0, 1],
-    translateY: [20, 0],
-    duration: 600,
-    easing: 'easeOutExpo',
-    delay: 600
-  });
-  anime({
-    targets: '.anim-hero-image',
-    opacity: [0, 1],
-    scale: [0.95, 1],
-    duration: 1000,
-    easing: 'easeOutExpo',
-    delay: 300
-  });
+  // === HERO (on page load, staggered) ===
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-badge'));},100);
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-title'));},300);
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-text'));},500);
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-cta'));},700);
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-image'));},400);
 
-  // === ANIMATION 4: ABOUT SECTION ===
-  animateOnScroll('.anim-about-label', function() {
-    anime({ targets: '.anim-about-label', opacity: [0,1], duration: 500, easing: 'easeOutExpo' });
-    anime({ targets: '.anim-about-title', opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo', delay: 100 });
-    anime({ targets: '.anim-about-text', opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo', delay: 200 });
-    anime({ targets: '.anim-about-tag', opacity: [0,1], translateX: [-15,0], duration: 500, easing: 'easeOutExpo', delay: anime.stagger(80, {start: 300}) });
+  // === ABOUT ===
+  onScroll('.anim-about-label',function(){
+    reveal(document.querySelector('.anim-about-label'));
+    setTimeout(function(){reveal(document.querySelector('.anim-about-title'));},100);
+    setTimeout(function(){reveal(document.querySelector('.anim-about-text'));},200);
+    staggerReveal(document.querySelectorAll('.anim-about-tag'),300,80);
   });
-
-  // About chart segments
-  animateOnScroll('.anim-about-chart', function() {
-    document.querySelectorAll('.anim-chart-segment').forEach(function(seg, i) {
-      var targetWidth = seg.getAttribute('data-width');
-      anime({
-        targets: seg,
-        width: targetWidth,
-        duration: 1200,
-        easing: 'easeOutExpo',
-        delay: i * 200
-      });
+  onScroll('.anim-about-chart',function(){
+    document.querySelectorAll('.anim-chart-segment').forEach(function(seg,i){
+      setTimeout(function(){seg.style.width=seg.getAttribute('data-width');},i*200);
     });
   });
 
-  // === ANIMATION 5: APPS & TOOLS CARDS ===
-  animateOnScroll('.anim-work-header', function() {
-    anime({ targets: '.anim-work-header', opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo' });
-  });
-  animateOnScroll('.anim-work-card', function(el) {
-    anime({
-      targets: el,
-      opacity: [0,1],
-      translateY: [40,0],
-      duration: 800,
-      easing: 'easeOutExpo'
-    });
-  }, { rootMargin: '0px 0px -30px 0px' });
+  // === APPS & TOOLS ===
+  onScroll('.anim-work-header',function(el){reveal(el);});
+  onScroll('.anim-work-card',function(el){reveal(el);},{rootMargin:'0px 0px -30px 0px'});
 
-  // === ANIMATION 6: SERVICES SECTION ===
-  animateOnScroll('.anim-services-header', function() {
-    anime({ targets: '.anim-services-header', opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo' });
-    anime({ targets: '.anim-service-card', opacity: [0,1], translateY: [30,0], duration: 700, easing: 'easeOutExpo', delay: anime.stagger(120, {start: 200}) });
+  // === SERVICES ===
+  onScroll('.anim-services-header',function(){
+    reveal(document.querySelector('.anim-services-header'));
+    staggerReveal(document.querySelectorAll('.anim-service-card'),200,120);
   });
 
-  // === ANIMATION 7: FAQ SECTION ===
-  animateOnScroll('.anim-faq-title', function() {
-    anime({ targets: '.anim-faq-title', opacity: [0,1], duration: 600, easing: 'easeOutExpo' });
-    anime({ targets: '.anim-faq-item', opacity: [0,1], translateY: [15,0], duration: 500, easing: 'easeOutExpo', delay: anime.stagger(80, {start: 150}) });
+  // === FAQ ===
+  onScroll('.anim-faq-title',function(){
+    reveal(document.querySelector('.anim-faq-title'));
+    staggerReveal(document.querySelectorAll('.anim-faq-item'),150,80);
   });
 
-  // === ANIMATION 8: KEYNOTES SECTIONS ===
-  animateOnScroll('.anim-keynote-block', function(block) {
-    var labels = block.querySelectorAll('.anim-kn-label');
-    var titles = block.querySelectorAll('.anim-kn-title');
-    var texts = block.querySelectorAll('.anim-kn-text');
-    var ctas = block.querySelectorAll('.anim-kn-cta');
-    var videos = block.querySelectorAll('.anim-kn-video');
-    anime({ targets: labels, opacity: [0,1], duration: 500, easing: 'easeOutExpo' });
-    anime({ targets: titles, opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo', delay: 100 });
-    anime({ targets: texts, opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo', delay: 200 });
-    anime({ targets: ctas, opacity: [0,1], duration: 500, easing: 'easeOutExpo', delay: 300 });
-    anime({ targets: videos, opacity: [0,1], scale: [0.97,1], duration: 900, easing: 'easeOutExpo', delay: 100 });
-  }, { threshold: 0.1 });
+  // === KEYNOTES ===
+  onScroll('.anim-keynote-block',function(block){
+    var d=0;
+    block.querySelectorAll('.anim-kn-label').forEach(function(el){setTimeout(function(){reveal(el);},d);});d+=100;
+    block.querySelectorAll('.anim-kn-title').forEach(function(el){setTimeout(function(){reveal(el);},d);});d+=100;
+    block.querySelectorAll('.anim-kn-text').forEach(function(el){setTimeout(function(){reveal(el);},d);});d+=100;
+    block.querySelectorAll('.anim-kn-cta').forEach(function(el){setTimeout(function(){reveal(el);},d);});
+    block.querySelectorAll('.anim-kn-video').forEach(function(el){setTimeout(function(){reveal(el);},100);});
+  },{threshold:0.1});
 
-  // === ANIMATION 9: DAILY FEED / INSTAGRAM ===
-  animateOnScroll('.anim-feed-icon', function() {
-    anime({ targets: '.anim-feed-icon', opacity: [0,1], scale: [0.5,1], duration: 800, easing: 'easeOutBack' });
-    anime({ targets: '.anim-feed-title', opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo', delay: 150 });
-    anime({ targets: '.anim-feed-text', opacity: [0,1], duration: 600, easing: 'easeOutExpo', delay: 250 });
-    anime({ targets: '.anim-feed-cta', opacity: [0,1], translateY: [15,0], duration: 600, easing: 'easeOutExpo', delay: 350 });
+  // === DAILY FEED ===
+  onScroll('.anim-feed-icon',function(){
+    reveal(document.querySelector('.anim-feed-icon'));
+    setTimeout(function(){reveal(document.querySelector('.anim-feed-title'));},150);
+    setTimeout(function(){reveal(document.querySelector('.anim-feed-text'));},250);
+    setTimeout(function(){reveal(document.querySelector('.anim-feed-cta'));},350);
   });
 
-  // === ANIMATION 10: BOOK SECTION ===
-  animateOnScroll('.anim-book-visual', function() {
-    anime({ targets: '.anim-book-visual', opacity: [0,1], translateX: [-40,0], duration: 1000, easing: 'easeOutExpo' });
-    anime({ targets: '.anim-book-label', opacity: [0,1], duration: 500, easing: 'easeOutExpo', delay: 200 });
-    anime({ targets: '.anim-book-title', opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo', delay: 300 });
-    anime({ targets: '.anim-book-text', opacity: [0,1], duration: 600, easing: 'easeOutExpo', delay: 400 });
-    anime({ targets: '.anim-book-cta', opacity: [0,1], duration: 500, easing: 'easeOutExpo', delay: 500 });
-  }, { threshold: 0.1 });
+  // === BOOK ===
+  onScroll('.anim-book-visual',function(){
+    reveal(document.querySelector('.anim-book-visual'));
+    setTimeout(function(){reveal(document.querySelector('.anim-book-label'));},200);
+    setTimeout(function(){reveal(document.querySelector('.anim-book-title'));},300);
+    setTimeout(function(){reveal(document.querySelector('.anim-book-text'));},400);
+    setTimeout(function(){reveal(document.querySelector('.anim-book-cta'));},500);
+  },{threshold:0.1});
 
-  // === ANIMATION 11: SUBSTACK SECTION ===
-  animateOnScroll('.anim-sub-icon', function() {
-    anime({ targets: '.anim-sub-icon', opacity: [0,1], scale: [0.5,1], duration: 700, easing: 'easeOutBack' });
-    anime({ targets: '.anim-sub-title', opacity: [0,1], duration: 600, easing: 'easeOutExpo', delay: 100 });
-    anime({ targets: '.anim-sub-text', opacity: [0,1], duration: 600, easing: 'easeOutExpo', delay: 200 });
-    anime({ targets: '.anim-sub-embed', opacity: [0,1], translateY: [20,0], duration: 700, easing: 'easeOutExpo', delay: anime.stagger(150, {start: 300}) });
+  // === SUBSTACK ===
+  onScroll('.anim-sub-icon',function(){
+    reveal(document.querySelector('.anim-sub-icon'));
+    setTimeout(function(){reveal(document.querySelector('.anim-sub-title'));},100);
+    setTimeout(function(){reveal(document.querySelector('.anim-sub-text'));},200);
+    staggerReveal(document.querySelectorAll('.anim-sub-embed'),300,150);
   });
 })();
 </script>
