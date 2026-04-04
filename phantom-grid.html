@@ -375,10 +375,25 @@
       slots.forEach(function(s){s.textContent='';});
     }
   };
-  var inactivityTimer;
+  var inactivityTimer,countdownInterval,countdownSeconds=300;
+  function updateCountdown(){
+    var m=Math.floor(countdownSeconds/60);
+    var s=countdownSeconds%60;
+    var el=document.getElementById('staging-countdown');
+    if(el)el.textContent=m+':'+(s<10?'0':'')+s;
+  }
   function resetTimer(){
     clearTimeout(inactivityTimer);
+    clearInterval(countdownInterval);
+    countdownSeconds=300;
+    updateCountdown();
+    countdownInterval=setInterval(function(){
+      countdownSeconds--;
+      updateCountdown();
+      if(countdownSeconds<=0)clearInterval(countdownInterval);
+    },1000);
     inactivityTimer=setTimeout(function(){
+      clearInterval(countdownInterval);
       document.getElementById('staging-gate').style.display='flex';
       entered='';
       slots.forEach(function(s){s.textContent='';});
@@ -399,7 +414,11 @@
 })();
 </script>
 
-<div id="staging-sticky" style="position:fixed;top:18px;right:18px;z-index:99998;background:#FFE500;color:#1a1a1a;padding:14px 22px;font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;transform:rotate(4deg);box-shadow:2px 4px 12px rgba(0,0,0,0.25);border-radius:2px;pointer-events:none;line-height:1;">STAGING ENVIRONMENT</div>
+<div id="staging-sticky" style="position:fixed;top:18px;right:18px;z-index:99998;background:#FFE500;color:#1a1a1a;padding:14px 22px 10px;font-family:'Inter',sans-serif;text-align:center;transform:rotate(4deg);box-shadow:2px 4px 12px rgba(0,0,0,0.25);border-radius:2px;pointer-events:none;line-height:1;">
+  <div style="font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;">STAGING ENVIRONMENT</div>
+  <div id="staging-countdown" style="font-size:11px;font-weight:700;font-family:'SF Mono','Fira Code',monospace;margin-top:6px;color:#1a1a1a;animation:blink-countdown 1s step-end infinite;">5:00</div>
+</div>
+<style>@keyframes blink-countdown{0%,100%{opacity:1}50%{opacity:0.3}}</style>
 
 <!-- NAV -->
 <nav>
