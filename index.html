@@ -502,87 +502,54 @@
     </style>
 
     <!-- MEDIA / PRESS SECTION -->
-    <section id="press-section" class="py-16 bg-white border-b border-stone-100 overflow-hidden">
+    <style>
+      .press-shine{background-image:linear-gradient(120deg,transparent 0%,transparent 30%,rgba(250,204,21,0.35) 45%,rgba(255,255,255,0.6) 50%,rgba(250,204,21,0.35) 55%,transparent 70%,transparent 100%);background-size:200% 100%;background-clip:text;-webkit-background-clip:text;color:#44403c;-webkit-text-fill-color:#44403c;}
+      .press-shine.shimmer{animation:pressShine 0.8s ease-in-out forwards;-webkit-text-fill-color:transparent;color:transparent;}
+      @keyframes pressShine{0%{background-position:200% center}100%{background-position:-200% center}}
+    </style>
+    <section id="press-section" class="py-16 bg-white border-b border-stone-100">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p class="text-center text-xs font-bold uppercase tracking-widest text-stone-400 mb-8">As Seen In</p>
-            <div class="relative">
-                <!-- Scanning Eyes -->
-                <div id="scan-eyes" style="position:absolute;top:-28px;left:0;z-index:10;opacity:0;transition:opacity 0.4s ease;pointer-events:none;display:flex;align-items:center;">
-                    <span style="font-size:22px;filter:drop-shadow(0 0 6px rgba(250,204,21,0.5));line-height:1;">&#x1F441;</span>
-                </div>
-                <!-- Scan Beam -->
-                <div id="scan-beam" style="position:absolute;top:0;bottom:0;left:0;width:120px;z-index:5;pointer-events:none;opacity:0;transition:opacity 0.4s ease;background:linear-gradient(90deg,transparent 0%,rgba(250,204,21,0.12) 30%,rgba(250,204,21,0.18) 50%,rgba(250,204,21,0.12) 70%,transparent 100%);border-radius:50%;"></div>
+            <div class="flex flex-wrap justify-center items-center gap-12 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
 
-                <div class="flex flex-wrap justify-center items-center gap-12 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 relative z-1">
+                <a href="https://event.technologyreview.com/emtech-mit-2022/speaker/548759/don-allen-stevenson-iii" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+                    MIT Technology Review
+                </a>
 
-                    <a href="https://event.technologyreview.com/emtech-mit-2022/speaker/548759/don-allen-stevenson-iii" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
-                        MIT Technology Review
-                    </a>
+                <a href="https://www.forbes.com/sites/lesliekatz/2024/03/25/artists-get-early-access-to-openais-sora-video-tool-with-surreal-results/" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+                    Forbes
+                </a>
 
-                    <a href="https://www.forbes.com/sites/lesliekatz/2024/03/25/artists-get-early-access-to-openais-sora-video-tool-with-surreal-results/" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
-                        Forbes
-                    </a>
+                <a href="https://www.wired.com/story/snap-spectacles-ar/" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+                    WIRED
+                </a>
 
-                    <a href="https://www.wired.com/story/snap-spectacles-ar/" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
-                        WIRED
-                    </a>
+                <a href="https://techcrunch.com/2024/09/25/zuckerberg-chats-with-ai-clone-as-human-creator-looks-on-in-years-weirdest-demo/" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+                    TechCrunch
+                </a>
 
-                    <a href="https://techcrunch.com/2024/09/25/zuckerberg-chats-with-ai-clone-as-human-creator-looks-on-in-years-weirdest-demo/" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
-                        TechCrunch
-                    </a>
+                <a href="https://www.adweek.com/brand-marketing/ai-trailblazers-power-100-2025-building-the-future/" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+                    Adweek
+                </a>
 
-                    <a href="https://www.adweek.com/brand-marketing/ai-trailblazers-power-100-2025-building-the-future/" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
-                        Adweek
-                    </a>
-
-                </div>
             </div>
          </div>
     </section>
     <script>
     (function(){
       var section=document.getElementById('press-section');
-      var eyes=document.getElementById('scan-eyes');
-      var beam=document.getElementById('scan-beam');
       var hasPlayed=false;
       var obs=new IntersectionObserver(function(entries){
         entries.forEach(function(e){
           if(e.isIntersecting&&!hasPlayed){
             hasPlayed=true;
-            eyes.style.opacity='1';
-            beam.style.opacity='1';
-            var container=eyes.parentElement;
-            var w=container.offsetWidth;
-            var dur=2800;
-            var start=null;
-            function sweep(ts){
-              if(!start)start=ts;
-              var p=Math.min((ts-start)/dur,1);
-              // Ease in-out
-              var ep=p<0.5?2*p*p:(1-Math.pow(-2*p+2,2)/2);
-              var x=ep*(w-40);
-              eyes.style.transform='translateX('+x+'px)';
-              beam.style.transform='translateX('+(x-40)+'px)';
-              if(p<1){requestAnimationFrame(sweep);}
-              else{
-                // Blink at end
-                eyes.style.transition='opacity 0.15s';
-                eyes.style.opacity='0';
-                setTimeout(function(){
-                  eyes.style.opacity='1';
-                  setTimeout(function(){
-                    eyes.style.opacity='0';
-                    beam.style.transition='opacity 0.6s';
-                    beam.style.opacity='0';
-                    setTimeout(function(){eyes.style.opacity='0';},200);
-                  },150);
-                },150);
-              }
-            }
-            requestAnimationFrame(sweep);
+            var items=section.querySelectorAll('.press-shine');
+            items.forEach(function(el,i){
+              setTimeout(function(){el.classList.add('shimmer');},i*250);
+            });
           }
         });
-      },{threshold:0.4});
+      },{threshold:0.5});
       obs.observe(section);
     })();
     </script>
