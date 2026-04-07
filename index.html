@@ -191,6 +191,104 @@
 </head>
 <body class="text-stone-900 font-sans antialiased overflow-x-hidden">
 
+<div id="staging-gate" style="position:fixed;inset:0;z-index:99999;background:#1C1917;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;">
+  <div style="text-align:center;color:white;">
+    <div style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#a1a1aa;margin-bottom:24px;">Staging Preview</div>
+    <div style="font-size:24px;font-weight:700;margin-bottom:32px;">Enter PIN to continue</div>
+    <div id="pin-dots" style="display:flex;gap:16px;justify-content:center;margin-bottom:32px;">
+      <div class="pin-slot" style="width:48px;height:56px;border-radius:12px;border:2px solid #3f3f46;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;background:#27272a;"></div>
+      <div class="pin-slot" style="width:48px;height:56px;border-radius:12px;border:2px solid #3f3f46;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;background:#27272a;"></div>
+      <div class="pin-slot" style="width:48px;height:56px;border-radius:12px;border:2px solid #3f3f46;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;background:#27272a;"></div>
+      <div class="pin-slot" style="width:48px;height:56px;border-radius:12px;border:2px solid #3f3f46;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;background:#27272a;"></div>
+    </div>
+    <div id="pin-error" style="color:#ef4444;font-size:14px;margin-bottom:24px;min-height:20px;"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:240px;margin:0 auto;">
+      <button onclick="addDigit('1')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">1</button>
+      <button onclick="addDigit('2')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">2</button>
+      <button onclick="addDigit('3')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">3</button>
+      <button onclick="addDigit('4')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">4</button>
+      <button onclick="addDigit('5')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">5</button>
+      <button onclick="addDigit('6')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">6</button>
+      <button onclick="addDigit('7')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">7</button>
+      <button onclick="addDigit('8')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">8</button>
+      <button onclick="addDigit('9')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">9</button>
+      <button onclick="clearPin()" style="padding:16px;font-size:16px;font-weight:600;border-radius:12px;border:none;background:#3f3f46;color:#a1a1aa;cursor:pointer;">CLR</button>
+      <button onclick="addDigit('0')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">0</button>
+      <button onclick="submitPin()" style="padding:16px;font-size:16px;font-weight:600;border-radius:12px;border:none;background:#F97316;color:white;cursor:pointer;">GO</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var PIN='1940';
+  var entered='';
+  var slots=document.querySelectorAll('.pin-slot');
+  window.addDigit=function(d){
+    if(entered.length>=4)return;
+    entered+=d;
+    slots[entered.length-1].textContent='\u25cf';
+    document.getElementById('pin-error').textContent='';
+  };
+  window.clearPin=function(){
+    entered='';
+    slots.forEach(function(s){s.textContent='';});
+    document.getElementById('pin-error').textContent='';
+  };
+  window.submitPin=function(){
+    if(entered===PIN){
+      document.getElementById('staging-gate').style.display='none';
+      resetTimer();
+    }else{
+      document.getElementById('pin-error').textContent='Wrong PIN. Try again.';
+      entered='';
+      slots.forEach(function(s){s.textContent='';});
+    }
+  };
+  var inactivityTimer,countdownInterval,countdownSeconds=300;
+  function updateCountdown(){
+    var m=Math.floor(countdownSeconds/60);
+    var s=countdownSeconds%60;
+    var el=document.getElementById('staging-countdown');
+    if(el)el.textContent=m+':'+(s<10?'0':'')+s;
+  }
+  function resetTimer(){
+    clearTimeout(inactivityTimer);
+    clearInterval(countdownInterval);
+    countdownSeconds=300;
+    updateCountdown();
+    countdownInterval=setInterval(function(){
+      countdownSeconds--;
+      updateCountdown();
+      if(countdownSeconds<=0)clearInterval(countdownInterval);
+    },1000);
+    inactivityTimer=setTimeout(function(){
+      clearInterval(countdownInterval);
+      document.getElementById('staging-gate').style.display='flex';
+      entered='';
+      slots.forEach(function(s){s.textContent='';});
+      document.getElementById('pin-error').textContent='Session expired. Enter PIN again.';
+    },5*60*1000);
+  }
+  ['mousemove','keydown','click','scroll','touchstart'].forEach(function(evt){
+    document.addEventListener(evt,function(){
+      if(document.getElementById('staging-gate').style.display==='none')resetTimer();
+    });
+  });
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('staging-gate').style.display==='none')return;
+    if(e.key>='0'&&e.key<='9')addDigit(e.key);
+    else if(e.key==='Backspace')clearPin();
+    else if(e.key==='Enter')submitPin();
+  });
+})();
+</script>
+
+<div id="staging-sticky" style="position:fixed;top:18px;right:18px;z-index:99998;background:#FFE500;color:#1a1a1a;padding:14px 22px 10px;font-family:'Inter',sans-serif;text-align:center;transform:rotate(4deg);box-shadow:2px 4px 12px rgba(0,0,0,0.25);border-radius:2px;pointer-events:none;line-height:1;">
+  <div style="font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;">STAGING ENVIRONMENT</div>
+  <div id="staging-countdown" style="font-size:11px;font-weight:700;font-family:'SF Mono','Fira Code',monospace;margin-top:6px;color:#1a1a1a;animation:blink-countdown 1s step-end infinite;">5:00</div>
+</div>
+<style>@keyframes blink-countdown{0%,100%{opacity:1}50%{opacity:0.3}}</style>
+
     <!-- Navigation -->
     <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-stone-100 transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -201,10 +299,9 @@
 
                 <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
                     <a href="#about" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">About</a>
-                    <a href="#work" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Apps</a>
-                    <a href="#services" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Consulting</a>
+                    <a href="#systems" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Systems</a>
+                    <a href="#keynotes" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Speaking</a>
                     <a href="#podcast" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Podcast</a>
-                    <a href="#keynotes" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">Keynotes</a>
                     <a href="#omniii" class="text-sm font-medium text-stone-600 hover:text-brand-dark transition-colors">OMNIII</a>
                 </div>
 
@@ -227,10 +324,9 @@
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-stone-100 absolute w-full">
             <div class="px-4 pt-2 pb-6 space-y-1">
                 <a href="#about" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">About</a>
-                <a href="#work" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Apps</a>
-                <a href="#services" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Consulting</a>
+                <a href="#systems" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Systems</a>
+                <a href="#keynotes" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Speaking</a>
                 <a href="#podcast" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Podcast</a>
-                <a href="#keynotes" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">Keynotes</a>
                 <a href="#omniii" class="block px-3 py-3 rounded-md text-base font-medium text-stone-700 hover:text-stone-900 hover:bg-brand-surface">OMNIII</a>
                 <div class="mt-4 px-3">
                     <!-- Updated Link -->
@@ -251,34 +347,39 @@
             <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                 
                 <div class="w-full lg:w-1/2 space-y-8 animate-fade-up">
-                    <a href="https://www.instagram.com/reel/DO_hCvLEf2W/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="inline-flex items-center px-3 py-1 rounded-full border border-purple-200 bg-purple-50/80 backdrop-blur-sm text-brand-accent text-xs font-bold tracking-wide uppercase hover:bg-purple-100 transition-colors cursor-pointer z-20 relative">
+                    <a href="https://www.instagram.com/reel/DO_hCvLEf2W/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="anim-hero-badge inline-flex items-center px-3 py-1 rounded-full border border-purple-200 bg-purple-50/80 backdrop-blur-sm text-brand-accent text-xs font-bold tracking-wide uppercase hover:bg-purple-100 transition-colors cursor-pointer z-20 relative" style="opacity:0">
                         <span class="w-2 h-2 rounded-full bg-brand-accent mr-2 animate-pulse"></span>
-                        Latest: TED 2025 Opening Animation
+                        Now Building: OMNIII
                     </a>
                     
-                    <h1 class="text-4xl lg:text-5xl xl:text-6xl font-display font-bold leading-tight text-stone-900 relative z-20">
-                        Future of Spatial Computing and AI for <br class="hidden lg:block" />
-                        <span class="gradient-text">Creators, Studios, and Execs</span>
+                    <h1 class="anim-hero-title text-4xl lg:text-5xl xl:text-6xl font-display font-bold leading-tight text-stone-900 relative z-20" style="opacity:0">
+                        I build AI systems that change how creative teams actually work.
                     </h1>
                     
-                    <p class="text-lg lg:text-xl text-stone-600 leading-relaxed max-w-lg relative z-20">
-                        I help teams across Fortune 100 companies understand where this tech is heading and how to use it in a way that actually feels creative. Keynotes, workshops, experiments… whatever gets people to that aha moment.
+                    <p class="anim-hero-text text-lg lg:text-xl text-stone-600 leading-relaxed max-w-lg relative z-20" style="opacity:0">
+                        Creative Intelligence Architect · AI Research Lead @Asteria · MasterClass Instructor
+                    </p>
+                    <p class="anim-hero-text text-base text-stone-500 max-w-lg relative z-20 mt-2" style="opacity:0">
+                        Building OMNIII — a voice-first AI orchestrator for creators.
+                    </p>
+                    <p class="text-sm text-stone-400 max-w-lg relative z-20 mt-2">
+                        Previously DreamWorks Animation. Now working with Meta, Apple, Adobe, OpenAI, and teams figuring out what AI actually looks like inside real workflows.
                     </p>
                     
-                    <div class="flex flex-wrap gap-4 pt-2 relative z-20">
+                    <div class="anim-hero-cta flex flex-wrap gap-4 pt-2 relative z-20" style="opacity:0">
                         <!-- Updated Link -->
                         <a href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" class="bg-brand-dark text-white px-8 py-4 rounded-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center">
                             Work With Don
                             <i class="fas fa-arrow-right ml-2 text-sm"></i>
                         </a>
-                        <a href="https://www.masterclass.com/classes/achieve-more-with-gen-ai?utm_campaign=Share&utm_medium=Copy&utm_source=class_guest_next" target="_blank" class="bg-white text-brand-primary border border-orange-200 px-8 py-4 rounded-lg font-bold hover:bg-orange-50 hover:border-brand-primary transition-all">
-                            Take Masterclass
+                        <a href="https://www.youtube.com/watch?v=yaeazIA5np8" target="_blank" class="bg-white text-brand-primary border border-orange-200 px-8 py-4 rounded-lg font-bold hover:bg-orange-50 hover:border-brand-primary transition-all">
+                            Watch the Reel →
                         </a>
                     </div>
                 </div>
 
                 <div class="w-full lg:w-1/2 relative z-20">
-                    <a href="#keynotes" class="block relative aspect-[4/5] lg:aspect-square max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl group cursor-pointer transform hover:scale-[1.02] transition-all duration-500">
+                    <a href="#keynotes" class="anim-hero-image block relative aspect-[4/5] lg:aspect-square max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl group cursor-pointer transform hover:scale-[1.02] transition-all duration-500" style="opacity:0">
                         <div class="absolute inset-0 bg-stone-900">
                              <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/80 to-orange-600/50 mix-blend-overlay"></div>
                              <img src="https://img.youtube.com/vi/yaeazIA5np8/maxresdefault.jpg" class="w-full h-full object-cover opacity-60">
@@ -310,7 +411,7 @@
     <!-- Trusted By / Marquee Section (Seamless Loop) -->
     <section class="py-10 bg-white border-t border-b border-stone-100 overflow-hidden relative">
         <div class="max-w-7xl mx-auto px-4 mb-4">
-             <p class="text-center text-xs font-bold uppercase tracking-widest text-stone-400">Trusted Advisor and Collaborator with</p>
+             <p class="text-center text-xs font-bold uppercase tracking-widest text-stone-400">Advisor & Collaborator</p>
         </div>
         
         <div class="flex overflow-x-hidden w-full">
@@ -401,34 +502,60 @@
     </style>
 
     <!-- MEDIA / PRESS SECTION -->
-    <section class="py-16 bg-white border-b border-stone-100">
+    <style>
+      .press-shine{background-image:linear-gradient(120deg,transparent 0%,transparent 30%,rgba(250,204,21,0.35) 45%,rgba(255,255,255,0.6) 50%,rgba(250,204,21,0.35) 55%,transparent 70%,transparent 100%);background-size:200% 100%;background-clip:text;-webkit-background-clip:text;color:#44403c;-webkit-text-fill-color:#44403c;}
+      .press-shine.shimmer{animation:pressShine 0.8s ease-in-out;-webkit-text-fill-color:transparent;color:transparent;}
+      @keyframes pressShine{0%{background-position:200% center}99.9%{background-position:-200% center}100%{background-position:-200% center}}
+    </style>
+    <section id="press-section" class="py-16 bg-white border-b border-stone-100">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p class="text-center text-xs font-bold uppercase tracking-widest text-stone-400 mb-8">As Seen In</p>
             <div class="flex flex-wrap justify-center items-center gap-12 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                
-                <a href="https://event.technologyreview.com/emtech-mit-2022/speaker/548759/don-allen-stevenson-iii" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+
+                <a href="https://event.technologyreview.com/emtech-mit-2022/speaker/548759/don-allen-stevenson-iii" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
                     MIT Technology Review
                 </a>
-                
-                <a href="https://www.forbes.com/sites/lesliekatz/2024/03/25/artists-get-early-access-to-openais-sora-video-tool-with-surreal-results/" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+
+                <a href="https://www.forbes.com/sites/lesliekatz/2024/03/25/artists-get-early-access-to-openais-sora-video-tool-with-surreal-results/" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
                     Forbes
                 </a>
-                
-                <a href="https://www.wired.com/story/snap-spectacles-ar/" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+
+                <a href="https://www.wired.com/story/snap-spectacles-ar/" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
                     WIRED
                 </a>
-                
-                <a href="https://techcrunch.com/2024/09/25/zuckerberg-chats-with-ai-clone-as-human-creator-looks-on-in-years-weirdest-demo/" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+
+                <a href="https://techcrunch.com/2024/09/25/zuckerberg-chats-with-ai-clone-as-human-creator-looks-on-in-years-weirdest-demo/" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
                     TechCrunch
                 </a>
-                
-                <a href="https://www.adweek.com/brand-marketing/ai-trailblazers-power-100-2025-building-the-future/" target="_blank" class="text-xl font-display font-bold text-stone-800 hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
+
+                <a href="https://www.adweek.com/brand-marketing/ai-trailblazers-power-100-2025-building-the-future/" target="_blank" class="press-shine text-xl font-display font-bold hover:text-brand-primary hover:scale-105 active:scale-95 transform inline-block transition-all duration-300">
                     Adweek
                 </a>
 
             </div>
          </div>
     </section>
+    <script>
+    (function(){
+      var section=document.getElementById('press-section');
+      var hasPlayed=false;
+      var obs=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting&&!hasPlayed){
+            hasPlayed=true;
+            var items=section.querySelectorAll('.press-shine');
+            items.forEach(function(el,i){
+              setTimeout(function(){
+                el.classList.add('shimmer');
+                el.addEventListener('animationend',function(){el.classList.remove('shimmer');},{once:true});
+              },i*250);
+            });
+          }
+        });
+      },{threshold:0.5});
+      obs.observe(section);
+    })();
+    </script>
 
     <!-- ABOUT SECTION (UPDATED with Read More) -->
     <section id="about" class="py-24 bg-brand-surface">
@@ -441,28 +568,37 @@
                 </div>
                 
                 <div class="w-full md:w-1/2 space-y-6">
-                    <div class="inline-block px-3 py-1 bg-white rounded text-xs font-bold tracking-widest text-stone-500 mb-2 border border-stone-200">
+                    <div class="anim-about-label inline-block px-3 py-1 bg-white rounded text-xs font-bold tracking-widest text-stone-500 mb-2 border border-stone-200" style="opacity:0">
                         THE STORY
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900">
-                        Emerging Tech is My Playground
+                    <h2 class="anim-about-title text-3xl md:text-4xl font-display font-bold text-stone-900" style="opacity:0">
+                        What happens when I enter a team.
                     </h2>
                     
                     <!-- Expandable Text Block -->
-                    <div id="story-content">
+                    <div id="story-content" class="anim-about-text" style="opacity:0">
                         <p class="text-lg text-stone-600 leading-relaxed mb-4">
-                            I’m Don Allen Stevenson III, a creative technologist who loves exploring new tools. I spent years at DreamWorks Animation as a specialist trainer, onboarding artists and helping them get up to speed so they could jump into films like How to Train Your Dragon, Trolls, Boss Baby, The Bad Guys—all that good stuff. After DreamWorks, I went deep into AR, AI, and interactive media way before the rest of the world started paying attention.
+                            I once asked an AI to describe me as a protein in the human body, based on everything it knew about how I work. It said I’m a growth factor. Not the protein that maintains the system. The one that shows up and makes everything around it grow faster.
+                        </p>
+                        <p class="text-lg text-stone-600 leading-relaxed mb-4">
+                            That’s honestly the best description of what I do.
                         </p>
                         
                         <div id="story-expanded" class="hidden space-y-4 text-lg text-stone-600 leading-relaxed">
                             <p>
-                                These days I sit somewhere between artist, advisor, and experiment-maker. Some weeks I’m helping teams at Meta, Apple, Adobe, Google, or OpenAI think about where tech is heading. Other weeks I’m making experimental films, characters, books, or little prototypes that end up spreading on Instagram or TikTok.
+                                Here’s the thing about most AI adoption. Teams buy the tools, run a few experiments, and then go right back to doing things the way they always have. The tool sits there. Nobody’s workflow actually changes. I walk in and that changes. Not because I hand people a deck, but because I sit down next to them and we build something together. People want to sit next to me at work because that’s where the learning happens. That’s where someone goes from "I don’t really get AI" to "wait, I just cut my review cycle in half."
                             </p>
                             <p>
-                                Teaching is still a big part of what I do. Live sessions, keynotes, workshops—whatever helps people understand the future without feeling overwhelmed. My work has shown up in places like MIT Tech Review, Wired, Forbes, Business Insider, and Meta’s series with Keke Palmer.
+                                I push beyond status quo. Every time. If a workflow has existed for five years and nobody’s questioned it, I’m questioning it. If there’s a faster, smarter, more creative way to move, I’m prototyping it before the meeting ends. And I never advise on something I’m not also doing myself. Whatever I’m telling your team to try, I’ve already tried it. I’m building OMNIII, a voice-first AI orchestrator, from scratch. I’m running AI pipelines inside real productions at Asteria. I’m testing these systems with my own content, my own audience, my own workflows. This isn’t theoretical for me. I genuinely love this stuff. It brings me joy in a way that’s hard to explain without sounding corny, but it’s true.
                             </p>
                             <p>
-                                And underneath everything, I’m driven by curiosity, my family, and the belief that we can actually build a brighter future with the tools we have in front of us.
+                                My work sits between product, engineering, and creative. I prototype real AI systems, test them inside actual production environments, and show teams what changes when AI becomes part of the operating system instead of just another app on the desktop.
+                            </p>
+                            <p>
+                                I spent years at DreamWorks Animation training artists on films like How to Train Your Dragon, Trolls, and The Bad Guys. After that I went deep into AR, XR, and AI before most of the industry showed up. These days I lead the A.R.T. Department at Asteria, advise companies like Meta, Apple, and Adobe, teach on MasterClass, and build tools for creators who want AI to work the way they think.
+                            </p>
+                            <p>
+                                And underneath all of it, I’m a dad, a curious builder, and someone who genuinely believes we can make this future feel human.
                             </p>
                         </div>
                     </div>
@@ -472,37 +608,37 @@
                     </button>
                     
                     <div class="flex flex-wrap gap-3 pt-4">
-                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">10+ Years in Creative Tech</span>
-                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">Fortune 500 Advisor</span>
-                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">245k+ Community</span>
-                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">AR/XR Expert</span>
-                        <span class="px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide">Published Author</span>
+                        <span class="anim-about-tag px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide" style="opacity:0">15+ Years in Creative Tech</span>
+                        <span class="anim-about-tag px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide" style="opacity:0">Fortune 500 Advisor</span>
+                        <span class="anim-about-tag px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide" style="opacity:0">245k+ Community</span>
+                        <span class="anim-about-tag px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide" style="opacity:0">Published Author</span>
+                        <span class="anim-about-tag px-4 py-2 bg-white border border-stone-200 rounded-full text-xs font-bold text-stone-600 uppercase tracking-wide" style="opacity:0">MasterClass Instructor</span>
                     </div>
 
                     <!-- Time Chart Component -->
                     <div class="mt-8 pt-8 border-t border-stone-100">
                         <h3 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-4">How I Actually Spend My Time</h3>
-                        <div class="flex w-full h-4 rounded-full overflow-hidden cursor-pointer shadow-inner bg-stone-100">
-                            <div class="chart-segment bg-stone-900 h-full transition-all duration-300 relative group" style="width: 40%" onclick="document.getElementById('work').scrollIntoView({behavior: 'smooth'})">
+                        <div class="anim-about-chart flex w-full h-4 rounded-full overflow-hidden cursor-pointer shadow-inner bg-stone-100">
+                            <div class="anim-chart-segment chart-segment bg-stone-900 h-full transition-all duration-300 relative group" style="width: 0" data-width="40%" onclick="document.getElementById('systems').scrollIntoView({behavior: 'smooth'})">
                                 <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 bg-stone-900 text-white text-xs p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 text-center">
-                                    <strong>Advisory & R&D</strong><br>Meta, Apple, OpenAI
+                                    <strong>Building Systems & Products</strong><br>OMNIII, GLYPH, Asteria R&D
                                 </div>
                             </div>
-                            <div class="chart-segment bg-brand-primary h-full transition-all duration-300 relative group" style="width: 35%" onclick="document.getElementById('keynotes').scrollIntoView({behavior: 'smooth'})">
+                            <div class="anim-chart-segment chart-segment bg-brand-primary h-full transition-all duration-300 relative group" style="width: 0" data-width="35%" onclick="document.getElementById('keynotes').scrollIntoView({behavior: 'smooth'})">
                                 <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 bg-brand-primary text-white text-xs p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 text-center">
-                                    <strong>Teaching & Speaking</strong><br>MasterClass, TEDx, SXSW
+                                    <strong>Advisory & Consulting</strong><br>Meta, Apple, Adobe, WhatsApp
                                 </div>
                             </div>
-                            <div class="chart-segment bg-brand-accent h-full transition-all duration-300 relative group" style="width: 25%" onclick="document.getElementById('daily-feed').scrollIntoView({behavior: 'smooth'})">
+                            <div class="anim-chart-segment chart-segment bg-brand-accent h-full transition-all duration-300 relative group" style="width: 0" data-width="25%" onclick="document.getElementById('daily-feed').scrollIntoView({behavior: 'smooth'})">
                                 <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 bg-brand-accent text-white text-xs p-2 rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 text-center">
-                                    <strong>Making & Experiments</strong><br>Sora Films, Prototypes
+                                    <strong>Teaching & Speaking</strong><br>MasterClass, keynotes, workshops
                                 </div>
                             </div>
                         </div>
                         <div class="flex justify-between text-xs text-stone-500 mt-3 font-medium">
-                            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-stone-900 mr-2"></span>Advisory (40%)</span>
-                            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-brand-primary mr-2"></span>Teaching (35%)</span>
-                            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-brand-accent mr-2"></span>Making (25%)</span>
+                            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-stone-900 mr-2"></span>Systems (40%)</span>
+                            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-brand-primary mr-2"></span>Advisory (35%)</span>
+                            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-brand-accent mr-2"></span>Teaching (25%)</span>
                         </div>
                     </div>
 
@@ -512,17 +648,17 @@
     </section>
 
     <!-- CASE STUDIES / OUTCOMES SECTION -->
-    <section id="work" class="py-24 bg-white">
+    <section id="systems" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="text-center max-w-2xl mx-auto mb-16">
-                <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4">Apps & Tools</h2>
-                <p class="text-stone-600">Things I've built and shipped.</p>
+             <div class="anim-work-header text-center max-w-2xl mx-auto mb-16" style="opacity:0">
+                <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4">Systems I Build</h2>
+                <p class="text-stone-600">I don't just talk about AI workflows — I build them, ship them, and show what happens.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                 <!-- GLYPH ASCII Art Engine -->
-                <a href="https://donalleniii.github.io/glyph/" target="_blank" class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block">
+                <a href="https://donalleniii.github.io/glyph/" target="_blank" class="anim-work-card group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block" style="opacity:0;transform:translateY(40px)">
                     <div class="h-64 bg-gray-900 relative overflow-hidden">
                          <div class="absolute inset-0 bg-gradient-to-br from-violet-600 to-gray-900 opacity-90"></div>
                          <canvas id="glyphPreview" class="absolute inset-0 w-full h-full" style="opacity:0.85; mix-blend-mode:screen"></canvas>
@@ -541,7 +677,7 @@
                 </a>
 
                 <!-- Project 4: G-Splat -->
-                <a href="https://donalleniii.github.io/gsplat-frontend/" target="_blank" class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block">
+                <a href="https://donalleniii.github.io/gsplat-frontend/" target="_blank" class="anim-work-card group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block" style="opacity:0;transform:translateY(40px)">
                     <div class="h-64 bg-gray-950 relative overflow-hidden">
                          <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-slate-950 to-gray-950"></div>
                          <canvas id="gsplatPreview" class="absolute inset-0 w-full h-full"></canvas>
@@ -560,7 +696,7 @@
                 </a>
 
                 <!-- Phantom Grid — Dark Factory Experiment -->
-                <a href="./phantom-grid.html" class="group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block">
+                <a href="./phantom-grid.html" class="anim-work-card group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block" style="opacity:0;transform:translateY(40px)">
                     <div class="h-64 bg-black relative overflow-hidden">
                          <canvas id="darkFactoryPreview" class="absolute inset-0 w-full h-full"></canvas>
                          <div class="absolute inset-0 pointer-events-none" style="background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.22) 4px);z-index:2"></div>
@@ -581,7 +717,7 @@
                 </a>
 
                 <!-- OMNIII — iOS App (In Review) -->
-                <div class="md:col-span-2 group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300">
+                <div class="anim-work-card md:col-span-2 group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300" style="opacity:0;transform:translateY(40px)">
                     <div class="flex flex-col md:flex-row">
                         <!-- Left: Visual -->
                         <div class="h-64 md:h-auto md:w-1/2 bg-stone-950 relative overflow-hidden flex items-center justify-center">
@@ -602,7 +738,7 @@
                                     In Review
                                 </span>
                             </div>
-                            <p class="text-stone-600 mb-4 text-lg">Speak naturally. OMNIII captures your voice, transcribes on-device, and routes your prompt to the best AI model for one clear answer.</p>
+                            <p class="text-stone-600 mb-4 text-lg">Speak naturally. OMNIII captures your voice, transcribes on-device with WhisperKit, and routes your prompt to the best AI model — then gives you one clear answer. Built from scratch using AI-assisted development. 19,000+ lines of Swift. Currently in App Store review.</p>
                             <div class="grid grid-cols-3 gap-3 mb-6">
                                 <div class="text-center p-3 bg-stone-50 rounded-xl">
                                     <div class="text-brand-primary text-lg mb-1"><i class="fas fa-microphone"></i></div>
@@ -636,36 +772,36 @@
     <!-- Services Section (UPDATED MASTERCLASS ICON) -->
     <section id="services" class="py-24 bg-brand-surface">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4">Work with Don</h2>
-                <p class="text-stone-600">Strategic guidance for the world's most innovative companies.</p>
+            <div class="anim-services-header text-center max-w-2xl mx-auto mb-16" style="opacity:0">
+                <h2 class="text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4">Let's build something.</h2>
+                <p class="text-stone-600">I work with teams at Fortune 500 companies, studios, and startups — usually in one of three ways.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Card 1: Masterclass (Updated Color) -->
-                <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
-                    <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white text-2xl mb-6">
-                        <i class="fas fa-graduation-cap"></i>
+                <!-- Card 1: Workflow Architecture -->
+                <div class="anim-service-card service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full" style="opacity:0">
+                    <div class="w-14 h-14 rounded-full bg-stone-900 flex items-center justify-center text-white text-2xl mb-6">
+                        <i class="fas fa-cogs"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-stone-900 mb-3">Start With My MasterClass</h3>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Workflow Architecture</h3>
                     <p class="text-stone-600 mb-8 flex-grow leading-relaxed">
-                        If you want an easy way to learn from me, begin with my official MasterClass on Generative AI. It’s a full walkthrough of how to start creating with AI right away.
+                        I come in, look at how your team actually works, and redesign the parts where AI can replace coordination, speed up production, or eliminate handoffs. This isn’t a deck — it’s a working prototype.
                     </p>
-                    <a href="https://www.masterclass.com/classes/achieve-more-with-gen-ai?utm_campaign=Share&utm_medium=Copy&utm_source=class_guest_next" target="_blank" class="inline-flex items-center text-brand-primary font-bold hover:text-orange-700 transition-colors group">
-                        Take the Course 
+                    <a href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" class="inline-flex items-center text-brand-primary font-bold hover:text-orange-700 transition-colors group">
+                        Start a Conversation
                         <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
 
                 <!-- Card 2 -->
-                <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full relative overflow-hidden">
+                <div class="anim-service-card service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full relative overflow-hidden" style="opacity:0">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-stone-100 rounded-bl-full -mr-10 -mt-10"></div>
                     <div class="w-14 h-14 rounded-full bg-stone-100 flex items-center justify-center text-brand-dark text-2xl mb-6 relative z-10">
                         <i class="fas fa-briefcase"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-stone-900 mb-3">Work With Me Directly</h3>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Strategic Advisory</h3>
                     <p class="text-stone-600 mb-8 flex-grow leading-relaxed">
-                        If you want to skip the intro stuff and get straight to it, this is the path. I work with teams at Apple, Google, Instagram, and WhatsApp on creative technologies and workflows.
+                        Ongoing partnership for teams navigating AI adoption. I help you figure out what to build, what to buy, and what to ignore — based on what I'm seeing across every company I work with.
                     </p>
                     <a href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" class="bg-brand-dark text-white px-6 py-3 rounded-lg font-bold hover:bg-stone-800 transition-all inline-block text-center">
                         Book Consultation 
@@ -673,16 +809,16 @@
                 </div>
 
                 <!-- Card 3 -->
-                <div class="service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full">
-                    <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-brand-accent text-2xl mb-6">
+                <div class="anim-service-card service-card bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full" style="opacity:0">
+                    <div class="w-14 h-14 rounded-full bg-brand-primary flex items-center justify-center text-white text-2xl mb-6">
                         <i class="fas fa-microphone-alt"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-stone-900 mb-3">Bring Me In To Speak</h3>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Workshops & Training</h3>
                     <p class="text-stone-600 mb-8 flex-grow leading-relaxed">
-                        If you want someone who can energize your team — devs, execs, or a whole room — this is where I show up best. I speak at internal and public events worldwide.
+                        I run sessions (like Camp Future Proof) that get your team from 'I've heard of ChatGPT' to 'I just rebuilt my entire review pipeline.' Hands-on, practical, no slides-only talks.
                     </p>
-                    <a href="mailto:donallenthethird@gmail.com?subject=Speaking%20Inquiry" class="inline-flex items-center text-brand-accent font-bold hover:text-purple-700 transition-colors group">
-                        Email Me 
+                    <a href="mailto:donallenthethird@gmail.com?subject=Workshop%20Inquiry" class="inline-flex items-center text-brand-primary font-bold hover:text-orange-700 transition-colors group">
+                        Book a Workshop
                         <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
@@ -690,94 +826,34 @@
         </div>
     </section>
 
-    <!-- FAQ SECTION -->
-    <section id="faq" class="py-24 bg-white border-t border-stone-100">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-display font-bold text-stone-900 mb-10 text-center">Frequently Asked Questions</h2>
-            
-            <div class="space-y-4">
-                <!-- FAQ Item 1 -->
-                <details class="group border border-stone-200 rounded-lg bg-white open:border-brand-primary/30 transition-all duration-300">
-                    <summary class="flex cursor-pointer list-none items-center justify-between p-6 font-medium text-stone-900">
-                        <span>What types of companies do you work with?</span>
-                        <span class="transition group-open:rotate-180">
-                            <i class="fas fa-chevron-down text-stone-400"></i>
-                        </span>
-                    </summary>
-                    <div class="text-stone-600 px-6 pb-6 text-sm leading-relaxed">
-                        I primarily advise Fortune 500 companies, innovative startups, and creative agencies looking to integrate Generative AI and Spatial Computing into their workflows and products.
-                    </div>
-                </details>
-
-                <!-- FAQ Item 2 -->
-                <details class="group border border-stone-200 rounded-lg bg-white open:border-brand-primary/30 transition-all duration-300">
-                    <summary class="flex cursor-pointer list-none items-center justify-between p-6 font-medium text-stone-900">
-                        <span>What does a typical consulting engagement look like?</span>
-                        <span class="transition group-open:rotate-180">
-                             <i class="fas fa-chevron-down text-stone-400"></i>
-                        </span>
-                    </summary>
-                    <div class="text-stone-600 px-6 pb-6 text-sm leading-relaxed">
-                        Engagements range from strategic advisory retainers to project-based creative direction. We usually start with a discovery session to identify high-impact opportunities for AI integration.
-                    </div>
-                </details>
-
-                <!-- FAQ Item 3 -->
-                <details class="group border border-stone-200 rounded-lg bg-white open:border-brand-primary/30 transition-all duration-300">
-                    <summary class="flex cursor-pointer list-none items-center justify-between p-6 font-medium text-stone-900">
-                        <span>Do you offer workshops or team training?</span>
-                        <span class="transition group-open:rotate-180">
-                             <i class="fas fa-chevron-down text-stone-400"></i>
-                        </span>
-                    </summary>
-                    <div class="text-stone-600 px-6 pb-6 text-sm leading-relaxed">
-                        Yes. I offer specialized workshops like "Camp Future Proof" designed to upskill creative teams on the latest AI tools and workflows.
-                    </div>
-                </details>
-                
-                 <!-- FAQ Item 4 -->
-                 <details class="group border border-stone-200 rounded-lg bg-white open:border-brand-primary/30 transition-all duration-300">
-                    <summary class="flex cursor-pointer list-none items-center justify-between p-6 font-medium text-stone-900">
-                        <span>How do I book you for speaking?</span>
-                        <span class="transition group-open:rotate-180">
-                             <i class="fas fa-chevron-down text-stone-400"></i>
-                        </span>
-                    </summary>
-                    <div class="text-stone-600 px-6 pb-6 text-sm leading-relaxed">
-                        You can email me directly at <a href="mailto:donallenthethird@gmail.com" class="text-brand-primary underline">donallenthethird@gmail.com</a> to discuss your event, date, and budget.
-                    </div>
-                </details>
-            </div>
-        </div>
-    </section>
 
     <!-- Keynote Highlights (Featured Appearance) -->
     <section id="keynotes" class="py-24 bg-brand-dark text-white relative overflow-hidden">
         <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-stone-800 to-transparent opacity-50"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-2xl mx-auto mb-20">
-                <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">Featured Appearance</h2>
+                <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">I don't give talks about AI. I show it working.</h2>
                 <p class="text-stone-400 text-lg leading-relaxed">
-                    From the main stage of Meta Connect to the creative halls of SxSW.
+                    Live demonstrations of how AI changes real workflows — not just what's possible, but what teams can adopt the next morning.
                 </p>
             </div>
 
             <!-- Meta -->
-            <div class="flex flex-col lg:flex-row items-center gap-16 mb-24">
+            <div class="anim-keynote-block flex flex-col lg:flex-row items-center gap-16 mb-24">
                 <div class="w-full lg:w-1/2">
-                    <div class="inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-brand-accent mb-6 border border-stone-700">
+                    <div class="anim-kn-label inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-brand-accent mb-6 border border-stone-700" style="opacity:0">
                         META CONNECT
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-display font-bold mb-6">On Stage with Zuckerberg: The Future of Creator AI</h2>
-                    <p class="text-stone-400 text-lg leading-relaxed mb-8">
+                    <h2 class="anim-kn-title text-3xl md:text-4xl font-display font-bold mb-6" style="opacity:0">On Stage with Zuckerberg: The Future of Creator AI</h2>
+                    <p class="anim-kn-text text-stone-400 text-lg leading-relaxed mb-8" style="opacity:0">
                         For six months, I worked alongside Meta’s teams to help build the behavioral models for <strong>AI Studio</strong>. This culminated in a live keynote with Mark Zuckerberg, unveiling the world's first AI video calling feature.
                     </p>
-                    <a href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" class="bg-white text-brand-dark px-8 py-3 rounded-lg font-bold hover:bg-stone-200 transition-colors inline-block">
+                    <a href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" class="anim-kn-cta bg-white text-brand-dark px-8 py-3 rounded-lg font-bold hover:bg-stone-200 transition-colors inline-block" style="opacity:0">
                         Work With Don
                     </a>
                 </div>
                 <div class="w-full lg:w-1/2">
-                    <div class="relative rounded-xl overflow-hidden border border-stone-700 shadow-2xl bg-black">
+                    <div class="anim-kn-video relative rounded-xl overflow-hidden border border-stone-700 shadow-2xl bg-black" style="opacity:0">
                         <div class="aspect-video">
                             <!-- Updated YouTube Embed for TEDx -->
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/yaeazIA5np8?si=IMRUPC3dnWPRhRz8&amp;start=27&rel=0" title="Featured Video" frameborder="0" allowfullscreen></iframe>
@@ -787,9 +863,9 @@
             </div>
 
             <!-- SxSW -->
-            <div class="flex flex-col lg:flex-row items-center gap-16">
+            <div class="anim-keynote-block flex flex-col lg:flex-row items-center gap-16">
                  <div class="w-full lg:w-1/2 order-2 lg:order-1">
-                    <div class="relative rounded-xl overflow-hidden border border-stone-700 shadow-2xl bg-black">
+                    <div class="anim-kn-video relative rounded-xl overflow-hidden border border-stone-700 shadow-2xl bg-black" style="opacity:0">
                         <div class="aspect-video">
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/Ja-MTe1VkfM?start=695&rel=0" title="SxSW Keynote" frameborder="0" allowfullscreen></iframe>
                         </div>
@@ -797,35 +873,35 @@
                 </div>
 
                 <div class="w-full lg:w-1/2 order-1 lg:order-2">
-                    <div class="inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-brand-accent mb-6 border border-stone-700">
+                    <div class="anim-kn-label inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-brand-accent mb-6 border border-stone-700" style="opacity:0">
                         SxSW 2025
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-display font-bold mb-6">Unlock Your Creative Superpowers</h2>
-                    <p class="text-stone-400 text-lg leading-relaxed mb-8">
+                    <h2 class="anim-kn-title text-3xl md:text-4xl font-display font-bold mb-6" style="opacity:0">Unlock Your Creative Superpowers</h2>
+                    <p class="anim-kn-text text-stone-400 text-lg leading-relaxed mb-8" style="opacity:0">
                         How can you turn Gen AI into your own magical purple crayon? In this session with <strong>MasterClass</strong>, I explored how lateral thinking skills can help you unlock the creative problem-solving power of Generative AI.
                     </p>
-                    <a href="mailto:donallenthethird@gmail.com?subject=SxSW%20Keynote%20Inquiry" class="inline-flex items-center bg-white text-brand-dark px-8 py-3 rounded-lg font-bold hover:bg-stone-200 transition-colors">
+                    <a href="mailto:donallenthethird@gmail.com?subject=SxSW%20Keynote%20Inquiry" class="anim-kn-cta inline-flex items-center bg-white text-brand-dark px-8 py-3 rounded-lg font-bold hover:bg-stone-200 transition-colors" style="opacity:0">
                         Book Don for Your Event
                     </a>
                 </div>
             </div>
 
             <!-- Sora / OpenAI -->
-            <div class="flex flex-col lg:flex-row items-center gap-16 mt-24">
+            <div class="anim-keynote-block flex flex-col lg:flex-row items-center gap-16 mt-24">
                 <div class="w-full lg:w-1/2">
-                    <div class="inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-brand-accent mb-6 border border-stone-700">
+                    <div class="anim-kn-label inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-brand-accent mb-6 border border-stone-700" style="opacity:0">
                         OPENAI / SORA
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-display font-bold mb-6">Beyond Our Reality</h2>
-                    <p class="text-stone-400 text-lg leading-relaxed mb-8">
+                    <h2 class="anim-kn-title text-3xl md:text-4xl font-display font-bold mb-6" style="opacity:0">Beyond Our Reality</h2>
+                    <p class="anim-kn-text text-stone-400 text-lg leading-relaxed mb-8" style="opacity:0">
                         An AI‑generated nature documentary featuring impossible creatures. One of the first films created with OpenAI's <strong>Sora</strong>, exploring what happens when you give an artist a tool that can dream.
                     </p>
-                    <a href="https://openai.com/index/sora-first-impressions/" target="_blank" class="inline-flex items-center bg-white text-brand-dark px-8 py-3 rounded-lg font-bold hover:bg-stone-200 transition-colors">
+                    <a href="https://openai.com/index/sora-first-impressions/" target="_blank" class="anim-kn-cta inline-flex items-center bg-white text-brand-dark px-8 py-3 rounded-lg font-bold hover:bg-stone-200 transition-colors" style="opacity:0">
                         Watch on OpenAI <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                 </div>
                 <div class="w-full lg:w-1/2">
-                    <div class="relative rounded-xl overflow-hidden border border-stone-700 shadow-2xl bg-black">
+                    <div class="anim-kn-video relative rounded-xl overflow-hidden border border-stone-700 shadow-2xl bg-black" style="opacity:0">
                         <div class="aspect-video">
                             <iframe class="w-full h-full" src="https://www.youtube.com/embed/euvqHPkyS10?rel=0" title="Beyond Our Reality - Sora Film" frameborder="0" allowfullscreen></iframe>
                         </div>
@@ -839,16 +915,18 @@
     <section id="daily-feed" class="py-24 bg-white border-t border-stone-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
              <div class="text-center mb-16">
-                <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 rounded-3xl text-white text-5xl shadow-xl mb-8">
+                <div class="anim-feed-icon inline-flex items-center justify-center w-24 h-24 bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 rounded-3xl text-white text-5xl shadow-xl mb-8" style="opacity:0">
                     <i class="fab fa-instagram"></i>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-stone-900 mb-6">The Daily Feed</h2>
-                <p class="text-xl text-stone-600 max-w-2xl mx-auto mb-10">
-                    Breaking news, XR prototypes, and AI tutorials dropped daily. Join the community where the future happens in real-time.
+                <h2 class="anim-feed-title text-4xl md:text-5xl font-display font-bold text-stone-900 mb-6" style="opacity:0">The Daily Feed</h2>
+                <p class="anim-feed-text text-xl text-stone-600 max-w-2xl mx-auto mb-10" style="opacity:0">
+                    I post almost every day — AI tutorials, XR prototypes, workflow breakdowns, and the occasional existential question about where all of this is going. 245k+ people are along for the ride.
                 </p>
-                <a href="https://www.instagram.com/donalleniii/" target="_blank" class="inline-flex items-center bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 text-white px-10 py-5 rounded-full font-bold text-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <i class="fab fa-instagram mr-3"></i> Join 130k+ on Instagram
+                <a href="https://www.instagram.com/donalleniii/" target="_blank" class="anim-feed-cta inline-flex items-center bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 text-white px-10 py-5 rounded-full font-bold text-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300" style="opacity:0">
+                    <i class="fab fa-instagram mr-3"></i> Join 245k+ on Instagram
                 </a>
+                <a href="https://www.tiktok.com/@donalleniii" target="_blank" class="inline-flex items-center text-stone-600 hover:text-stone-900 px-6 py-3 rounded-full font-bold text-sm border border-stone-200 hover:border-stone-400 transition-all ml-3"><i class="fab fa-tiktok mr-2"></i> TikTok</a>
+                <a href="https://www.linkedin.com/in/donallenstevensoniii/" target="_blank" class="inline-flex items-center text-stone-600 hover:text-stone-900 px-6 py-3 rounded-full font-bold text-sm border border-stone-200 hover:border-stone-400 transition-all ml-3"><i class="fab fa-linkedin mr-2"></i> LinkedIn</a>
             </div>
         </div>
     </section>
@@ -859,7 +937,8 @@
             <div class="inline-block px-3 py-1 bg-stone-800 rounded text-xs font-bold tracking-widest text-brand-accent mb-6 border border-stone-700">
                 THE PODCAST
             </div>
-            <h2 class="text-3xl md:text-5xl font-display font-bold mb-12">Rethink Reality</h2>
+            <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">Rethink Reality</h2>
+            <p class="text-stone-400 text-lg mb-12 max-w-2xl mx-auto">Conversations with the people actually building the future. Recent guests include Dr. Fei-Fei Li, Emonee LaRussa, Bilawal Sidhu, and Sinéad Bovell.</p>
             <div class="flex justify-center">
                 <!-- Spotify Video Embed -->
                 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/show/3B9nZzv9zfdGlHMMvDKcdb/video?utm_source=generator&theme=0" width="624" height="351" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" class="w-full max-w-2xl shadow-2xl"></iframe>
@@ -867,64 +946,55 @@
         </div>
     </section>
 
-    <!-- Book Section -->
-    <section id="book" class="py-24 bg-brand-surface overflow-hidden">
+    <!-- Learn From Don -->
+    <section id="learn" class="py-24 bg-brand-surface overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center gap-16">
-                <div class="w-full md:w-1/2 flex justify-center order-2 md:order-1">
-                    <div class="book-container">
-                        <div class="book">
-                            <div class="book-cover"></div>
-                            <div class="book-spine"></div>
-                            <div class="book-pages"></div>
-                            <div class="book-back"></div>
-                        </div>
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="anim-book-title text-3xl md:text-4xl font-display font-bold text-stone-900 mb-4" style="opacity:0">Go Deeper</h2>
+                <p class="anim-book-text text-stone-600" style="opacity:0">Learn from my experience — at your own pace.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- MasterClass -->
+                <div class="anim-book-visual bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full" style="opacity:0">
+                    <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white text-2xl mb-6">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Start here.</h3>
+                    <p class="text-stone-600 mb-8 flex-grow leading-relaxed">My full MasterClass course on Generative AI — a walkthrough of how to start creating with AI right away. No jargon, no gatekeeping.</p>
+                    <a href="https://www.masterclass.com/classes/achieve-more-with-gen-ai" target="_blank" class="inline-flex items-center text-brand-primary font-bold hover:text-orange-700 transition-colors group">
+                        Take the Course <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
-                <div class="w-full md:w-1/2 space-y-6 order-1 md:order-2">
-                    <div class="inline-block px-3 py-1 bg-white rounded text-xs font-bold tracking-widest text-brand-primary mb-2 border border-stone-200">
-                        THE BOOK
+
+                <!-- Substack -->
+                <div class="anim-book-label bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full" style="opacity:0">
+                    <div class="w-14 h-14 rounded-full bg-brand-primary flex items-center justify-center text-white text-2xl mb-6">
+                        <i class="fas fa-newspaper"></i>
                     </div>
-                    <h2 class="text-4xl md:text-5xl font-display font-bold leading-tight text-stone-900">
-                        Don't Wait for an Invite.<br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-accent">Make a Seat.</span>
-                    </h2>
-                    <p class="text-stone-600 text-lg leading-relaxed">
-                        A guide to discovering opportunities and leveraging your unique perspective in the tech world. Stop asking for permission and start building the future you want to see.
-                    </p>
-                    <div class="pt-4">
-                        <a href="https://www.amazon.com/Make-Seat-Discovering-Opportunities-Leveraging/dp/B0DFV4QMLY" target="_blank" class="inline-flex items-center bg-white text-brand-primary border-2 border-brand-primary px-8 py-3 rounded-lg font-bold hover:bg-orange-50 transition-colors">
-                            <i class="fab fa-amazon mr-2"></i> Buy on Amazon
-                        </a>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Future Proof Reports</h3>
+                    <p class="text-stone-600 mb-8 flex-grow leading-relaxed">Deep dives on AI strategy, creative workflows, and what's actually changing. The stuff I can't fit into a 60-second reel.</p>
+                    <a href="https://donalleniii.substack.com" target="_blank" class="inline-flex items-center text-brand-primary font-bold hover:text-orange-700 transition-colors group">
+                        Read on Substack <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- The Book -->
+                <div class="anim-book-cta bg-white rounded-2xl p-8 border border-stone-100 shadow-sm flex flex-col items-start h-full" style="opacity:0">
+                    <div class="w-14 h-14 rounded-full bg-stone-900 flex items-center justify-center text-white text-2xl mb-6">
+                        <i class="fas fa-book"></i>
                     </div>
+                    <h3 class="text-xl font-bold text-stone-900 mb-3">Make a Seat</h3>
+                    <p class="text-stone-600 mb-8 flex-grow leading-relaxed">A guide to discovering opportunities and building the future without waiting for an invitation. Stop asking for permission.</p>
+                    <a href="https://www.amazon.com/Make-Seat-Discovering-Opportunities-Leveraging/dp/B0DFV4QMLY" target="_blank" class="inline-flex items-center text-brand-primary font-bold hover:text-orange-700 transition-colors group">
+                        <i class="fab fa-amazon mr-2"></i> Buy on Amazon <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Substack Section (UPDATED with Embed) -->
-    <section id="substack" class="py-24 bg-white border-t border-stone-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <div class="w-16 h-16 bg-brand-primary rounded-xl mx-auto mb-6 flex items-center justify-center text-white text-2xl shadow-lg shadow-orange-200">
-                    <i class="fas fa-newspaper"></i>
-                </div>
-                <h2 class="text-3xl font-display font-bold text-stone-900 mb-4">Go Deeper on Substack</h2>
-                <p class="text-stone-600 max-w-xl mx-auto mb-8">
-                    My latest thoughts on AI strategy, XR development, and creative direction. Read deep dives not found on Instagram.
-                </p>
-                
-                <!-- Substack Embeds -->
-                <div class="flex justify-center">
-                    <div class="w-full max-w-xl space-y-6">
-                        <div class="substack-post-embed"><p lang="en">I Built a 19,000-Line iOS App Last Weekend. I Can't Code. by Don Allen Stevenson III</p><p>How AI tools collapsed the gap between design and engineering — enabling non-programmers to build functional software through natural language.</p><a data-post-link href="https://donalleniii.substack.com/p/i-built-a-19000-line-ios-app-last">Read on Substack</a></div>
-                        <div class="substack-post-embed"><p lang="en">When Screens Go Quiet: Why Meta's Ray-Ban Display Changes Everything by Don Allen Stevenson III</p><p>I tested Meta's new Ray-Ban Display glasses with the Neural Band. This isn't a product review. This is about what happens when technology finally gets out of the way.</p><a data-post-link href="https://donalleniii.substack.com/p/when-screens-go-quiet-why-metas-ray">Read on Substack</a></div>
-                        <script async src="https://substack.com/embedjs/embed.js" charset="utf-8"></script>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <script async src="https://substack.com/embedjs/embed.js" charset="utf-8"></script>
 
     <!-- Footer -->
     <footer class="bg-white py-12 border-t border-stone-200">
@@ -934,16 +1004,14 @@
             </div>
             <div class="flex flex-wrap justify-center gap-6 text-sm text-stone-500 mb-6">
                 <a href="#about" class="hover:text-brand-dark">About</a>
-                <a href="#work" class="hover:text-brand-dark">Apps</a>
-                <a href="#services" class="hover:text-brand-dark">Consulting</a>
+                <a href="#systems" class="hover:text-brand-dark">Systems</a>
+                <a href="#keynotes" class="hover:text-brand-dark">Speaking</a>
                 <a href="#podcast" class="hover:text-brand-dark">Podcast</a>
-                <a href="#book" class="hover:text-brand-dark">Book</a>
-                <a href="#omniii" class="hover:text-brand-dark">OMNIII App</a>
-                <!-- Updated Link -->
-                <a href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" class="hover:text-brand-dark">Contact</a>
+                <a href="#omniii" class="hover:text-brand-dark">OMNIII</a>
+                <a href="mailto:donallenthethird@gmail.com" class="hover:text-brand-dark">Contact</a>
                 <a href="omniii-support.html" class="hover:text-brand-dark">Support</a>
-                <a href="omniii-privacy.html" class="hover:text-brand-dark">Privacy Policy</a>
-                <a href="omniii-terms.html" class="hover:text-brand-dark">Terms of Service</a>
+                <a href="omniii-privacy.html" class="hover:text-brand-dark">Privacy</a>
+                <a href="omniii-terms.html" class="hover:text-brand-dark">Terms</a>
             </div>
             <div class="flex gap-6 text-xl text-stone-400 mb-6">
                 <a href="https://x.com/DonAllenIII" target="_blank" class="hover:text-brand-primary transition-colors"><i class="fab fa-twitter"></i></a>
@@ -1489,6 +1557,94 @@
     else if(!e.isIntersecting){running=false;}
   },{threshold:0.1});
   obs.observe(cvs);
+})();
+</script>
+
+<!-- Scroll-triggered animations (CSS transitions + IntersectionObserver) -->
+<style>
+[class*="anim-"]{transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1);}
+.anim-hero-badge{transform:translateY(-20px)}.anim-hero-title,.anim-hero-text{transform:translateY(30px)}
+.anim-hero-cta{transform:translateY(20px)}.anim-hero-image{transform:scale(0.95)}
+.anim-about-title,.anim-about-text{transform:translateY(20px)}.anim-about-tag{transform:translateX(-15px)}
+.anim-work-header,.anim-services-header{transform:translateY(20px)}
+.anim-service-card{transform:translateY(30px)}
+.anim-kn-title,.anim-kn-text{transform:translateY(20px)}.anim-kn-video{transform:scale(0.97)}
+.anim-feed-icon{transform:scale(0.5)}.anim-feed-title,.anim-feed-cta{transform:translateY(20px)}
+.anim-book-visual{transform:translateX(-40px)}.anim-book-title{transform:translateY(20px)}
+.anim-visible{opacity:1!important;transform:none!important;}
+.anim-chart-segment{transition:width 1.2s cubic-bezier(0.16,1,0.3,1);}
+</style>
+<script>
+(function(){
+  function reveal(el){if(el)el.classList.add('anim-visible');}
+  function staggerReveal(els,baseDelay,stagger){els.forEach(function(el,i){setTimeout(function(){reveal(el);},baseDelay+i*stagger);});}
+  function onScroll(selector,callback,opts){
+    var els=document.querySelectorAll(selector);if(!els.length)return;var o=opts||{};
+    els.forEach(function(el){
+      var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){
+        if(e.isIntersecting){callback(e.target);obs.unobserve(e.target);}
+      });},{threshold:o.threshold||0.15,rootMargin:o.rootMargin||'0px 0px -50px 0px'});
+      obs.observe(el);
+    });
+  }
+
+  // === HERO (on page load, staggered) ===
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-badge'));},100);
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-title'));},300);
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-text'));},500);
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-cta'));},700);
+  setTimeout(function(){reveal(document.querySelector('.anim-hero-image'));},400);
+
+  // === ABOUT ===
+  onScroll('.anim-about-label',function(){
+    reveal(document.querySelector('.anim-about-label'));
+    setTimeout(function(){reveal(document.querySelector('.anim-about-title'));},100);
+    setTimeout(function(){reveal(document.querySelector('.anim-about-text'));},200);
+    staggerReveal(document.querySelectorAll('.anim-about-tag'),300,80);
+  });
+  onScroll('.anim-about-chart',function(){
+    document.querySelectorAll('.anim-chart-segment').forEach(function(seg,i){
+      setTimeout(function(){seg.style.width=seg.getAttribute('data-width');},i*200);
+    });
+  });
+
+  // === APPS & TOOLS ===
+  onScroll('.anim-work-header',function(el){reveal(el);});
+  onScroll('.anim-work-card',function(el){reveal(el);},{rootMargin:'0px 0px -30px 0px'});
+
+  // === SERVICES ===
+  onScroll('.anim-services-header',function(){
+    reveal(document.querySelector('.anim-services-header'));
+    staggerReveal(document.querySelectorAll('.anim-service-card'),200,120);
+  });
+
+  // === KEYNOTES ===
+  onScroll('.anim-keynote-block',function(block){
+    var d=0;
+    block.querySelectorAll('.anim-kn-label').forEach(function(el){setTimeout(function(){reveal(el);},d);});d+=100;
+    block.querySelectorAll('.anim-kn-title').forEach(function(el){setTimeout(function(){reveal(el);},d);});d+=100;
+    block.querySelectorAll('.anim-kn-text').forEach(function(el){setTimeout(function(){reveal(el);},d);});d+=100;
+    block.querySelectorAll('.anim-kn-cta').forEach(function(el){setTimeout(function(){reveal(el);},d);});
+    block.querySelectorAll('.anim-kn-video').forEach(function(el){setTimeout(function(){reveal(el);},100);});
+  },{threshold:0.1});
+
+  // === DAILY FEED ===
+  onScroll('.anim-feed-icon',function(){
+    reveal(document.querySelector('.anim-feed-icon'));
+    setTimeout(function(){reveal(document.querySelector('.anim-feed-title'));},150);
+    setTimeout(function(){reveal(document.querySelector('.anim-feed-text'));},250);
+    setTimeout(function(){reveal(document.querySelector('.anim-feed-cta'));},350);
+  });
+
+  // === BOOK ===
+  onScroll('.anim-book-visual',function(){
+    reveal(document.querySelector('.anim-book-visual'));
+    setTimeout(function(){reveal(document.querySelector('.anim-book-label'));},200);
+    setTimeout(function(){reveal(document.querySelector('.anim-book-title'));},300);
+    setTimeout(function(){reveal(document.querySelector('.anim-book-text'));},400);
+    setTimeout(function(){reveal(document.querySelector('.anim-book-cta'));},500);
+  },{threshold:0.1});
+
 })();
 </script>
 </body>

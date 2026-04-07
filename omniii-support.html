@@ -116,6 +116,105 @@
   </style>
 </head>
 <body>
+
+<div id="staging-gate" style="position:fixed;inset:0;z-index:99999;background:#1C1917;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;">
+  <div style="text-align:center;color:white;">
+    <div style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#a1a1aa;margin-bottom:24px;">Staging Preview</div>
+    <div style="font-size:24px;font-weight:700;margin-bottom:32px;">Enter PIN to continue</div>
+    <div id="pin-dots" style="display:flex;gap:16px;justify-content:center;margin-bottom:32px;">
+      <div class="pin-slot" style="width:48px;height:56px;border-radius:12px;border:2px solid #3f3f46;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;background:#27272a;"></div>
+      <div class="pin-slot" style="width:48px;height:56px;border-radius:12px;border:2px solid #3f3f46;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;background:#27272a;"></div>
+      <div class="pin-slot" style="width:48px;height:56px;border-radius:12px;border:2px solid #3f3f46;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;background:#27272a;"></div>
+      <div class="pin-slot" style="width:48px;height:56px;border-radius:12px;border:2px solid #3f3f46;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;background:#27272a;"></div>
+    </div>
+    <div id="pin-error" style="color:#ef4444;font-size:14px;margin-bottom:24px;min-height:20px;"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:240px;margin:0 auto;">
+      <button onclick="addDigit('1')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">1</button>
+      <button onclick="addDigit('2')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">2</button>
+      <button onclick="addDigit('3')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">3</button>
+      <button onclick="addDigit('4')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">4</button>
+      <button onclick="addDigit('5')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">5</button>
+      <button onclick="addDigit('6')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">6</button>
+      <button onclick="addDigit('7')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">7</button>
+      <button onclick="addDigit('8')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">8</button>
+      <button onclick="addDigit('9')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">9</button>
+      <button onclick="clearPin()" style="padding:16px;font-size:16px;font-weight:600;border-radius:12px;border:none;background:#3f3f46;color:#a1a1aa;cursor:pointer;">CLR</button>
+      <button onclick="addDigit('0')" style="padding:16px;font-size:20px;font-weight:600;border-radius:12px;border:none;background:#27272a;color:white;cursor:pointer;">0</button>
+      <button onclick="submitPin()" style="padding:16px;font-size:16px;font-weight:600;border-radius:12px;border:none;background:#F97316;color:white;cursor:pointer;">GO</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var PIN='1940';
+  var entered='';
+  var slots=document.querySelectorAll('.pin-slot');
+  window.addDigit=function(d){
+    if(entered.length>=4)return;
+    entered+=d;
+    slots[entered.length-1].textContent='\u25cf';
+    document.getElementById('pin-error').textContent='';
+  };
+  window.clearPin=function(){
+    entered='';
+    slots.forEach(function(s){s.textContent='';});
+    document.getElementById('pin-error').textContent='';
+  };
+  window.submitPin=function(){
+    if(entered===PIN){
+      document.getElementById('staging-gate').style.display='none';
+      resetTimer();
+    }else{
+      document.getElementById('pin-error').textContent='Wrong PIN. Try again.';
+      entered='';
+      slots.forEach(function(s){s.textContent='';});
+    }
+  };
+  var inactivityTimer,countdownInterval,countdownSeconds=300;
+  function updateCountdown(){
+    var m=Math.floor(countdownSeconds/60);
+    var s=countdownSeconds%60;
+    var el=document.getElementById('staging-countdown');
+    if(el)el.textContent=m+':'+(s<10?'0':'')+s;
+  }
+  function resetTimer(){
+    clearTimeout(inactivityTimer);
+    clearInterval(countdownInterval);
+    countdownSeconds=300;
+    updateCountdown();
+    countdownInterval=setInterval(function(){
+      countdownSeconds--;
+      updateCountdown();
+      if(countdownSeconds<=0)clearInterval(countdownInterval);
+    },1000);
+    inactivityTimer=setTimeout(function(){
+      clearInterval(countdownInterval);
+      document.getElementById('staging-gate').style.display='flex';
+      entered='';
+      slots.forEach(function(s){s.textContent='';});
+      document.getElementById('pin-error').textContent='Session expired. Enter PIN again.';
+    },5*60*1000);
+  }
+  ['mousemove','keydown','click','scroll','touchstart'].forEach(function(evt){
+    document.addEventListener(evt,function(){
+      if(document.getElementById('staging-gate').style.display==='none')resetTimer();
+    });
+  });
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('staging-gate').style.display==='none')return;
+    if(e.key>='0'&&e.key<='9')addDigit(e.key);
+    else if(e.key==='Backspace')clearPin();
+    else if(e.key==='Enter')submitPin();
+  });
+})();
+</script>
+
+<div id="staging-sticky" style="position:fixed;top:18px;right:18px;z-index:99998;background:#FFE500;color:#1a1a1a;padding:14px 22px 10px;font-family:'Inter',sans-serif;text-align:center;transform:rotate(4deg);box-shadow:2px 4px 12px rgba(0,0,0,0.25);border-radius:2px;pointer-events:none;line-height:1;">
+  <div style="font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;">STAGING ENVIRONMENT</div>
+  <div id="staging-countdown" style="font-size:11px;font-weight:700;font-family:'SF Mono','Fira Code',monospace;margin-top:6px;color:#1a1a1a;animation:blink-countdown 1s step-end infinite;">5:00</div>
+</div>
+<style>@keyframes blink-countdown{0%,100%{opacity:1}50%{opacity:0.3}}</style>
+
   <div class="container">
     <div class="logo"><a href="https://donalleniii.me/#omniii">OMNIII</a></div>
     <div class="subtitle">Voice-First AI Orchestrator</div>
