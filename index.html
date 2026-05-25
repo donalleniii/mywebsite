@@ -635,6 +635,25 @@
                     </div>
                 </a>
 
+                <!-- Piano Courts — Wearable Chord Trainer -->
+                <a href="https://piano-courts.vercel.app/" target="_blank" class="anim-work-card group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block" style="opacity:0;transform:translateY(40px)">
+                    <div class="h-64 bg-black relative overflow-hidden">
+                         <canvas id="pianoCourtsPreview" class="absolute inset-0 w-full h-full"></canvas>
+                         <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(90deg,#000 0%,transparent 18%,transparent 82%,#000 100%)"></div>
+                         <div class="absolute bottom-6 left-6 text-white font-bold text-2xl w-10/12">Piano Courts</div>
+                         <div class="absolute top-6 right-6 text-white/12 text-7xl"><i class="fas fa-music"></i></div>
+                    </div>
+                    <div class="p-8 bg-white h-full flex flex-col">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                             <span class="px-3 py-1 bg-stone-100 text-brand-accent text-xs font-bold uppercase rounded">Wearable Web App</span>
+                        </div>
+                        <p class="text-stone-600 mb-6 text-lg">A swipe-first chord trainer for smart glasses. Explore genre progressions, see piano voicings, and hear each chord with a simple synth.</p>
+                        <div class="text-brand-primary font-bold flex items-center mt-auto">
+                            Launch Piano Courts <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </a>
+
                 <!-- Phantom Grid — Dark Factory Experiment -->
                 <a href="./phantom-grid.html" class="anim-work-card group relative rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300 block" style="opacity:0;transform:translateY(40px)">
                     <div class="h-64 bg-black relative overflow-hidden">
@@ -1376,6 +1395,101 @@
           if (p.y < 0) p.y += h; else if (p.y >= h) p.y -= h;
           ctx.fillRect(p.x, p.y, 0.9, 0.9);
         }
+        frame++;
+        if (running) requestAnimationFrame(draw);
+      }
+
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting && !running) { running = true; draw(); }
+        else if (!e.isIntersecting) { running = false; }
+      }, { threshold: 0.1 });
+      obs.observe(cvs);
+    })();
+    </script>
+
+    <!-- Piano Courts Preview Animation — wearable piano chord trainer -->
+    <script>
+    (function() {
+      const cvs = document.getElementById('pianoCourtsPreview');
+      if (!cvs) return;
+      const ctx = cvs.getContext('2d');
+      let running = false, frame = 0;
+      const chords = [
+        { name: 'Blues', right: [0, 4, 7, 10], left: [0, 7, 12] },
+        { name: 'Soul', right: [0, 4, 7, 11], left: [0, 7, 12] },
+        { name: 'Pop', right: [0, 4, 7], left: [0, 7, 12] },
+        { name: 'Rock', right: [0, 7], left: [0, 12] }
+      ];
+      const whiteSteps = [0, 2, 4, 5, 7, 9, 11];
+      const blackOffsets = [
+        { step: 1, after: 0 },
+        { step: 3, after: 1 },
+        { step: 6, after: 3 },
+        { step: 8, after: 4 },
+        { step: 10, after: 5 }
+      ];
+
+      function drawRow(w, y, h, chord, hand) {
+        const cols = 14;
+        const gap = 3;
+        const margin = w * 0.08;
+        const keyW = (w - margin * 2 - gap * (cols - 1)) / cols;
+        const active = hand === 'right' ? chord.right : chord.left;
+        const fill = hand === 'right' ? '#eadf9c' : '#244866';
+        const stroke = hand === 'right' ? '#eadf9c' : '#386b95';
+
+        for (let i = 0; i < cols; i++) {
+          const x = margin + i * (keyW + gap);
+          const note = whiteSteps[i % 7] + Math.floor(i / 7) * 12;
+          const on = active.some((n) => (n % 12) === (note % 12));
+          ctx.fillStyle = on ? fill : '#050505';
+          ctx.strokeStyle = on ? stroke : 'rgba(255,255,255,0.72)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(x, y, keyW, h, 6);
+          ctx.fill();
+          ctx.stroke();
+        }
+
+        blackOffsets.concat(blackOffsets.map((k) => ({ step: k.step + 12, after: k.after + 7 }))).forEach((key) => {
+          if (key.after >= cols - 1) return;
+          const x = margin + (key.after + 1) * (keyW + gap) - keyW * 0.28;
+          const on = active.some((n) => (n % 12) === (key.step % 12));
+          ctx.fillStyle = on ? fill : '#000000';
+          ctx.strokeStyle = on ? stroke : 'rgba(255,255,255,0.82)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(x, y, keyW * 0.56, h * 0.58, 5);
+          ctx.fill();
+          ctx.stroke();
+        });
+      }
+
+      function draw() {
+        const dpr = window.devicePixelRatio || 1;
+        const displayW = cvs.offsetWidth, displayH = cvs.offsetHeight;
+        cvs.width = displayW * dpr;
+        cvs.height = displayH * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const w = displayW, h = displayH;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, w, h);
+
+        const chordIndex = Math.floor(frame / 110) % chords.length;
+        const chord = chords[chordIndex];
+        drawRow(w, h * 0.26, h * 0.24, chord, 'right');
+        drawRow(w, h * 0.56, h * 0.24, chord, 'left');
+
+        ctx.fillStyle = 'rgba(214, 216, 220, 0.86)';
+        ctx.font = '700 18px Inter, sans-serif';
+        ctx.fillText(chord.name, w * 0.08, h * 0.16);
+        ctx.fillStyle = 'rgba(248, 244, 234, 0.94)';
+        ctx.font = '800 28px "Space Grotesk", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('C7', w * 0.5, h * 0.47);
+        ctx.textAlign = 'left';
+
         frame++;
         if (running) requestAnimationFrame(draw);
       }
