@@ -1,0 +1,12 @@
+# Proxy the resources index and short links to the comment-to-DM worker.
+#
+# These are rewrites (status 200), not redirects, so the browser stays on
+# donalleniii.me. Both paths are new: nothing on this site answers /links or
+# /go/ today, so no existing page changes behaviour.
+#
+# Remove these three lines to undo. The worker keeps serving the same content
+# on its own URL either way, so links already sent never break.
+
+/links      https://comment-to-dm.donallenthethird.workers.dev/links      200
+/links/*    https://comment-to-dm.donallenthethird.workers.dev/links/:splat  200
+/go/*       https://comment-to-dm.donallenthethird.workers.dev/go/:splat   200
