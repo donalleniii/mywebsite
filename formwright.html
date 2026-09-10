@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormWright — 3D modeling built for iPad</title>
+    <meta name="description" content="FormWright is a 3D modeling app built for iPad. Model, edit points, stack non-destructive modifiers, paint textures straight onto the surface, and export. Built for finger and Apple Pencil.">
+    <meta property="og:title" content="FormWright — 3D modeling built for iPad">
+    <meta property="og:description" content="Model, edit, paint, export. One 3D app that actually belongs on iPad. Now in closed beta.">
+    <meta property="og:url" content="https://donalleniii.me/formwright.html">
+    <meta property="og:type" content="website">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            primary: '#F97316',
+                            accent: '#A855F7',
+                            dark: '#1C1917',
+                            surface: '#FAFAF9',
+                        }
+                    },
+                    animation: {
+                        'fade-up': 'fadeUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0C0A09; color: #FAFAF9; }
+        .gradient-text {
+            background: linear-gradient(to right, #F97316, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            --poster-color: transparent;
+            background: transparent;
+        }
+        model-viewer::part(default-progress-bar) { background: #F97316; height: 2px; }
+        .glow {
+            background: radial-gradient(circle at 50% 60%, rgba(249,115,22,0.22), rgba(168,85,247,0.12) 40%, transparent 70%);
+        }
+        .card { background: #1C1917; border: 1px solid rgba(255,255,255,0.07); }
+        .card:hover { border-color: rgba(255,255,255,0.16); }
+        .strike { position: relative; display: inline-block; color: #78716C; }
+        .strike::after {
+            content: ""; position: absolute; left: -2%; right: -2%; top: 52%; height: 3px;
+            background: #F97316; transform: rotate(-2deg); border-radius: 2px;
+        }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- NAV -->
+    <nav class="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#0C0A09]/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <a href="./" class="text-stone-500 hover:text-white text-sm font-medium transition-colors"><i class="fas fa-arrow-left mr-2 text-xs"></i>donalleniii.me</a>
+                <span class="hidden sm:inline text-white/10">|</span>
+                <a href="#top" class="font-display font-bold text-lg tracking-tight text-white">FormWright</a>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-400">
+                <a href="#why" class="hover:text-white transition-colors">Why</a>
+                <a href="#what" class="hover:text-white transition-colors">What it does</a>
+                <a href="#how" class="hover:text-white transition-colors">How it's made</a>
+                <a href="#who" class="hover:text-white transition-colors">Who it's for</a>
+            </div>
+            <a href="https://forms.gle/98h6BGSYan4YJYpf7" target="_blank" rel="noopener" class="bg-brand-primary hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">Join the beta</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header id="top" class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden grid-bg">
+        <div class="absolute inset-0 glow pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+                <div class="animate-fade-up">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-bold uppercase tracking-widest text-stone-300 mb-8">
+                        <span class="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></span>
+                        iPad App &middot; Closed Beta
+                    </div>
+                    <h1 class="font-display font-bold text-5xl sm:text-6xl lg:text-7xl leading-[1.02] tracking-tight mb-6">
+                        3D modeling that <span class="gradient-text">belongs</span> on iPad.
+                    </h1>
+                    <p class="text-lg sm:text-xl text-stone-400 leading-relaxed max-w-xl mb-10">
+                        Model, edit points, stack non-destructive modifiers, paint textures straight onto the surface, and export. All in one app, built from the ground up for finger and Apple Pencil.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 sm:items-center">
+                        <a href="https://forms.gle/98h6BGSYan4YJYpf7" target="_blank" rel="noopener" class="inline-flex items-center justify-center whitespace-nowrap bg-brand-primary hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold text-base transition-all hover:-translate-y-0.5 shadow-lg shadow-orange-500/20">
+                            Join the beta waitlist <i class="fas fa-arrow-right ml-3 text-sm"></i>
+                        </a>
+                        <span class="text-sm text-stone-500 sm:ml-2">Requires iPadOS 18 or later. Testers get a TestFlight invite.</span>
+                    </div>
+                </div>
+
+                <div class="relative animate-fade-up" style="animation-delay:0.15s">
+                    <div class="aspect-square lg:aspect-[4/5] rounded-3xl card overflow-hidden relative">
+                        <model-viewer
+                            src="assets/formwright/formwright-sample.glb"
+                            alt="A model built and exported in FormWright"
+                            camera-controls
+                            auto-rotate
+                            auto-rotate-delay="800"
+                            rotation-per-second="18deg"
+                            shadow-intensity="1"
+                            exposure="1.05"
+                            environment-image="neutral"
+                            camera-orbit="-25deg 78deg 78%"
+                            interaction-prompt="none"
+                            loading="eager">
+                        </model-viewer>
+                        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-stone-500 pointer-events-none">
+                            <span><i class="fas fa-cube mr-1.5 text-brand-primary"></i>Modeled &amp; exported in FormWright</span>
+                            <span class="hidden sm:inline"><i class="fas fa-hand-pointer mr-1.5"></i>Drag to orbit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- WHY -->
+    <section id="why" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-5">
+                    <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">The goal</div>
+                    <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">
+                        "There just isn't an iPad app that can&hellip;"
+                    </h2>
+                </div>
+                <div class="lg:col-span-7 space-y-6 text-lg text-stone-400 leading-relaxed">
+                    <p>
+                        The iPad has the chip, the display, and the best drawing input ever put in a tablet. But every time I wanted to <em class="text-stone-200 not-italic font-medium">make</em> a 3D model on it, I ran into the same wall. Sculpting apps that can't do clean polygon work. Modelers with no way to paint. Painters with no way to model. And every workflow ends with "now send it to a desktop."
+                    </p>
+                    <p>
+                        FormWright exists to remove that sentence. The goal is one app where you can start from a blank scene, build the form, adjust the points, add modifiers you can always undo, paint on the surface, and walk out with a file the rest of the world can open. Without ever leaving the iPad.
+                    </p>
+                    <p class="text-stone-200 font-medium">
+                        Not a desktop app squeezed onto a touchscreen. A modeling tool designed for the way your hands actually work on glass.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT -->
+    <section id="what" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-2xl mb-16">
+                <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">What it does</div>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight mb-5">Model. Adjust. Paint. Export.</h2>
+                <p class="text-lg text-stone-400">Everything below happens in the same scene, on the same canvas, with the same two tools: your finger and a Pencil.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-orange-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-cube"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Polygon modeling</h3>
+                    <p class="text-stone-400">Build from primitives and shape them into real forms. Clean topology you can take anywhere, not a sculpted blob.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-orange-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-vector-square"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Point-level editing</h3>
+                    <p class="text-stone-400">Grab a vertex, edge, or face and move it. Precise adjustments that feel natural with a Pencil tip.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-brand-accent flex items-center justify-center text-lg mb-5"><i class="fas fa-layer-group"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Non-destructive modifiers</h3>
+                    <p class="text-stone-400">Twist, bend, and stack modifiers on top of your base mesh. Dial them in, turn them off, change your mind later. The original is never touched.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-brand-accent flex items-center justify-center text-lg mb-5"><i class="fas fa-paintbrush"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Texture brush</h3>
+                    <p class="text-stone-400">Paint directly on the model's surface. Brushstrokes land on the texture, on the geometry, in real time. No UV round trip to another app.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-orange-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-fill-drip"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Bucket fill &amp; gradient maps</h3>
+                    <p class="text-stone-400">Flood a surface with color or map a gradient across it. Fast ways to block in a look before you get into brushwork.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-orange-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-file-export"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Real exports</h3>
+                    <p class="text-stone-400">PBR materials with color, metallic, and roughness maps. Export to USDZ, GLB, or STL and open it in AR, a game engine, or a slicer.</p>
+                </div>
+            </div>
+
+            <!-- Painted texture proof -->
+            <div class="mt-16 grid lg:grid-cols-2 gap-8 items-center">
+                <div class="rounded-3xl overflow-hidden card aspect-square lg:aspect-auto lg:h-[460px]">
+                    <img src="assets/formwright/painted-texture.jpg" alt="A color texture map painted by hand inside FormWright" class="w-full h-full object-cover" loading="lazy">
+                </div>
+                <div>
+                    <div class="text-xs font-bold text-brand-accent uppercase tracking-widest mb-4">Straight from the app</div>
+                    <h3 class="font-display font-bold text-2xl sm:text-3xl mb-4">This is a texture map, painted on an iPad.</h3>
+                    <p class="text-stone-400 text-lg leading-relaxed mb-4">
+                        Every stroke in this image was laid down on a 3D surface with the texture brush and exported as a standard color map alongside its metallic and roughness maps. Drop the files into any PBR pipeline and they just work.
+                    </p>
+                    <p class="text-stone-500 text-sm">The spinning model at the top of this page was exported from FormWright the same way.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="how" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-5">
+                    <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">How it's made</div>
+                    <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight mb-6">Built by one person, for one device.</h2>
+                    <p class="text-stone-400 text-lg leading-relaxed">
+                        I'm <a href="./" class="text-white font-medium hover:text-brand-primary transition-colors">Don Allen III</a>. I've spent years advising companies on spatial computing and AI, and shipping my own creative tools on the side. FormWright is the one I kept wishing someone else would build.
+                    </p>
+                </div>
+                <div class="lg:col-span-7 grid sm:grid-cols-2 gap-5">
+                    <div class="card rounded-2xl p-7">
+                        <div class="text-brand-primary text-xl mb-4"><i class="fab fa-apple"></i></div>
+                        <h3 class="font-display font-bold text-lg mb-2">Native to iPadOS</h3>
+                        <p class="text-stone-400 text-sm leading-relaxed">Written for iPad, not ported to it. It uses the GPU, the Pencil, and multitouch the way Apple intended, which is why the viewport stays fast while you paint.</p>
+                    </div>
+                    <div class="card rounded-2xl p-7">
+                        <div class="text-brand-primary text-xl mb-4"><i class="fas fa-hand-pointer"></i></div>
+                        <h3 class="font-display font-bold text-lg mb-2">Touch first, Pencil precise</h3>
+                        <p class="text-stone-400 text-sm leading-relaxed">Every tool was designed for a finger first, then refined for the Pencil. Nothing depends on a keyboard, a mouse, or a right-click.</p>
+                    </div>
+                    <div class="card rounded-2xl p-7">
+                        <div class="text-brand-primary text-xl mb-4"><i class="fas fa-rotate"></i></div>
+                        <h3 class="font-display font-bold text-lg mb-2">Shipped in the open</h3>
+                        <p class="text-stone-400 text-sm leading-relaxed">Builds go to real testers through TestFlight, and the feedback shapes the next build. What you see on Instagram is the actual app, not a render.</p>
+                    </div>
+                    <div class="card rounded-2xl p-7">
+                        <div class="text-brand-primary text-xl mb-4"><i class="fas fa-file-code"></i></div>
+                        <h3 class="font-display font-bold text-lg mb-2">Standard formats, no lock-in</h3>
+                        <p class="text-stone-400 text-sm leading-relaxed">USDZ, GLB, and STL out. PBR texture maps out. Your work leaves the app in files every other tool already understands.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHO -->
+    <section id="who" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-2xl mb-16">
+                <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">Who it's for</div>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight mb-5">People who think with their hands.</h2>
+                <p class="text-lg text-stone-400">If you've ever put down the iPad to go finish something on a desktop, this is for you.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="card rounded-2xl p-7">
+                    <div class="text-2xl mb-4"><i class="fas fa-pen-nib text-brand-accent"></i></div>
+                    <h3 class="font-display font-bold text-lg mb-2">Concept artists &amp; designers</h3>
+                    <p class="text-stone-400 text-sm leading-relaxed">Block out a form, paint the look, and get a shaded reference in one sitting on the couch.</p>
+                </div>
+                <div class="card rounded-2xl p-7">
+                    <div class="text-2xl mb-4"><i class="fas fa-print text-brand-accent"></i></div>
+                    <h3 class="font-display font-bold text-lg mb-2">Makers &amp; 3D printers</h3>
+                    <p class="text-stone-400 text-sm leading-relaxed">Model the part, export STL, send it to the slicer. No laptop required in the workshop.</p>
+                </div>
+                <div class="card rounded-2xl p-7">
+                    <div class="text-2xl mb-4"><i class="fas fa-vr-cardboard text-brand-accent"></i></div>
+                    <h3 class="font-display font-bold text-lg mb-2">AR &amp; spatial creators</h3>
+                    <p class="text-stone-400 text-sm leading-relaxed">USDZ export means the thing you just built can be dropped into an AR scene minutes later.</p>
+                </div>
+                <div class="card rounded-2xl p-7">
+                    <div class="text-2xl mb-4"><i class="fas fa-graduation-cap text-brand-accent"></i></div>
+                    <h3 class="font-display font-bold text-lg mb-2">Students &amp; first-timers</h3>
+                    <p class="text-stone-400 text-sm leading-relaxed">If the iPad is the only computer you own, you should still get to learn 3D. Now you can.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="beta" class="py-24 border-t border-white/5 relative overflow-hidden grid-bg">
+        <div class="absolute inset-0 glow pointer-events-none"></div>
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+            <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">Closed beta</div>
+            <h2 class="font-display font-bold text-4xl sm:text-5xl leading-tight tracking-tight mb-6">
+                <span class="strike">There just isn't an iPad app that can.</span><br>
+                <span class="gradient-text">Well. Until now.</span>
+            </h2>
+            <p class="text-lg text-stone-400 mb-10">FormWright is in closed beta on TestFlight. Tell me a little about you and your iPad, and I'll send an invite as spots open up.</p>
+            <a href="https://forms.gle/98h6BGSYan4YJYpf7" target="_blank" rel="noopener" class="inline-flex items-center justify-center bg-brand-primary hover:bg-orange-600 text-white px-10 py-5 rounded-xl font-bold text-lg transition-all hover:-translate-y-0.5 shadow-lg shadow-orange-500/20">
+                Join the beta waitlist <i class="fas fa-arrow-right ml-3"></i>
+            </a>
+            <div class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-stone-500">
+                <span><i class="fas fa-check mr-2 text-brand-primary"></i>iPadOS 18 or later</span>
+                <span><i class="fas fa-check mr-2 text-brand-primary"></i>Free during beta</span>
+                <span><i class="fas fa-check mr-2 text-brand-primary"></i>Invites go out by email</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-white/5 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-stone-500">
+            <div>&copy; 2026 Don Allen III. FormWright is an independent project.</div>
+            <div class="flex items-center gap-6">
+                <a href="https://www.instagram.com/donalleniii/" target="_blank" rel="noopener" class="hover:text-white transition-colors"><i class="fab fa-instagram mr-1.5"></i>Follow the build</a>
+                <a href="./" class="hover:text-white transition-colors">donalleniii.me</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
