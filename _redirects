@@ -10,3 +10,6 @@
 /links      https://comment-to-dm.donallenthethird.workers.dev/links      200
 /links/*    https://comment-to-dm.donallenthethird.workers.dev/links/:splat  200
 /go/*       https://comment-to-dm.donallenthethird.workers.dev/go/:splat   200
+
+# Clean URL for the FormWright landing page.
+/formwright   /formwright.html   200
