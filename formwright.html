@@ -125,8 +125,8 @@
                 <div class="relative animate-fade-up" style="animation-delay:0.15s">
                     <div class="aspect-square lg:aspect-[4/5] rounded-3xl card overflow-hidden relative">
                         <model-viewer
-                            src="assets/formwright/formwright-sample.glb"
-                            alt="A model built and exported in FormWright"
+                            src="assets/formwright/marble-statue.glb"
+                            alt="A marble statue rendered live in 3D"
                             camera-controls
                             auto-rotate
                             auto-rotate-delay="800"
@@ -134,12 +134,12 @@
                             shadow-intensity="1"
                             exposure="1.05"
                             environment-image="neutral"
-                            camera-orbit="-25deg 78deg 78%"
+                            camera-orbit="-20deg 82deg auto"
                             interaction-prompt="none"
                             loading="eager">
                         </model-viewer>
                         <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-stone-500 pointer-events-none">
-                            <span><i class="fas fa-cube mr-1.5 text-brand-primary"></i>Modeled &amp; exported in FormWright</span>
+                            <span><i class="fas fa-cube mr-1.5 text-brand-primary"></i>Live 3D. Real PBR materials.</span>
                             <span class="hidden sm:inline"><i class="fas fa-hand-pointer mr-1.5"></i>Drag to orbit</span>
                         </div>
                     </div>
@@ -215,18 +215,28 @@
                 </div>
             </div>
 
-            <!-- Painted texture proof -->
-            <div class="mt-16 grid lg:grid-cols-2 gap-8 items-center">
-                <div class="rounded-3xl overflow-hidden card aspect-square lg:aspect-auto lg:h-[460px]">
-                    <img src="assets/formwright/painted-texture.jpg" alt="A color texture map painted by hand inside FormWright" class="w-full h-full object-cover" loading="lazy">
+            <!-- Model gallery -->
+            <div class="mt-16">
+                <div class="max-w-2xl mb-8">
+                    <div class="text-xs font-bold text-brand-accent uppercase tracking-widest mb-4">In the viewport</div>
+                    <h3 class="font-display font-bold text-2xl sm:text-3xl mb-3">Real models, real materials, on glass.</h3>
+                    <p class="text-stone-400 text-lg leading-relaxed">Textured PBR assets and clean low-poly forms both live in the same scene. Drag any of these to orbit them. This is what FormWright's viewport is built to handle.</p>
                 </div>
-                <div>
-                    <div class="text-xs font-bold text-brand-accent uppercase tracking-widest mb-4">Straight from the app</div>
-                    <h3 class="font-display font-bold text-2xl sm:text-3xl mb-4">This is a texture map, painted on an iPad.</h3>
-                    <p class="text-stone-400 text-lg leading-relaxed mb-4">
-                        Every stroke in this image was laid down on a 3D surface with the texture brush and exported as a standard color map alongside its metallic and roughness maps. Drop the files into any PBR pipeline and they just work.
-                    </p>
-                    <p class="text-stone-500 text-sm">The spinning model at the top of this page was exported from FormWright the same way.</p>
+                <div class="grid md:grid-cols-2 gap-5">
+                    <div class="rounded-3xl overflow-hidden card aspect-square relative">
+                        <model-viewer src="assets/formwright/soccer-ball.glb" alt="A soccer ball with a photoreal leather texture" camera-controls auto-rotate auto-rotate-delay="1200" rotation-per-second="14deg" shadow-intensity="1" exposure="1.05" environment-image="neutral" interaction-prompt="none" loading="lazy"></model-viewer>
+                        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-stone-500 pointer-events-none">
+                            <span><i class="fas fa-paintbrush mr-1.5 text-brand-accent"></i>Textured PBR surface</span>
+                            <span><i class="fas fa-hand-pointer mr-1.5"></i>Drag to orbit</span>
+                        </div>
+                    </div>
+                    <div class="rounded-3xl overflow-hidden card aspect-square relative">
+                        <model-viewer src="assets/formwright/athletic-male.glb" alt="A low-poly human figure in a T-pose" camera-controls auto-rotate auto-rotate-delay="1200" rotation-per-second="14deg" shadow-intensity="1" exposure="1.05" environment-image="neutral" camera-orbit="0deg 80deg auto" interaction-prompt="none" loading="lazy"></model-viewer>
+                        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-stone-500 pointer-events-none">
+                            <span><i class="fas fa-vector-square mr-1.5 text-brand-accent"></i>Clean low-poly form</span>
+                            <span><i class="fas fa-hand-pointer mr-1.5"></i>Drag to orbit</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
