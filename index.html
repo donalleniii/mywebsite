@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f3f1e9">
+  <meta name="theme-color" content="#24134c">
   <meta name="description" content="Enter the world of Don Allen III. Explore creative AI, spatial computing, projects, and ideas in a playful 3D portfolio.">
   <title>Don Allen III — A world of possibility</title>
   <link rel="icon" href="assets/world/favicon.svg" type="image/svg+xml">
@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/world/style.css">
+  <link rel="stylesheet" href="assets/world/play.css">
 </head>
 <body>
   <a class="skip" href="#destinations">Skip to destinations</a>
@@ -20,27 +21,30 @@
   </header>
   <main id="experience">
     <section class="intro" aria-labelledby="title">
-      <p class="eyebrow"><span class="live-dot"></span> A LITTLE WORLD. A LOT OF POSSIBILITY.</p>
-      <h1 id="title">The future <br>is a <em>place <br>we make.</em></h1>
-      <p class="intro-copy">I’m Don. Artist, builder, and relentlessly curious human. I turn emerging technology into things people can actually use.</p>
-      <button class="primary" id="begin">Let curiosity lead <span aria-hidden="true">↗</span></button>
-      <p class="intro-note">Six islands. A few big ideas. Your own path.</p>
+      <p class="eyebrow"><span class="live-dot"></span> WELCOME TO MY CREATIVE UNIVERSE.</p>
+      <h1 id="title">Big ideas. <br>Wild worlds. <br><em>Come play.</em></h1>
+      <p class="intro-copy">I’m Don. Artist, builder, professional what-if asker. Grab your curiosity. There’s a whole universe of AI, art, and possibility to get into.</p>
+      <button class="primary" id="begin">Play spark hunt <span aria-hidden="true">✦</span></button>
+      <p class="intro-note">Chase 8 sparks. Meet your next big idea.</p>
       <div class="credentials"><span>PREVIOUSLY DREAMWORKS</span><span>AI RESEARCH @ ASTERIA</span><span>MASTERCLASS INSTRUCTOR</span></div>
     </section>
     <section class="world" id="world" aria-label="Interactive island world">
-      <div class="world-caption"><span class="coordinate">DA—III / EXPLORATION 001</span><span class="world-live"><i></i> OPEN WORLD</span></div>
-      <div id="scene" aria-hidden="true"></div>
+      <div class="world-caption"><span class="coordinate">DON’S LITTLE MULTIVERSE</span><span class="world-live"><i></i> GOOD VIBES ONLINE</span></div>
+      <div id="scene"></div>
+      <div class="game-hud" id="game-hud" hidden><span class="game-star">✦</span><span><small>SPARK HUNT</small><strong id="spark-score" aria-live="polite">0 / 8</strong></span><span id="game-time">0:00</span><button id="end-game" aria-label="Exit spark hunt">✕</button></div>
+      <div id="spark-labels" aria-label="Collectible sparks" hidden></div>
+      <div class="game-controls" id="game-controls" hidden><div class="dpad" aria-label="Move explorer"><button data-move="up" aria-label="Move up">↑</button><button data-move="left" aria-label="Move left">←</button><button data-move="down" aria-label="Move down">↓</button><button data-move="right" aria-label="Move right">→</button></div><button id="hop" aria-label="Make explorer jump">Hop! ↟</button></div>
       <div id="island-labels" aria-label="Island destinations"></div>
-      <div class="world-message" id="world-message" role="status">Preparing your little world…</div>
-      <div class="world-tools"><button id="rotate-left" aria-label="Rotate world left">↶</button><button id="reset-view" aria-label="Reset world view">⌖</button><button id="rotate-right" aria-label="Rotate world right">↷</button><span class="tool-divider"></span><button id="motion" aria-pressed="false" aria-label="Pause world animation">Ⅱ</button></div>
-      <div class="world-hint"><span class="hint-desktop">Drag to orbit · </span>Tap an island to explore</div>
+      <div class="world-message" id="world-message" role="status">Bending a little reality…</div>
+      <div class="world-tools"><button id="rotate-left" aria-label="Rotate world left">↶</button><button id="reset-view" aria-label="Reset world view">⌖</button><button id="rotate-right" aria-label="Rotate world right">↷</button><span class="tool-divider"></span><button id="sound" aria-pressed="false" aria-label="Enable playful sound effects">♫</button><button id="motion" aria-pressed="false" aria-label="Pause world animation">Ⅱ</button></div>
+      <div class="world-hint"><span class="hint-desktop">Drag to spin · </span>Pick an island. Find your thing.</div>
     </section>
     <aside class="quest" aria-label="Exploration progress">
-      <button id="journal" aria-label="Open your collected principles"><span class="quest-symbol" aria-hidden="true">✳</span><span><small>YOUR SIDE QUEST</small><strong id="quest-title">Collect a little perspective.</strong><span class="quest-caption">Discover the principles behind the work.</span></span><span class="quest-count" id="quest-count">0/6</span></button>
+      <button id="journal" aria-label="Open your collected principles"><span class="quest-symbol" aria-hidden="true">✳</span><span><small>YOUR SIDE QUEST</small><strong id="quest-title">Six islands. Six superpowers.</strong><span class="quest-caption">Collect the ideas that power my universe.</span></span><span class="quest-count" id="quest-count">0/6</span></button>
       <div class="progress-track" aria-hidden="true"><div id="progress-fill"></div></div>
     </aside>
     <nav class="destinations" id="destinations" aria-label="Explore the world"></nav>
-    <footer class="world-footer"><span>A playground for the possible.</span><span>HUMAN FIRST. ALWAYS. <span class="footer-star">✳</span></span></footer>
+    <footer class="world-footer"><span>STAY CURIOUS. MAKE WEIRD THINGS.</span><span>HUMAN FIRST. ALWAYS. <span class="footer-star">✳</span></span></footer>
   </main>
   <dialog id="detail" aria-labelledby="detail-title"><div class="dialog-top"><span id="detail-tag" class="eyebrow"></span><button class="close" id="close-detail" aria-label="Close destination">✕</button></div><div id="detail-content"></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

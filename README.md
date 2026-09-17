@@ -7,6 +7,16 @@ or Cloudflare configuration changes are required for this experiment.
 
 ## Experience
 
+The world uses an electric-purple space backdrop and saturated lime, pink,
+orange, cyan, and violet islands. Choose **Play spark hunt** to start an optional
+8-spark collection game. Tap a star to guide the explorer there, steer with
+WASD/arrow keys while the canvas has focus, or use the on-screen direction pad.
+Space or **Hop!** makes the explorer jump. A timer, collection bursts, and a
+confetti celebration reward finishing the route; replay starts a fresh run.
+Sound effects are opt-in via the music-note button. Opening a content panel
+pauses the game clock. Reduced motion suppresses confetti and hopping animation.
+
+
 Six procedural 3D islands connect Don’s story, eight projects, OMNIII, speaking,
 learning resources, and collaboration. Select an island to guide a small explorer
 across the world, read its content, and collect a principle. All six principles
@@ -45,7 +55,8 @@ npx playwright install chromium webkit
 npm test
 ```
 
-The browser suite exercises the full collection loop, persistence, reset,
+The browser suite exercises the spark hunt, replay, game controls, sound opt-in,
+modal game pause, the principle collection loop, persistence, reset,
 keyboard focus, reduced motion, storage denial, 3D failure, no-JavaScript access,
 touch selection, existing pages, and portrait/landscape resizing at phone,
 small-phone, tablet, foldable-size, and laptop widths. Chromium and WebKit are
