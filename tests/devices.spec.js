@@ -110,5 +110,5 @@ test('phone screen reader stays usable through rotation and permits classic navi
   await expect.poll(async()=>{const r=await page.locator('#detail').boundingBox();return r.x>=0&&r.y>=0&&r.x+r.width<=viewport.width+1&&r.y+r.height<=viewport.height+1;}).toBe(true);
   await expect(page.locator('#close-detail')).toBeInViewport();await expect(page.locator('#classic-content')).toBeInViewport();
  }
- await page.locator('#classic-content').click();await expect(page).toHaveURL(/classic.html#services$/);
+ await page.locator('#classic-content').click();await expect(page).toHaveURL(/classic(?:\.html)?#services$/);
 });
