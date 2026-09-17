@@ -1,7 +1,7 @@
 {
   "name": "mywebsite",
   "version": "1.0.0",
-  "description": "An explorable 3D portfolio for Don Allen III",
+  "description": "A playable journey through five 3D devices for Don Allen III",
   "directories": {
     "test": "tests"
   },
