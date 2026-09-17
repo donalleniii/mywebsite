@@ -13,7 +13,8 @@ Visitors guide **Little Don** through five device generations:
 The hardware consists of procedural Three.js meshes. A single game canvas is
 mapped onto each screen as a live texture. Little Don's player object, location,
 and collected curiosity stay intact when devices change. The pixel character
-is a stylized interpretation: glasses, beard, and an orange shirt. Game rooms
+follows the supplied drawing: tied-up locs, oversized square glasses, a full
+beard, open jacket, and sneakers, with a small alternating walk cycle. Game rooms
 use the muted overhead studio/gallery direction of the supplied reference.
 
 ## Play
@@ -23,14 +24,19 @@ use the muted overhead studio/gallery direction of the supplied reference.
 - **Tap a portal on the device screen:** walk there and activate it.
 - **On-screen direction pad:** tap to step or hold to walk.
 - **Physical 3D controls:** handheld direction pad/A/B and flip-phone buttons work.
-- **Drag the shell:** inspect the 3D object.
+- **Drag the shell:** inspect the 3D object. Devices rotate into view on arrival;
+  a fine desktop pointer adds a gentle tilt while viewing the whole device.
+- **Sun / moon button:** switch between a warm daylight studio and a violet
+  nighttime studio, including device lighting, controls, and content panels.
+  The theme follows the system until chosen, then remembers the choice when
+  browser storage is available.
 - **Focus screen:** zoom in for a more readable play area. A first screen tap on
   small displays also zooms in; subsequent taps interact.
 - **Device timeline:** visit any device directly. Content shortcuts expose all
   portfolio information without requiring gameplay.
 
 Sound is off until enabled. Reduced motion disables ambient motion and makes
-initial device transitions immediate. Content dialogs suspend game movement.
+device transitions immediate, and disables pointer-follow tilt. Content dialogs suspend game movement.
 Game state lasts for the current visit; a new visit starts on the handheld.
 
 When 3D is unavailable, the same game remains playable as a 2D canvas. Without
@@ -60,7 +66,8 @@ npm test
 The suite checks default handheld rendering, WASD movement, actual 3D-screen
 portal selection, character/collection continuity, all five devices, touch
 controls, screen zoom, focus restoration, reduced motion, sound opt-in, content
-access, fallbacks, and portrait/landscape layouts. Chromium and WebKit are used.
+access, fallbacks, theme persistence and system preferences (including unavailable
+storage), static reduced-motion rendering, and portrait/landscape layouts. Chromium and WebKit are used.
 Physical phone and dual-screen hardware have not been certified.
 
 ## Preview and branch isolation

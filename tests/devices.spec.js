@@ -54,3 +54,29 @@ test('no JavaScript retains the classic portfolio link',async({browser})=>{
 test('WASD keeps working after choosing a device from the timeline',async({page})=>{
  await ready(page);await page.locator('[data-era="1"]').click();await holdUntil(page,'d',()=>Number(document.querySelector('#device-stage').dataset.playerX)>7.2);await expect(page.locator('body')).toHaveAttribute('data-era','desktop');
 });
+
+test('theme changes the whole page, preserves the journey and survives reload',async({page})=>{
+ await page.emulateMedia({colorScheme:'light'});await ready(page);
+ await page.locator('[data-era="2"]').click();await page.locator('#device-stage canvas').focus();await holdUntil(page,'d',()=>Number(document.querySelector('#device-stage').dataset.playerX)>7);
+ const x=await page.locator('#device-stage').getAttribute('data-player-x');
+ await page.getByRole('button',{name:'Switch to dark mode'}).click();
+ await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+ await expect(page.locator('body')).toHaveCSS('background-color','rgb(23, 24, 34)');
+ await expect(page.locator('body')).toHaveAttribute('data-era','flip');await expect(page.locator('#device-stage')).toHaveAttribute('data-player-x',x);
+ await page.locator('[data-content="about"]').click();await expect(page.locator('dialog')).toHaveCSS('background-color','rgb(36, 35, 47)');await page.keyboard.press('Escape');
+ await page.reload();await expect(page.getByRole('button',{name:'Switch to light mode'})).toHaveAttribute('aria-pressed','true');
+ await page.getByRole('button',{name:'Switch to light mode'}).click();await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+});
+
+test('theme follows system preference until chosen, and works with storage blocked',async({page})=>{
+ await page.addInitScript(()=>{Storage.prototype.getItem=()=>{throw new Error('Storage disabled');};Storage.prototype.setItem=()=>{throw new Error('Storage disabled');};});
+ await page.emulateMedia({colorScheme:'dark'});await ready(page);await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+ await page.emulateMedia({colorScheme:'light'});await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+ await page.getByRole('button',{name:'Switch to dark mode'}).click();await page.emulateMedia({colorScheme:'dark'});await page.emulateMedia({colorScheme:'light'});await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+});
+
+test('reduced motion keeps the device still when the mouse moves',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});await ready(page);const canvas=page.locator('#device-stage canvas');
+ const before=await canvas.screenshot();const r=await canvas.boundingBox();await page.mouse.move(r.x+r.width*.9,r.y+r.height*.2);await page.waitForTimeout(300);
+ expect((await canvas.screenshot()).equals(before)).toBe(true);
+});

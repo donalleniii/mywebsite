@@ -2,16 +2,43 @@
 // This canvas is a live texture on the 3D screen, with a 2D fallback.
 export const WIDTH=480,HEIGHT=320;
 const TILE=32,OX=16,OY=34;
-export function drawDon(ctx,x,y,{ink='#332039',skin='#a96946',shirt='#ffb636',light='#fff6da',mono=false,step=0,scale=1}={}){
+export function drawDon(ctx,x,y,{ink='#302637',skin='#ad7651',shirt='#fff2d7',light='#fff6da',mono=false,step=0,scale=1}={}){
   ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.scale(scale,scale);
-  const rect=(x,y,w,h,color)=>{ctx.fillStyle=color;ctx.fillRect(x,y,w,h);};
-  rect(-9,10,18,3,mono?ink:'#00000024');
-  rect(-5,3,4,8,ink);rect(2,3,4,8,ink);rect(-6,10+(step%2),5,3,light);rect(2,11-(step%2),5,3,light);
-  rect(-7,-6,14,12,shirt);rect(-10,-4+(step%2),3,8,skin);rect(7,-4-(step%2),3,8,skin);
-  rect(-6,-18,12,13,skin);rect(-4,-20,8,2,skin);
-  rect(-7,-15,6,5,ink);rect(1,-15,6,5,ink);rect(-1,-14,2,1,ink);rect(-5,-14,3,2,light);rect(3,-14,3,2,light);
-  rect(-5,-8,10,3,ink);rect(-3,-5,6,2,ink);rect(-1,-9,2,1,light);
-  rect(-2,-3,4,2,light);ctx.restore();
+  const rect=(x,y,w,h,color=ink)=>{ctx.fillStyle=color;ctx.fillRect(x,y,w,h);};
+  const face=mono?light:skin,jacket=mono?light:'#d8b575',tee=mono?light:shirt;
+  const stride=step%2,denim=mono?ink:'#59526e';
+  rect(-11,13,24,2,mono?ink:'#30263725');
+  // Sneakers and alternating trouser legs give the same little human a walk cycle.
+  rect(-8,3,7,10+stride,ink);rect(3,3,7,11-stride,ink);
+  rect(-6,5,4,6+stride,denim);rect(4,5,4,7-stride,denim);
+  rect(-10,11+stride,9,4);rect(3,12-stride,10,3);
+  rect(-9,12+stride,7,2,light);rect(5,12-stride,7,2,light);
+  // Open jacket, light button-down, bent arms.
+  rect(-10,-8,21,14);rect(-8,-7,17,12,jacket);
+  rect(-3,-7,7,13,tee);rect(-5,-5,2,10);rect(4,-5,2,10);
+  rect(0,-2,1,1);rect(0,2,1,1);
+  rect(-14,-6+stride,5,9);rect(-13,-5+stride,3,6,jacket);
+  rect(-14,1+stride,5,4);rect(-13,2+stride,3,2,face);
+  rect(10,-8-stride,5,9);rect(11,-7-stride,3,6,jacket);
+  rect(12,-11-stride,5,5);rect(13,-10-stride,3,3,face);
+  // Tied-up locs: stepped silhouette, visible tie and a few light ridges.
+  rect(-15,-32,9,3);rect(-18,-29,13,4);rect(-20,-25,13,4);
+  rect(-18,-21,11,4);rect(-15,-18,7,3);
+  rect(-14,-30,5,1,mono?light:'#746354');rect(-17,-26,7,1,mono?light:'#746354');
+  rect(-15,-22,5,1,mono?light:'#746354');rect(-9,-23,4,5,mono?light:'#d7ae69');
+  // Large head, swept hairline, ears, brows and oversized square glasses.
+  rect(-8,-24,16,3);rect(-10,-21,21,16);rect(-8,-19,18,13,face);
+  rect(-11,-17,3,5);rect(-10,-16,2,3,face);
+  rect(-7,-22,16,4);rect(-3,-22,2,3,mono?light:'#65534c');rect(2,-21,2,2,mono?light:'#65534c');
+  rect(-5,-18,4,1);rect(5,-18,4,1);
+  rect(-8,-16,9,8);rect(4,-16,9,8);rect(1,-14,3,2);
+  rect(-6,-14,5,4,light);rect(6,-14,5,4,light);
+  rect(-3,-13,1,3);rect(8,-13,1,3);
+  rect(1,-11,3,3,face);
+  // Full beard, smiling mouth and a small chin highlight.
+  rect(-7,-8,18,4);rect(-5,-4,14,3);rect(-2,-1,8,2);
+  rect(-3,-7,10,3,light);rect(-1,-7,6,1);rect(1,-3,3,1,mono?light:'#b48a65');
+  ctx.restore();
 }
 export function createGame({onAction,onHint,onCollect,onMove}){
   const canvas=document.createElement('canvas');canvas.width=WIDTH;canvas.height=HEIGHT;
@@ -52,7 +79,7 @@ export function createGame({onAction,onHint,onCollect,onMove}){
     for(const [x,y] of [[1,6],[12,1],[5,4]]){const xx=OX+x*TILE,yy=OY+y*TILE;ctx.fillStyle=e.subtle;ctx.fillRect(xx-7,yy-7,19,19);ctx.fillStyle=e.ink;if(index===0){ctx.fillRect(xx-2,yy-3,8,11);ctx.fillRect(xx-5,yy-8,14,9);}else if(index===1){ctx.fillRect(xx-6,yy-8,18,12);ctx.fillRect(xx,yy+4,6,3);}else if(index===2){ctx.fillRect(xx-3,yy-8,10,17);ctx.fillStyle=e.screen;ctx.fillRect(xx-1,yy-5,6,7);}else if(index===3){ctx.fillRect(xx-7,yy-7,20,14);ctx.fillStyle=e.screen;ctx.fillRect(xx-4,yy-4,14,8);}else{ctx.beginPath();ctx.arc(xx+2,yy,10,0,Math.PI*2);ctx.fill();}}
     portals.forEach((p,i)=>{const x=OX+p.x*TILE,y=OY+p.y*TILE;ctx.fillStyle=e.subtle;ctx.fillRect(x-20,y-18,40,39);ctx.strokeStyle=e.ink;ctx.strokeRect(x-19,y-19,38,36);ctx.fillStyle=e.ink;if(i===2){ctx.fillRect(x-7,y-8,8,18);ctx.fillRect(x+1,y-4,5,10);ctx.fillRect(x+6,y-1,4,4);}else{ctx.fillRect(x-10,y-7,20,15);ctx.fillRect(x-8,y-11,9,4);ctx.fillStyle=e.screen;ctx.fillRect(x-6,y-2,12,2);}ctx.fillStyle=e.ink;ctx.textAlign='center';ctx.font='bold 11px monospace';ctx.fillText(p.label,x,y+33);if(p===near){ctx.strokeStyle=e.ink;ctx.lineWidth=2;ctx.strokeRect(x-24,y-24,48,47);}});
     chips.forEach((c,i)=>{if(collected.has(`${era.id}:${i}`))return;const x=OX+c.x*TILE,y=OY+c.y*TILE+(ambient?Math.sin(time*3+i)*2:0);ctx.fillStyle=mono?e.ink:'#e29a11';ctx.beginPath();ctx.moveTo(x,y-6);ctx.lineTo(x+6,y);ctx.lineTo(x,y+6);ctx.lineTo(x-6,y);ctx.closePath();ctx.fill();});
-    drawDon(ctx,OX+player.x*TILE,OY+player.y*TILE,{ink:mono?e.ink:'#302336',skin:mono?e.ink:'#a66b46',shirt:mono?e.ink:'#f4a731',light:mono?e.screen:'#fff5cd',mono,step:Math.floor(player.steps)});
+    drawDon(ctx,OX+player.x*TILE,OY+player.y*TILE,{ink:mono?e.ink:'#302336',skin:mono?e.ink:'#a66b46',shirt:mono?e.screen:'#fff2d7',light:mono?e.screen:'#fff5cd',mono,step:Math.floor(player.steps)});
     ctx.fillStyle=e.ink;ctx.textAlign='center';ctx.font='bold 12px monospace';ctx.fillText(near?`[ A ] ${near.type==='next'?'NEXT DEVICE':near.label}`:'WASD / ARROWS  •  ENTER: SELECT',WIDTH/2,306);
     if(mono){ctx.fillStyle=e.ink;ctx.globalAlpha=.06;for(let y=0;y<HEIGHT;y+=3)ctx.fillRect(0,y,WIDTH,1);ctx.globalAlpha=1;}
   }

@@ -9,3 +9,21 @@
 @media(max-width:800px){.intro .chapter-content,.intro .next-device{display:none}.stage-wrap{margin-top:7px}}
 [data-screen-focus="true"] .device-sticker{display:none}
 @media(max-width:800px){.direction-pad{grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px)}}
+/* Daylight studio / after-hours studio. The LCDs keep their own era palettes. */
+:root{color-scheme:light}.theme-toggle{display:flex;align-items:center;justify-content:center;gap:7px;background:transparent;border:1px solid var(--line);border-radius:5px;padding:9px 11px;min-height:40px;font-size:10px;white-space:nowrap}.theme-toggle>span:first-child{font-size:19px;line-height:1}.theme-toggle:hover{background:#ffffff60}.traveler canvas{height:40px;width:32px}
+:root[data-theme="dark"]{color-scheme:dark;--paper:#171822;--ink:#f1e9df;--muted:#b2aaba;--line:#3f3b4d}
+[data-theme="dark"] body{background:radial-gradient(ellipse at 73% 43%,#42335b60,transparent 60%),var(--paper)}
+[data-theme="dark"] :is(.brand small,.header-links>a:first-child,.eyebrow,.intro-copy,.era-copy p,.traveler small,.stage-caption,.model-hint,.control-description>span,.device-timeline small,.device-timeline b,.content-shortcuts>span,.content-shortcuts button,footer,.dialog-bar>span,.body-copy,.content-card p,.content-card small){color:#b6aebd}
+[data-theme="dark"] .monogram{color:#e8ddea}[data-theme="dark"] .monogram>span{color:#e5aa7e}[data-theme="dark"] h1 em{color:#d6b3e8}
+[data-theme="dark"] :is(.work-link,.era-number,.chapter-content button,.view-tools,.playbar,.direction-pad button,kbd,.device-timeline,.device-symbol,dialog,.content-card,.detail-links a,.back-to-device){border-color:var(--line)}
+[data-theme="dark"] .era-number{color:var(--era-accent)}[data-theme="dark"] :is(.chapter-content button,.view-tools,.playbar,#stage-message,dialog){background:#24232f;color:var(--ink)}
+[data-theme="dark"] :is(.direction-pad button,kbd,.dialog-bar button){background:#393445;color:#eee5f0}[data-theme="dark"] .direction-pad button:active{background:#625175}
+[data-theme="dark"] .traveler canvas{background:#3d3844}[data-theme="dark"] .curiosity{color:#efca82}[data-theme="dark"] .next-device{background:#d4b8df;color:#251e30}[data-theme="dark"] .next-device:hover{background:#e6cdf0}
+[data-theme="dark"] .stage-wrap:before{opacity:.13}[data-theme="dark"] .power-status i{background:#c9e9a3;box-shadow:0 0 10px #b7e88c70}
+[data-theme="dark"] .view-tools button:hover{background:#403849}[data-theme="dark"] :is(.view-tools button[aria-pressed=true],.chapter-content button:hover){background:var(--era-accent);color:#302638}
+[data-theme="dark"] .device-timeline button[aria-current=step]{background:#343040}[data-theme="dark"] .device-timeline button[aria-current=step]:before{background:var(--era-accent)}[data-theme="dark"] .device-symbol{color:#d3c1de}
+[data-theme="dark"] .content-shortcuts button:hover{color:#fff}[data-theme="dark"] dialog::backdrop{background:#080813a6}[data-theme="dark"] .detail-links a:first-child{background:#d4b8df;color:#251e30}
+[data-theme="dark"] .theme-toggle:hover{background:#393445}[data-theme="dark"] :is(button,a,canvas):focus-visible{outline-color:var(--era-accent)}
+[data-theme="dark"] .action-button>span{background:#bb80a4;box-shadow:0 4px 0 #6d466d}[data-theme="dark"] .toast{background:#dbc4e8;color:#251e30}
+@media(max-width:800px){.header-links{gap:8px}.theme-toggle{width:40px;padding:8px}.theme-label{display:none}.traveler canvas{width:32px;height:40px}}
+@media(max-width:360px){.header-links{gap:5px}.work-link{font-size:8px;padding:10px 7px}.brand{gap:7px}.theme-toggle{width:36px;min-width:36px}.header{gap:7px}}
