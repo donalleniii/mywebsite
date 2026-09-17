@@ -2,13 +2,14 @@
 
 An experimental playable portfolio on `codex/playable-world`, based on `main`.
 The first view is a 3D LCD handheld containing a live overhead pixel game.
-Visitors guide **Little Don** through five device generations:
+Visitors guide **Little Don** through six playable interfaces:
 
 1. A pocket LCD handheld — story and learning.
 2. A beige 1990s CRT and keyboard — projects and creative process.
 3. An open flip phone — speaking and collaboration.
 4. A modern touch workstation — OMNIII and current systems.
 5. An animated organic, holographic interface — future possibilities.
+6. An open hardback sketchbook — ink-drawn Don, stories, and a curiosity library.
 
 The hardware consists of procedural Three.js meshes. A single game canvas is
 mapped onto each screen as a live texture. Little Don's player object, location,
@@ -36,7 +37,13 @@ use the muted overhead studio/gallery direction of the supplied reference.
   portfolio information without requiring gameplay.
 
 Sound is off until enabled. Reduced motion disables ambient motion and makes
-device transitions immediate, and disables pointer-follow tilt. Content dialogs suspend game movement.
+device transitions immediate, and disables pointer-follow tilt.
+
+Selecting a content portal or shortcut zooms the camera into the actual screen.
+A semantic HTML reading surface tracks the projected display, with scrollable
+content, section tabs, working links, and a Classic / readable option. On the
+book, the same interface becomes ink on paper. Reading suspends movement;
+Escape or Back to play restores the player, focus, and page position.
 Game state lasts for the current visit; a new visit starts on the handheld.
 
 When 3D is unavailable, the same game remains playable as a 2D canvas. Without
@@ -64,8 +71,9 @@ npm test
 ```
 
 The suite checks default handheld rendering, WASD movement, actual 3D-screen
-portal selection, character/collection continuity, all five devices, touch
-controls, screen zoom, focus restoration, reduced motion, sound opt-in, content
+portal selection, character/collection continuity, all six interfaces, touch
+controls, screen zoom, focus restoration, in-screen navigation and scrolling,
+book portal travel, reduced motion, sound opt-in, content
 access, fallbacks, theme persistence and system preferences (including unavailable
 storage), static reduced-motion rendering, and portrait/landscape layouts. Chromium and WebKit are used.
 Physical phone and dual-screen hardware have not been certified.

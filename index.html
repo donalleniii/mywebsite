@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#eee9df">
-  <meta name="description" content="One curious human. Five generations of possibility. Play as little Don Allen III through a 3D handheld, desktop, flip phone, touch device, and futuristic interface.">
+  <meta name="description" content="One curious human. Six worlds of possibility. Play as little Don Allen III through a 3D handheld, desktop, flip phone, touch device, futuristic interface, and an ink-filled book.">
   <title>Don Allen III — Same human. New interface.</title>
   <link rel="icon" href="assets/world/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
   <main>
     <div class="journey-layout">
       <section class="intro" aria-labelledby="title"><p class="eyebrow"><span class="signal"></span> A PLAYABLE PORTFOLIO BY DON ALLEN III</p><h1 id="title">Same human.<br>New <em>interface.</em></h1><p class="intro-copy">Technology keeps changing shape.<br>Curiosity is the part I take with me.</p>
-        <div class="era-copy"><span class="era-number" id="era-number">01 / 05</span><h2 id="era-title">It starts with play.</h2><p id="era-description">A little LCD. A big imagination. Move little Don to a portal and press A. See where curiosity takes you.</p></div>
+        <div class="era-copy"><span class="era-number" id="era-number">01 / 06</span><h2 id="era-title">It starts with play.</h2><p id="era-description">A little LCD. A big imagination. Move little Don to a portal and press A. See where curiosity takes you.</p></div>
         <div class="chapter-content"><span class="eyebrow">INSIDE THIS DEVICE</span><div id="chapter-links"></div></div>
         <button class="next-device" id="next-device">Enter the desktop era <span>→</span></button>
         <div class="traveler"><canvas id="portrait" width="64" height="80" aria-hidden="true"></canvas><span><strong>Little Don</strong><small>SAME CHARACTER. EVERY WORLD.</small></span><span class="curiosity" id="curiosity" aria-label="Curiosity collected">✦ 0</span></div>
@@ -31,6 +31,12 @@
       <section class="stage-wrap" aria-label="Playable 3D device">
         <div class="stage-caption"><span id="device-caption">POCKET WORLD / LCD EDITION</span><span class="power-status"><i></i> HUMAN ONLINE</span></div>
         <div id="device-stage"></div>
+        <section id="detail" class="screen-reader" role="dialog" aria-modal="true" aria-labelledby="detail-title" hidden>
+          <div class="reader-toolbar"><button id="close-detail" aria-label="Close content">← Back to play</button><span id="detail-tag"></span><a id="classic-content" href="classic.html">Classic / readable ↗</a></div>
+          <nav id="reader-nav" aria-label="Explore inside this screen"></nav>
+          <div id="reader-scroll" tabindex="0" role="region" aria-label="Portfolio content"><div id="detail-content"></div></div>
+          <div class="reader-footer"><span id="reader-medium"></span><span>DON ALLEN III · HUMAN ONLINE</span></div>
+        </section>
         <div id="stage-message" role="status">Powering up a little possibility…</div>
         <div class="device-sticker" aria-hidden="true">PLAY IS<br>A WAY IN <span>↗</span></div>
         <div class="view-tools"><button id="focus-screen" aria-pressed="false">⌕ <span>Focus screen</span></button><button id="sound" aria-label="Enable sound effects" aria-pressed="false">♫</button><button id="motion" aria-label="Pause ambient animation" aria-pressed="false">Ⅱ</button></div>
@@ -46,7 +52,7 @@
     <nav id="content-shortcuts" class="content-shortcuts" aria-label="All portfolio content"></nav>
     <footer><span>THE TOOLS EVOLVE. THE HUMAN STAYS.</span><span>CREATIVE INTELLIGENCE × SPATIAL COMPUTING × PLAY</span></footer>
   </main>
-  <dialog id="detail" aria-labelledby="detail-title"><div class="dialog-bar"><span id="detail-tag"></span><button id="close-detail" aria-label="Close content">✕</button></div><div id="detail-content"></div></dialog>
+
   <p id="announcement" class="sr-only" role="status" aria-live="polite"></p><div id="toast" class="toast" role="status"></div>
   <noscript><section class="no-js">The playable journey uses JavaScript. <a href="classic.html">Visit Don’s complete classic portfolio →</a></section></noscript>
   <script type="module" src="assets/world/device-app.js"></script>
