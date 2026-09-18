@@ -1,12 +1,12 @@
 import {test,expect} from '@playwright/test';
-const eras=['handheld','desktop','flip','modern','future','book'];
+const eras=['handheld','desktop','flip','modern','future','book','blocks','shore','robot'];
 async function ready(page){await page.goto('/');await expect(page.locator('body')).toHaveAttribute('data-ready','true');await expect(page.locator('body')).toHaveAttribute('data-renderer','3d');}
 async function holdUntil(page,key,predicate){await page.keyboard.down(key);try{await page.waitForFunction(predicate);}finally{await page.keyboard.up(key);}}
 async function tapScreen(page,u,v){const r=await page.locator('#device-stage canvas').boundingBox();await page.mouse.click(r.x+r.width/2+(u-.5)*r.width*.8*Math.cos(.22),r.y+r.height/2+(v-.5)*r.width*.8/1.5);}
 
-test('default handheld and persistent Don across all six devices',async({page})=>{
+test('default handheld and persistent Don across all nine interfaces',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await ready(page);await expect(page.locator('body')).toHaveAttribute('data-era','handheld');await page.locator('#device-stage canvas').focus();await holdUntil(page,'d',()=>Number(document.querySelector('#device-stage').dataset.playerX)>7.4);const x=await page.locator('#device-stage').getAttribute('data-player-x'),y=await page.locator('#device-stage').getAttribute('data-player-y');
- for(let i=1;i<6;i++){await page.locator('#next-device').click();await expect(page.locator('body')).toHaveAttribute('data-era',eras[i]);await expect(page.locator('#device-stage')).toHaveAttribute('data-player-id','little-don');await expect(page.locator('#device-stage')).toHaveAttribute('data-player-x',x);await expect(page.locator('#device-stage')).toHaveAttribute('data-player-y',y);}await page.locator('#next-device').click();await expect(page.locator('body')).toHaveAttribute('data-era','handheld');expect(errors).toEqual([]);
+ for(let i=1;i<eras.length;i++){await page.locator('#next-device').click();await expect(page.locator('body')).toHaveAttribute('data-era',eras[i]);await expect(page.locator('#device-stage')).toHaveAttribute('data-player-id','little-don');await expect(page.locator('#device-stage')).toHaveAttribute('data-player-x',x);await expect(page.locator('#device-stage')).toHaveAttribute('data-player-y',y);}await page.locator('#next-device').click();await expect(page.locator('body')).toHaveAttribute('data-era','handheld');expect(errors).toEqual([]);
 });
 
 test('WASD and Enter activate the in-game next-device portal',async({page})=>{
@@ -27,7 +27,8 @@ test('collected curiosity persists across eras',async({page})=>{
 
 for(const [name,width,height] of [['phone',390,844],['small-phone',320,568],['landscape',844,390],['tablet',768,1024],['foldable-size',720,960],['laptop',1440,900]]){
  test(`${name}: all devices, content and orientation changes`,async({page})=>{
-  await page.setViewportSize({width,height});await ready(page);for(let i=0;i<6;i++){await page.locator(`[data-era="${i}"]`).click();await expect(page.locator('body')).toHaveAttribute('data-era',eras[i]);await page.locator('[data-content="about"]').click();await expect(page.locator('#detail')).toBeVisible();await page.locator('#close-detail').click();}expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.setViewportSize({width:height,height:width});await page.locator('#focus-screen').click();await page.locator('[data-content="systems"]').click();await expect(page.getByRole('link',{name:'Meet FormWright'})).toHaveAttribute('href','formwright.html');await page.locator('#close-detail').click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  test.setTimeout(60000);
+  await page.setViewportSize({width,height});await ready(page);for(let i=0;i<eras.length;i++){await page.locator(`[data-era="${i}"]`).click();await expect(page.locator('body')).toHaveAttribute('data-era',eras[i]);await page.locator('[data-content="about"]').click();await expect(page.locator('#detail')).toBeVisible();await page.locator('#close-detail').click();}expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.setViewportSize({width:height,height:width});await page.locator('#focus-screen').click();await page.locator('[data-content="systems"]').click();await expect(page.getByRole('link',{name:'Meet FormWright'})).toHaveAttribute('href','formwright.html');await page.locator('#close-detail').click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  });
 }
 
@@ -96,10 +97,10 @@ test('content becomes the screen UI, with working tabs, scroll, classic links an
 
 test('ink book keeps Don playable, opens its page UI, and returns through its portal',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await ready(page);await page.locator('[data-era="5"]').click();
- await expect(page.locator('body')).toHaveAttribute('data-era','book');await expect(page.locator('#era-number')).toHaveText('06 / 06');
+ await expect(page.locator('body')).toHaveAttribute('data-era','book');await expect(page.locator('#era-number')).toHaveText('06 / 09');
  await page.locator('#focus-screen').click();await tapScreen(page,(16+2.1*32)/480,(34+2*32)/320);
  await expect(page.locator('#detail')).toBeVisible({timeout:10000});await expect(page.locator('#reader-medium')).toContainText('INK ON PAPER');
- await page.locator('#close-detail').click();await tapScreen(page,.8,.60625);await expect(page.locator('body')).toHaveAttribute('data-era','handheld',{timeout:10000});
+ await page.locator('#close-detail').click();await tapScreen(page,.8,.60625);await expect(page.locator('body')).toHaveAttribute('data-era','blocks',{timeout:10000});
 });
 
 test('phone screen reader stays usable through rotation and permits classic navigation',async({page})=>{
@@ -112,3 +113,13 @@ test('phone screen reader stays usable through rotation and permits classic navi
  }
  await page.locator('#classic-content').click();await expect(page).toHaveURL(/classic(?:\.html)?#services$/);
 });
+
+for(const [index,label] of [[6,'Build again'],[7,'Stack a stone'],[8,'Say hello']]){
+ test(`personal world ${index}: object interaction and readable screen`,async({page})=>{
+  await page.emulateMedia({reducedMotion:'reduce'});await ready(page);await expect(page.locator('#object-action')).toBeHidden();
+  await page.locator(`[data-era="${index}"]`).click();const action=page.getByRole('button',{name:label,exact:true});await expect(action).toBeVisible();
+  const canvas=page.locator('#device-stage canvas'),before=await canvas.screenshot();await action.click();await page.waitForTimeout(150);expect((await canvas.screenshot()).equals(before)).toBe(false);
+  const after=await canvas.screenshot();await page.waitForTimeout(200);expect((await canvas.screenshot()).equals(after)).toBe(true);
+  await page.locator('[data-content="systems"]').click();await expect(page.locator('.stage-wrap')).toHaveAttribute('data-reader-ready','true');await expect(page.getByRole('link',{name:'Meet FormWright'})).toBeVisible();await page.keyboard.press('Escape');await expect(action).toBeVisible();
+ });
+}

@@ -4,6 +4,7 @@ import {collaboratorWall,projectPreviews,videos,mountProjectPreviews,bindImageFa
 import {createGame,drawDon,WIDTH,HEIGHT} from './device-game.js';
 const $=s=>document.querySelector(s),dialog=$('#detail');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+const objectCounts=new Map(),objectLabels={blocks:"Build again",shore:"Stack a stone",robot:"Say hello"};
 let index=0,stage=null,paused=reduce.matches,sound=false,audio=null,lastFocus=null,toastTimer,fallbackFrame=0;
 const colorScheme=matchMedia('(prefers-color-scheme: dark)');
 let theme=document.documentElement.dataset.theme||'light',themeChosen=false;
@@ -32,7 +33,7 @@ $('#devices').innerHTML=eras.map((e,i)=>`<button data-era="${i}" aria-label="Vis
 $('#content-shortcuts').innerHTML=`<span>TAKE A SHORTCUT</span>${destinations.map(d=>`<button data-content="${d.id}">${escape(d.short)}</button>`).join('')}`;
 for(const b of document.querySelectorAll('[data-era]'))b.addEventListener('click',()=>setEra(Number(b.dataset.era)));
 for(const b of document.querySelectorAll('[data-content]'))b.addEventListener('click',()=>openContent(b.dataset.content,b));
-function setEra(next){index=next;const e=eras[index];document.body.dataset.era=e.id;document.body.style.setProperty('--era-color',e.color);document.body.style.setProperty('--era-accent',e.accent);$('#era-number').textContent=`${String(index+1).padStart(2,'0')} / ${String(eras.length).padStart(2,'0')}`;$('#era-title').textContent=e.title;$('#era-description').textContent=e.description;$('#device-caption').textContent=e.caption;$('#next-device').innerHTML=`${e.next} <span>→</span>`;$('#chapter-links').innerHTML=e.content.map(id=>{const d=destinations.find(d=>d.id===id);return `<button data-chapter="${id}">${escape(d.short)} <span>↗</span></button>`;}).join('');for(const b of document.querySelectorAll('[data-chapter]'))b.addEventListener('click',()=>openContent(b.dataset.chapter,b));for(const b of document.querySelectorAll('[data-era]'))b.setAttribute('aria-current',Number(b.dataset.era)===index?'step':'false');game.setEra(e,index,eras.length);stage?.setDevice(index);$('#announcement').textContent=`${e.name}. ${e.title} Little Don continues in this device.`;tone(300+index*90);}
+function setEra(next){index=next;const e=eras[index];document.body.dataset.era=e.id;document.body.dataset.worldAction=String(!!objectLabels[e.id]);$('#object-action').hidden=!objectLabels[e.id];$('#object-action').textContent=objectLabels[e.id]||'';document.body.style.setProperty('--era-color',e.color);document.body.style.setProperty('--era-accent',e.accent);$('#era-number').textContent=`${String(index+1).padStart(2,'0')} / ${String(eras.length).padStart(2,'0')}`;$('#era-title').textContent=e.title;$('#era-description').textContent=e.description;$('#device-caption').textContent=e.caption;$('#next-device').innerHTML=`${e.next} <span>→</span>`;$('#chapter-links').innerHTML=e.content.map(id=>{const d=destinations.find(d=>d.id===id);return `<button data-chapter="${id}">${escape(d.short)} <span>↗</span></button>`;}).join('');for(const b of document.querySelectorAll('[data-chapter]'))b.addEventListener('click',()=>openContent(b.dataset.chapter,b));for(const b of document.querySelectorAll('[data-era]'))b.setAttribute('aria-current',Number(b.dataset.era)===index?'step':'false');game.setEra(e,index,eras.length);game.setObjectState(objectCounts.get(e.id)||0);stage?.setDevice(index);$('#announcement').textContent=`${e.name}. ${e.title} Little Don continues in this device.`;tone(300+index*90);}
 for(const b of document.querySelectorAll('[data-studio]'))b.addEventListener('click',()=>openContent(b.dataset.studio,b));
 bindImageFallbacks($('.studio-shelf'));
 $('#next-device').addEventListener('click',()=>setEra((index+1)%eras.length));
@@ -97,6 +98,11 @@ for(const button of document.querySelectorAll('[data-move]')){
  for(const event of ['pointercancel','lostpointercapture'])button.addEventListener(event,()=>{active=false;game.move(direction,false);});
  button.addEventListener('click',e=>{if(e.detail===0)game.nudge(direction);});
 }
+$('#object-action').addEventListener('click',()=>{
+ const id=eras[index].id,count=(objectCounts.get(id)||0)+1;objectCounts.set(id,count);game.setObjectState(count);stage?.objectAction(count);
+ const message=id==='blocks'?`A new arrangement. Build ${count}.`:id==='shore'?`${3+count%4} stones, a little more balance.`:'Hello from the other side of the interface.';
+ $('#announcement').textContent=message;toast(message);tone(id==='shore'?280:480);
+});
 $('#interact').addEventListener('click',()=>game.interact());
 $('#sound').addEventListener('click',()=>{sound=!sound;$('#sound').setAttribute('aria-pressed',String(sound));$('#sound').setAttribute('aria-label',sound?'Mute sound effects':'Enable sound effects');tone();});
 function setMotion(){game.setAmbient(!paused);stage?.pause(paused);$('#motion').setAttribute('aria-pressed',String(paused));$('#motion').setAttribute('aria-label',paused?'Resume ambient animation':'Pause ambient animation');$('#motion').textContent=paused?'▷':'Ⅱ';}

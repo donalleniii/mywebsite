@@ -2,14 +2,17 @@
 
 An experimental playable portfolio on `codex/playable-world`, based on `main`.
 The first view is a 3D LCD handheld containing a live overhead pixel game.
-Visitors guide **Little Don** through six playable interfaces:
+Visitors guide **Little Don** through nine playable interfaces:
 
-1. A pocket LCD handheld — story and learning.
+1. A translucent indigo Game Boy Advance — story and learning.
 2. A beige 1990s CRT and keyboard — projects and creative process.
 3. An open flip phone — speaking and collaboration.
-4. A modern touch workstation — OMNIII and current systems.
+4. An iPad with a pencil — OMNIII and current systems.
 5. An animated organic, holographic interface — future possibilities.
 6. An open hardback sketchbook — ink-drawn Don, stories, and a curiosity library.
+7. Wooden building blocks — childhood curiosity and making.
+8. Ocean rock stacking — balance, learning, and the human behind the work.
+9. A gently animated robotic arm — systems and collaboration.
 
 The hardware consists of procedural Three.js meshes. A single game canvas is
 mapped onto each screen as a live texture. Little Don's player object, location,
@@ -85,7 +88,7 @@ npm test
 ```
 
 The suite checks default handheld rendering, WASD movement, actual 3D-screen
-portal selection, character/collection continuity, all six interfaces, touch
+portal selection, character/collection continuity, all nine interfaces, touch
 controls, screen zoom, focus restoration, in-screen navigation and scrolling,
 book portal travel, reduced motion, sound opt-in, content
 access, fallbacks, theme persistence and system preferences (including unavailable
@@ -111,3 +114,7 @@ support, legal, and resource routes remain available. `wrangler.json` and the
 original custom domain are unchanged. `.assetsignore` excludes development
 files if this branch is later served by the original Cloudflare setup. Nothing
 merges into `main` automatically; the draft PR remains for review.
+
+## Personal objects
+
+The indigo translucent Game Boy Advance opens the journey. The iPad includes a pencil, and three new worlds join the original device and ink-book collection: wooden blocks from Don’s childhood, ocean rock stacking, and a playful robotic arm. Build again, stack a stone, or say hello using each world’s object action. These actions also work in the 2D fallback. Reduced motion keeps the objects still; character progress and portfolio screen navigation continue across all nine worlds.
