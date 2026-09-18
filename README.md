@@ -49,6 +49,20 @@ Game state lasts for the current visit; a new visit starts on the handheld.
 When 3D is unavailable, the same game remains playable as a 2D canvas. Without
 JavaScript, the original portfolio is reachable via the classic-site link.
 
+## Studio shelf and visual portfolio
+
+The shelf below the device timeline opens three in-screen collections: video
+posters, Systems I Build, and Advisor & Collaborator. Speaking retains the
+original YouTube videos and timestamps; Beyond Our Reality uses the verified
+OpenAI channel upload. Missing high-resolution thumbnails fall back to standard
+thumbnails, then to a readable poster with the video link intact.
+
+Projects include the original FormWright artwork plus small animated visual
+studies for the other tools. These are lightweight previews, not embedded apps;
+links open the actual projects. Animation runs only for visible previews, respects
+motion settings, and is disposed when leaving the section. The 19-name collaborator
+stamp collection preserves the original site's relationship label and names.
+
 ## Local development
 
 Requires Node.js 22+ for tooling; the website itself is static.

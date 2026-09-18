@@ -1,5 +1,6 @@
 import {eras} from './device-data.js';
 import {destinations} from './content.js';
+import {collaboratorWall,projectPreviews,videos,mountProjectPreviews,bindImageFallbacks} from './studio.js';
 import {createGame,drawDon,WIDTH,HEIGHT} from './device-game.js';
 const $=s=>document.querySelector(s),dialog=$('#detail');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
@@ -32,16 +33,25 @@ $('#content-shortcuts').innerHTML=`<span>TAKE A SHORTCUT</span>${destinations.ma
 for(const b of document.querySelectorAll('[data-era]'))b.addEventListener('click',()=>setEra(Number(b.dataset.era)));
 for(const b of document.querySelectorAll('[data-content]'))b.addEventListener('click',()=>openContent(b.dataset.content,b));
 function setEra(next){index=next;const e=eras[index];document.body.dataset.era=e.id;document.body.style.setProperty('--era-color',e.color);document.body.style.setProperty('--era-accent',e.accent);$('#era-number').textContent=`${String(index+1).padStart(2,'0')} / ${String(eras.length).padStart(2,'0')}`;$('#era-title').textContent=e.title;$('#era-description').textContent=e.description;$('#device-caption').textContent=e.caption;$('#next-device').innerHTML=`${e.next} <span>→</span>`;$('#chapter-links').innerHTML=e.content.map(id=>{const d=destinations.find(d=>d.id===id);return `<button data-chapter="${id}">${escape(d.short)} <span>↗</span></button>`;}).join('');for(const b of document.querySelectorAll('[data-chapter]'))b.addEventListener('click',()=>openContent(b.dataset.chapter,b));for(const b of document.querySelectorAll('[data-era]'))b.setAttribute('aria-current',Number(b.dataset.era)===index?'step':'false');game.setEra(e,index,eras.length);stage?.setDevice(index);$('#announcement').textContent=`${e.name}. ${e.title} Little Don continues in this device.`;tone(300+index*90);}
+for(const b of document.querySelectorAll('[data-studio]'))b.addEventListener('click',()=>openContent(b.dataset.studio,b));
+bindImageFallbacks($('.studio-shelf'));
 $('#next-device').addEventListener('click',()=>setEra((index+1)%eras.length));
 // Content lives on the projected device screen. Keep semantic HTML for reading,
 // links, selection and assistive technology while the actual camera moves in.
-const outsideReader=()=>document.querySelectorAll('.header,.intro,.playbar,.device-timeline,.content-shortcuts,footer,.view-tools,.skip');
-let reading=false,readerScrollY=0;
+const outsideReader=()=>document.querySelectorAll('.header,.intro,.playbar,.device-timeline,.content-shortcuts,footer,.view-tools,.skip,.studio-shelf');
+let reading=false,readerScrollY=0,disposePreviews=()=>{};
 function closeContent(){
-  if(!reading)return;reading=false;dialog.hidden=true;document.body.dataset.reading='false';
+  if(!reading)return;disposePreviews();reading=false;dialog.hidden=true;document.body.dataset.reading='false';
   document.documentElement.classList.remove('is-reading');outsideReader().forEach(el=>el.inert=false);
   stage?.readContent(false);game.setReading(false);game.suspend(false);$('#device-stage canvas')?.removeAttribute('inert');
   window.scrollTo({top:readerScrollY,behavior:"instant"});lastFocus?.focus({preventScroll:true});
+}
+function renderCard(c,section){
+ const video=videos[c.title],preview=section==='systems'?projectPreviews[c.title]:null;
+ let media='';
+ if(video)media=`<a class="studio-media video-poster" href="${escape(c.url)}" target="_blank" rel="noopener noreferrer" aria-label="Watch ${escape(c.title)} on YouTube"><span class="media-placeholder" aria-hidden="true">${escape(video.label)}<strong>${escape(c.title)}</strong></span><img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" data-fallback="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" alt="${escape(c.title)} — video thumbnail" loading="lazy" width="1280" height="720"><span class="play-disc" aria-hidden="true">▶</span><span class="media-caption">WATCH ON YOUTUBE ↗</span></a>`;
+ else if(preview)media=`<a class="studio-media project-poster" href="${escape(c.url)}"${c.url.startsWith('https:')?' target="_blank" rel="noopener noreferrer"':''} aria-label="Open ${escape(c.title)} project">${preview==='formwright'?'<img src="assets/formwright/painted-texture.jpg" alt="Painted FormWright 3D texture artwork" loading="lazy" width="640" height="360">':`<canvas data-preview="${preview}" aria-hidden="true" width="640" height="360"></canvas>`}<span class="project-name">${escape(c.title)}</span><span class="preview-caption">${preview==='formwright'?'3D / TEXTURE PAINTING':'ANIMATED STUDY'} <b>↗</b></span></a>`;
+ return `<article class="content-card${media?' has-media':''}" data-card="${escape(c.title)}">${media}<div class="card-copy">${c.tag?`<small>${escape(c.tag)}</small>`:''}<h3>${escape(c.title)}</h3><p>${escape(c.text)}</p>${c.url?link(c.action,c.url):''}</div></article>`;
 }
 function openContent(id,opener=document.activeElement){
   const d=destinations.find(d=>d.id===id);if(!d)return;
@@ -53,7 +63,13 @@ function openContent(id,opener=document.activeElement){
   const hashes={connect:'services'};$('#classic-content').href=`classic.html#${hashes[id]||id}`;
   $('#reader-nav').innerHTML=destinations.map(item=>`<button data-read="${item.id}" aria-current="${item.id===id?'page':'false'}">${escape(item.short)}</button>`).join('');
   $('#reader-nav').querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>openContent(button.dataset.read)));
-  $('#detail-content').innerHTML=`<p class="reader-kicker">${escape(d.kicker)}</p><h2 id="detail-title">${escape(d.title)}</h2><p class="lead">${escape(d.lead)}</p><p class="body-copy">${escape(d.body)}</p><div class="principle"><small>THE HUMAN PART</small><strong>${escape(d.principle)}</strong></div>${d.cards.map(c=>`<article class="content-card">${c.tag?`<small>${escape(c.tag)}</small>`:''}<h3>${escape(c.title)}</h3><p>${escape(c.text)}</p>${c.url?link(c.action,c.url):''}</article>`).join('')}<div class="detail-links">${d.links.map(([label,url])=>link(label,url)).join('')}</div><button class="back-to-device" id="back-to-device">Back to Little Don →</button>`;
+  disposePreviews();
+  const gallery=['systems','keynotes'].includes(id);
+  const principle=`<div class="principle"><small>THE HUMAN PART</small><strong>${escape(d.principle)}</strong></div>`;
+  $('#detail-content').dataset.section=id;
+  $('#detail-content').innerHTML=`<p class="reader-kicker">${id==='systems'?'SYSTEMS I BUILD':escape(d.kicker)}</p><h2 id="detail-title">${escape(d.title)}</h2><p class="lead">${escape(d.lead)}</p>${gallery?'':`<p class="body-copy">${escape(d.body)}</p>`}${['about','connect'].includes(id)?collaboratorWall():''}${gallery?'':principle}<div class="content-collection ${id==='systems'?'project-gallery':id==='keynotes'?'video-gallery':''}">${d.cards.map(c=>renderCard(c,id)).join('')}</div>${gallery?`<p class="body-copy">${escape(d.body)}</p>${principle}`:''}<div class="detail-links">${d.links.map(([label,url])=>link(label,url)).join('')}</div><button class="back-to-device" id="back-to-device">Back to Little Don →</button>`;
+  bindImageFallbacks($('#detail-content'));
+  disposePreviews=mountProjectPreviews($('#detail-content'),{isPaused:()=>paused});
   dialog.hidden=false;$('#reader-scroll').scrollTop=0;
   stage?.readContent(true);$('#close-detail').focus({preventScroll:true});$('#back-to-device').addEventListener('click',closeContent);
 }
