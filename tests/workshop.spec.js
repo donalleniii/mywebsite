@@ -15,8 +15,8 @@ test('rock physics: rotation, soft gravity, collision, retry and preserved state
 test('plain wooden pieces fall in, drag, rotate and change shape',async({page})=>{
  await open(page,'blocks');const c=page.locator('#workshop-canvas');await expect(c).toHaveAttribute('data-pieces','6');await expect(c).toHaveAttribute('data-selected','false');
  const initial=await positions(page);await expect.poll(async()=>(await positions(page))[1].y).toBeGreaterThan(initial[1].y+15);
- await page.locator('.block-options summary').click();await page.locator('[data-work="pause"]').click();await c.scrollIntoViewIfNeeded();const piece=(await positions(page))[0],box=await c.boundingBox();await page.mouse.move(box.x+box.width*piece.x/900,box.y+box.height*piece.y/520);await page.mouse.down();await page.mouse.move(box.x+box.width*.7,box.y+box.height*.45,{steps:6});await page.mouse.up();await expect(c).toHaveAttribute('data-selected','false');
- expect((await positions(page))[0].x).toBeGreaterThan(580);
+ await page.locator('.block-options summary').click();await page.locator('[data-work="pause"]').click();await c.scrollIntoViewIfNeeded();const piece=(await positions(page))[0],box=await c.boundingBox();await page.mouse.move(box.x+box.width*piece.x/900,box.y+box.height*piece.y/520);await page.mouse.down();await expect(c).toHaveAttribute('data-selected','true');await page.mouse.move(box.x+box.width*.7,box.y+box.height*.45,{steps:6});await page.mouse.up();await expect(c).toHaveAttribute('data-selected','false');
+ await expect.poll(async()=>(await positions(page))[0].x).toBeGreaterThan(580);
  await page.locator('#block-shape').selectOption('wedge');await page.locator('[data-work="add"]').click();await expect(c).toHaveAttribute('data-pieces','7');
  await c.focus();await page.keyboard.press('q');await expect.poll(()=>c.getAttribute('data-angle')).not.toBe('0');await page.keyboard.press('ArrowLeft');await page.keyboard.press('Space');await expect(c).toHaveAttribute('data-selected','false');
  await page.locator('.block-story summary').click();await page.locator('[data-work="story"]').click();await expect(page.locator('#note-copy')).toContainText('adult');
