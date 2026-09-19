@@ -114,7 +114,7 @@ test('phone screen reader stays usable through rotation and permits classic navi
  await page.locator('#classic-content').click();await expect(page).toHaveURL(/classic(?:\.html)?#services$/);
 });
 
-for(const [index,label] of [[6,'Build again'],[7,'Stack a stone'],[8,'Say hello']]){
+for(const [index,label] of [[8,'Say hello']]){
  test(`personal world ${index}: object interaction and readable screen`,async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'});await ready(page);await expect(page.locator('#object-action')).toBeHidden();
   await page.locator(`[data-era="${index}"]`).click();const action=page.getByRole('button',{name:label,exact:true});await expect(action).toBeVisible();

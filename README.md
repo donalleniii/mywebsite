@@ -117,4 +117,8 @@ merges into `main` automatically; the draft PR remains for review.
 
 ## Personal objects
 
-The indigo translucent Game Boy Advance opens the journey. The iPad includes a pencil, and three new worlds join the original device and ink-book collection: wooden blocks from Don’s childhood, ocean rock stacking, and a playful robotic arm. Build again, stack a stone, or say hello using each world’s object action. These actions also work in the 2D fallback. Reduced motion keeps the objects still; character progress and portfolio screen navigation continue across all nine worlds.
+The indigo translucent Game Boy Advance opens the journey. The iPad includes a pencil, and three new worlds join the original device and ink-book collection: wooden blocks from Don’s childhood, ocean rock stacking, and a playful robotic arm. Build a city, balance stones with real physics, or say hello using each world’s object action. These actions also work in the 2D fallback. Reduced motion keeps the ambient 3D objects still; character progress and portfolio screen navigation continue across all nine worlds.
+
+## Interview-driven play
+
+The blocks and shore now open tactile physics workshops inside the device screen, with Don’s personal field notes, mouse/touch/keyboard manipulation, soft gravity, rotation, pause, and retry. The studio shelf foregrounds Meta Connect and the official MasterClass series. A browser-generated postcard records each visitor’s explored worlds, and prominent links lead into the original collaboration form. See [PERSONAL-WORLDS.md](PERSONAL-WORLDS.md) for the interview-to-build decisions and the exact measurement boundary.

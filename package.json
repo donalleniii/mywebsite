@@ -24,6 +24,7 @@
   "devDependencies": {
     "@playwright/test": "1.63.0",
     "agent-browser": "0.38.1",
+    "matter-js": "0.20.0",
     "three": "0.180.0"
   },
   "private": true

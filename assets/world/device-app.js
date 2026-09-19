@@ -1,10 +1,15 @@
+import {createJourney} from './journey.js';
 import {eras} from './device-data.js';
 import {destinations} from './content.js';
 import {collaboratorWall,projectPreviews,videos,mountProjectPreviews,bindImageFallbacks} from './studio.js';
 import {createGame,drawDon,WIDTH,HEIGHT} from './device-game.js';
 const $=s=>document.querySelector(s),dialog=$('#detail');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
-const objectCounts=new Map(),objectLabels={blocks:"Build again",shore:"Stack a stone",robot:"Say hello"};
+const objectCounts=new Map(),objectLabels={blocks:"Build a city",shore:"Balance stones",robot:"Say hello"};
+const personal={blocks:{id:"blocks",short:"Build a city",title:"Build somewhere you’d want to live."},shore:{id:"shore",short:"Balance stones",title:"Breathe. Balance. Begin again."}};
+const findDestination=id=>destinations.find(d=>d.id===id)||personal[id];
+const journey=createJourney(eras);
+let readerVersion=0;
 let index=0,stage=null,paused=reduce.matches,sound=false,audio=null,lastFocus=null,toastTimer,fallbackFrame=0;
 const colorScheme=matchMedia('(prefers-color-scheme: dark)');
 let theme=document.documentElement.dataset.theme||'light',themeChosen=false;
@@ -33,16 +38,17 @@ $('#devices').innerHTML=eras.map((e,i)=>`<button data-era="${i}" aria-label="Vis
 $('#content-shortcuts').innerHTML=`<span>TAKE A SHORTCUT</span>${destinations.map(d=>`<button data-content="${d.id}">${escape(d.short)}</button>`).join('')}`;
 for(const b of document.querySelectorAll('[data-era]'))b.addEventListener('click',()=>setEra(Number(b.dataset.era)));
 for(const b of document.querySelectorAll('[data-content]'))b.addEventListener('click',()=>openContent(b.dataset.content,b));
-function setEra(next){index=next;const e=eras[index];document.body.dataset.era=e.id;document.body.dataset.worldAction=String(!!objectLabels[e.id]);$('#object-action').hidden=!objectLabels[e.id];$('#object-action').textContent=objectLabels[e.id]||'';document.body.style.setProperty('--era-color',e.color);document.body.style.setProperty('--era-accent',e.accent);$('#era-number').textContent=`${String(index+1).padStart(2,'0')} / ${String(eras.length).padStart(2,'0')}`;$('#era-title').textContent=e.title;$('#era-description').textContent=e.description;$('#device-caption').textContent=e.caption;$('#next-device').innerHTML=`${e.next} <span>→</span>`;$('#chapter-links').innerHTML=e.content.map(id=>{const d=destinations.find(d=>d.id===id);return `<button data-chapter="${id}">${escape(d.short)} <span>↗</span></button>`;}).join('');for(const b of document.querySelectorAll('[data-chapter]'))b.addEventListener('click',()=>openContent(b.dataset.chapter,b));for(const b of document.querySelectorAll('[data-era]'))b.setAttribute('aria-current',Number(b.dataset.era)===index?'step':'false');game.setEra(e,index,eras.length);game.setObjectState(objectCounts.get(e.id)||0);stage?.setDevice(index);$('#announcement').textContent=`${e.name}. ${e.title} Little Don continues in this device.`;tone(300+index*90);}
+function setEra(next){index=next;journey.visit(eras[index].id);const e=eras[index];document.body.dataset.era=e.id;document.body.dataset.worldAction=String(!!objectLabels[e.id]);$('#object-action').hidden=!objectLabels[e.id];$('#object-action').textContent=objectLabels[e.id]||'';document.body.style.setProperty('--era-color',e.color);document.body.style.setProperty('--era-accent',e.accent);$('#era-number').textContent=`${String(index+1).padStart(2,'0')} / ${String(eras.length).padStart(2,'0')}`;$('#era-title').textContent=e.title;$('#era-description').textContent=e.description;$('#device-caption').textContent=e.caption;$('#next-device').innerHTML=`${e.next} <span>→</span>`;$('#chapter-links').innerHTML=e.content.map(id=>{const d=findDestination(id);return `<button data-chapter="${id}">${escape(d.short)} <span>↗</span></button>`;}).join('');for(const b of document.querySelectorAll('[data-chapter]'))b.addEventListener('click',()=>openContent(b.dataset.chapter,b));for(const b of document.querySelectorAll('[data-era]'))b.setAttribute('aria-current',Number(b.dataset.era)===index?'step':'false');game.setEra(e,index,eras.length);game.setObjectState(objectCounts.get(e.id)||0);stage?.setDevice(index);$('#announcement').textContent=`${e.name}. ${e.title} Little Don continues in this device.`;tone(300+index*90);}
 for(const b of document.querySelectorAll('[data-studio]'))b.addEventListener('click',()=>openContent(b.dataset.studio,b));
 bindImageFallbacks($('.studio-shelf'));
+$('#start-exploring').addEventListener('click',()=>{openContent('about',$('#start-exploring'));});
 $('#next-device').addEventListener('click',()=>setEra((index+1)%eras.length));
 // Content lives on the projected device screen. Keep semantic HTML for reading,
 // links, selection and assistive technology while the actual camera moves in.
-const outsideReader=()=>document.querySelectorAll('.header,.intro,.playbar,.device-timeline,.content-shortcuts,footer,.view-tools,.skip,.studio-shelf');
+const outsideReader=()=>document.querySelectorAll('.header,.intro,.playbar,.device-timeline,.content-shortcuts,footer,.view-tools,.skip,.studio-shelf,.journey-keepsake');
 let reading=false,readerScrollY=0,disposePreviews=()=>{};
 function closeContent(){
-  if(!reading)return;disposePreviews();reading=false;dialog.hidden=true;document.body.dataset.reading='false';
+  if(!reading)return;readerVersion++;disposePreviews();reading=false;dialog.hidden=true;document.body.dataset.reading='false';
   document.documentElement.classList.remove('is-reading');outsideReader().forEach(el=>el.inert=false);
   stage?.readContent(false);game.setReading(false);game.suspend(false);$('#device-stage canvas')?.removeAttribute('inert');
   window.scrollTo({top:readerScrollY,behavior:"instant"});lastFocus?.focus({preventScroll:true});
@@ -55,24 +61,26 @@ function renderCard(c,section){
  return `<article class="content-card${media?' has-media':''}" data-card="${escape(c.title)}">${media}<div class="card-copy">${c.tag?`<small>${escape(c.tag)}</small>`:''}<h3>${escape(c.title)}</h3><p>${escape(c.text)}</p>${c.url?link(c.action,c.url):''}</div></article>`;
 }
 function openContent(id,opener=document.activeElement){
-  const d=destinations.find(d=>d.id===id);if(!d)return;
+  const d=findDestination(id);if(!d)return;const version=++readerVersion;
   if(!reading){lastFocus=opener===document.body?$('#device-stage canvas'):opener;readerScrollY=window.scrollY;}
   reading=true;game.suspend(true);game.setReading(true);document.body.dataset.reading='true';document.documentElement.classList.add('is-reading');
   outsideReader().forEach(el=>el.inert=true);$('#device-stage canvas')?.setAttribute('inert','');
   const e=eras[index];dialog.style.setProperty('--screen-paper',e.screen);dialog.style.setProperty('--screen-ink',e.ink);
   $('#detail-tag').textContent=d.short.toUpperCase();$('#reader-medium').textContent=e.id==='book'?'INK ON PAPER / TURN AN IDEA INTO SOMETHING':`${e.name.toUpperCase()} / DON OS`;
-  const hashes={connect:'services'};$('#classic-content').href=`classic.html#${hashes[id]||id}`;
-  $('#reader-nav').innerHTML=destinations.map(item=>`<button data-read="${item.id}" aria-current="${item.id===id?'page':'false'}">${escape(item.short)}</button>`).join('');
+  const hashes={connect:'services'};$('#classic-content').href=`classic.html#${personal[id]?'about':hashes[id]||id}`;
+  $('#reader-nav').innerHTML=(personal[id]?[personal[id],...destinations]:destinations).map(item=>`<button data-read="${item.id}" aria-current="${item.id===id?'page':'false'}">${escape(item.short)}</button>`).join('');
   $('#reader-nav').querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>openContent(button.dataset.read)));
   disposePreviews();
+  const workshop=personal[id];
   const gallery=['systems','keynotes'].includes(id);
-  const principle=`<div class="principle"><small>THE HUMAN PART</small><strong>${escape(d.principle)}</strong></div>`;
+  const principle=workshop?'':`<div class="principle"><small>THE HUMAN PART</small><strong>${escape(d.principle)}</strong></div>`;
   $('#detail-content').dataset.section=id;
-  $('#detail-content').innerHTML=`<p class="reader-kicker">${id==='systems'?'SYSTEMS I BUILD':escape(d.kicker)}</p><h2 id="detail-title">${escape(d.title)}</h2><p class="lead">${escape(d.lead)}</p>${gallery?'':`<p class="body-copy">${escape(d.body)}</p>`}${['about','connect'].includes(id)?collaboratorWall():''}${gallery?'':principle}<div class="content-collection ${id==='systems'?'project-gallery':id==='keynotes'?'video-gallery':''}">${d.cards.map(c=>renderCard(c,id)).join('')}</div>${gallery?`<p class="body-copy">${escape(d.body)}</p>${principle}`:''}<div class="detail-links">${d.links.map(([label,url])=>link(label,url)).join('')}</div><button class="back-to-device" id="back-to-device">Back to Little Don →</button>`;
+  $('#detail-content').innerHTML=workshop?`<h2 id="detail-title">${escape(d.title)}</h2><p role="status">Opening your little world…</p>`:`<p class="reader-kicker">${id==='systems'?'SYSTEMS I BUILD':escape(d.kicker)}</p><h2 id="detail-title">${escape(d.title)}</h2><p class="lead">${escape(d.lead)}</p>${gallery?'':`<p class="body-copy">${escape(d.body)}</p>`}${id==='connect'?`<a class="reader-cta" data-collaborate="connect-top" href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" rel="noopener noreferrer">Tell me what you’re imagining ↗<small>Start with the collaboration form</small></a>`:''}${['about','connect'].includes(id)?collaboratorWall():''}${gallery?'':principle}<div class="content-collection ${id==='systems'?'project-gallery':id==='keynotes'?'video-gallery':''}">${d.cards.map(c=>renderCard(c,id)).join('')}</div>${gallery?`<p class="body-copy">${escape(d.body)}</p>${principle}`:''}<div class="detail-links">${d.links.map(([label,url])=>link(label,url)).join('')}</div><button class="back-to-device" id="back-to-device">Back to Little Don →</button>`;
   bindImageFallbacks($('#detail-content'));
-  disposePreviews=mountProjectPreviews($('#detail-content'),{isPaused:()=>paused});
+  disposePreviews=workshop?()=>{}:mountProjectPreviews($('#detail-content'),{isPaused:()=>paused});
   dialog.hidden=false;$('#reader-scroll').scrollTop=0;
-  stage?.readContent(true);$('#close-detail').focus({preventScroll:true});$('#back-to-device').addEventListener('click',closeContent);
+  stage?.readContent(true);$('#close-detail').focus({preventScroll:true});$('#back-to-device')?.addEventListener('click',closeContent);
+  if(workshop)import('./workshop.js').then(({workshopHTML,mountWorkshop})=>{if(!reading||version!==readerVersion)return;$('#detail-content').innerHTML=workshopHTML(id);disposePreviews=mountWorkshop($('#detail-content'),id,{reducedMotion:paused,onMilestone:()=>journey.mark(id)});}).catch(()=>{if(reading&&version===readerVersion)$('#detail-content').innerHTML='<h2 id="detail-title">A moment to begin again.</h2><p>The hands-on world could not load. You can still explore my story using the tabs above.</p>';});
 }
 $('#close-detail').addEventListener('click',closeContent);
 // Keep keyboard paging inside the screen even when the outer page is locked.
@@ -83,7 +91,7 @@ $('#reader-scroll').addEventListener('keydown',e=>{
 });
 dialog.addEventListener('keydown',e=>{
   if(e.key==='Escape'){e.preventDefault();closeContent();return;}
-  if(e.key!=='Tab')return;const elements=[...dialog.querySelectorAll('button,a[href],[tabindex="0"]')];
+  if(e.key!=='Tab')return;const elements=[...dialog.querySelectorAll('button,a[href],input,select,[tabindex="0"]')];
   if(e.shiftKey&&document.activeElement===elements[0]){e.preventDefault();elements.at(-1).focus();}
   else if(!e.shiftKey&&document.activeElement===elements.at(-1)){e.preventDefault();elements[0].focus();}
 });
@@ -99,7 +107,7 @@ for(const button of document.querySelectorAll('[data-move]')){
  button.addEventListener('click',e=>{if(e.detail===0)game.nudge(direction);});
 }
 $('#object-action').addEventListener('click',()=>{
- const id=eras[index].id,count=(objectCounts.get(id)||0)+1;objectCounts.set(id,count);game.setObjectState(count);stage?.objectAction(count);
+ const id=eras[index].id;if(personal[id]){openContent(id,$('#object-action'));return;}const count=(objectCounts.get(id)||0)+1;objectCounts.set(id,count);game.setObjectState(count);stage?.objectAction(count);
  const message=id==='blocks'?`A new arrangement. Build ${count}.`:id==='shore'?`${3+count%4} stones, a little more balance.`:'Hello from the other side of the interface.';
  $('#announcement').textContent=message;toast(message);tone(id==='shore'?280:480);
 });
@@ -107,7 +115,7 @@ $('#interact').addEventListener('click',()=>game.interact());
 $('#sound').addEventListener('click',()=>{sound=!sound;$('#sound').setAttribute('aria-pressed',String(sound));$('#sound').setAttribute('aria-label',sound?'Mute sound effects':'Enable sound effects');tone();});
 function setMotion(){game.setAmbient(!paused);stage?.pause(paused);$('#motion').setAttribute('aria-pressed',String(paused));$('#motion').setAttribute('aria-label',paused?'Resume ambient animation':'Pause ambient animation');$('#motion').textContent=paused?'▷':'Ⅱ';}
 $('#motion').addEventListener('click',()=>{paused=!paused;setMotion();});reduce.addEventListener('change',e=>{paused=e.matches;setMotion();});
-$('#focus-screen').addEventListener('click',()=>{const next=$('#focus-screen').getAttribute('aria-pressed')!=='true';$('#focus-screen').setAttribute('aria-pressed',String(next));$('#focus-screen').innerHTML=next?'↙ <span>Whole device</span>':'⌕ <span>Focus screen</span>';stage?.focusScreen(next);});
+$('#focus-screen').addEventListener('click',()=>{const next=$('#focus-screen').getAttribute('aria-pressed')!=='true';$('#focus-screen').setAttribute('aria-pressed',String(next));$('#focus-screen').innerHTML=next?'↙ <span>Whole device</span>':'⌕ <span>Focus screen</span>';stage?.focusScreen(next);if(next)$('.stage-wrap').scrollIntoView({block:'center',behavior:'instant'});});
 function fallback(){stage?.dispose();stage=null;document.body.dataset.renderer='2d';$('#stage-message').hidden=true;$('#device-stage').append(game.canvas);game.canvas.tabIndex=0;game.canvas.setAttribute('role','group');game.canvas.setAttribute('aria-label','Playable world. Use WASD or arrow keys to move, and Enter to select.');game.canvas.className='fallback-game';$('#focus-screen').hidden=true;$('.model-hint').textContent='Your playable world. Tap a portal or use the controls below.';game.canvas.addEventListener('pointerup',e=>{game.canvas.focus({preventScroll:true});const r=game.canvas.getBoundingClientRect();game.tap((e.clientX-r.left)/r.width*WIDTH,(e.clientY-r.top)/r.height*HEIGHT);});let last=0;function frame(now){fallbackFrame=requestAnimationFrame(frame);if(document.hidden){last=now;return;}if(now-last<1000/30)return;game.update(Math.min((now-last)/1000,.05));last=now;}cancelAnimationFrame(fallbackFrame);fallbackFrame=requestAnimationFrame(frame);document.body.dataset.ready='true';}
 setEra(0);setMotion();
 try{const {createDeviceStage}=await import('./device-stage.js');stage=createDeviceStage($('#device-stage'),game,{onFailure:fallback,ambient:!paused,theme,onScreenBounds(bounds){
