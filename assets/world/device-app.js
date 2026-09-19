@@ -1,16 +1,16 @@
 import {createJourney} from './journey.js';
-import {eras} from './device-data.js';
+import {eras,INITIAL_ERA} from './device-data.js';
 import {destinations} from './content.js';
 import {collaboratorWall,projectPreviews,videos,mountProjectPreviews,bindImageFallbacks} from './studio.js';
 import {createGame,drawDon,WIDTH,HEIGHT} from './device-game.js';
 const $=s=>document.querySelector(s),dialog=$('#detail');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
-const objectCounts=new Map(),objectLabels={blocks:"Build a city",shore:"Balance stones",robot:"Say hello"};
-const personal={blocks:{id:"blocks",short:"Build a city",title:"Build somewhere you’d want to live."},shore:{id:"shore",short:"Balance stones",title:"Breathe. Balance. Begin again."}};
+const objectCounts=new Map(),objectLabels={blocks:"Stack blocks",shore:"Balance stones",robot:"Say hello"};
+const personal={blocks:{id:"blocks",short:"Stack blocks",title:"Just a few wooden blocks."},shore:{id:"shore",short:"Balance stones",title:"Breathe. Balance. Begin again."}};
 const findDestination=id=>destinations.find(d=>d.id===id)||personal[id];
 const journey=createJourney(eras);
 let readerVersion=0;
-let index=0,stage=null,paused=reduce.matches,sound=false,audio=null,lastFocus=null,toastTimer,fallbackFrame=0;
+let index=INITIAL_ERA,stage=null,paused=reduce.matches,sound=false,audio=null,lastFocus=null,toastTimer,fallbackFrame=0;
 const colorScheme=matchMedia('(prefers-color-scheme: dark)');
 let theme=document.documentElement.dataset.theme||'light',themeChosen=false;
 try{themeChosen=['light','dark'].includes(localStorage.getItem('don-theme'));}catch{}
@@ -91,7 +91,7 @@ $('#reader-scroll').addEventListener('keydown',e=>{
 });
 dialog.addEventListener('keydown',e=>{
   if(e.key==='Escape'){e.preventDefault();closeContent();return;}
-  if(e.key!=='Tab')return;const elements=[...dialog.querySelectorAll('button,a[href],input,select,[tabindex="0"]')];
+  if(e.key!=='Tab')return;const elements=[...dialog.querySelectorAll('button,a[href],input,select,summary,[tabindex="0"]')].filter(el=>el.getClientRects().length);
   if(e.shiftKey&&document.activeElement===elements[0]){e.preventDefault();elements.at(-1).focus();}
   else if(!e.shiftKey&&document.activeElement===elements.at(-1)){e.preventDefault();elements[0].focus();}
 });
@@ -117,8 +117,8 @@ function setMotion(){game.setAmbient(!paused);stage?.pause(paused);$('#motion').
 $('#motion').addEventListener('click',()=>{paused=!paused;setMotion();});reduce.addEventListener('change',e=>{paused=e.matches;setMotion();});
 $('#focus-screen').addEventListener('click',()=>{const next=$('#focus-screen').getAttribute('aria-pressed')!=='true';$('#focus-screen').setAttribute('aria-pressed',String(next));$('#focus-screen').innerHTML=next?'↙ <span>Whole device</span>':'⌕ <span>Focus screen</span>';stage?.focusScreen(next);if(next)$('.stage-wrap').scrollIntoView({block:'center',behavior:'instant'});});
 function fallback(){stage?.dispose();stage=null;document.body.dataset.renderer='2d';$('#stage-message').hidden=true;$('#device-stage').append(game.canvas);game.canvas.tabIndex=0;game.canvas.setAttribute('role','group');game.canvas.setAttribute('aria-label','Playable world. Use WASD or arrow keys to move, and Enter to select.');game.canvas.className='fallback-game';$('#focus-screen').hidden=true;$('.model-hint').textContent='Your playable world. Tap a portal or use the controls below.';game.canvas.addEventListener('pointerup',e=>{game.canvas.focus({preventScroll:true});const r=game.canvas.getBoundingClientRect();game.tap((e.clientX-r.left)/r.width*WIDTH,(e.clientY-r.top)/r.height*HEIGHT);});let last=0;function frame(now){fallbackFrame=requestAnimationFrame(frame);if(document.hidden){last=now;return;}if(now-last<1000/30)return;game.update(Math.min((now-last)/1000,.05));last=now;}cancelAnimationFrame(fallbackFrame);fallbackFrame=requestAnimationFrame(frame);document.body.dataset.ready='true';}
-setEra(0);setMotion();
-try{const {createDeviceStage}=await import('./device-stage.js');stage=createDeviceStage($('#device-stage'),game,{onFailure:fallback,ambient:!paused,theme,onScreenBounds(bounds){
+setEra(INITIAL_ERA);setMotion();
+try{const {createDeviceStage}=await import('./device-stage.js');stage=createDeviceStage($('#device-stage'),game,{onFailure:fallback,ambient:!paused,theme,initialIndex:INITIAL_ERA,onScreenBounds(bounds){
   if(!reading)return;for(const [name,value]of Object.entries(bounds))dialog.style.setProperty(`--reader-${name}`,`${value}px`);
 },onFocus(value){document.body.dataset.screenFocus=String(value);$('#focus-screen').setAttribute('aria-pressed',String(value));$('#focus-screen').innerHTML=value?'↙ <span>Whole device</span>':'⌕ <span>Focus screen</span>';}});$('#stage-message').hidden=true;document.body.dataset.renderer='3d';document.body.dataset.ready='true';}catch(error){console.warn('Using the playable 2D fallback.',error);fallback();}
 function openHash(){const aliases={podcast:'resources',services:'connect',book:'resources'};const id=aliases[location.hash.slice(1)]||location.hash.slice(1);if(destinations.some(d=>d.id===id))openContent(id);}

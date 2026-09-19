@@ -1,12 +1,12 @@
 import {test,expect} from '@playwright/test';
 const eras=['handheld','desktop','flip','modern','future','book','blocks','shore','robot'];
-async function ready(page){await page.goto('/');await expect(page.locator('body')).toHaveAttribute('data-ready','true');await expect(page.locator('body')).toHaveAttribute('data-renderer','3d');}
+async function ready(page,handheld=true){await page.goto('/');await expect(page.locator('body')).toHaveAttribute('data-ready','true');await expect(page.locator('body')).toHaveAttribute('data-renderer','3d');if(handheld)await page.locator('[data-era="0"]').click();}
 async function holdUntil(page,key,predicate){await page.keyboard.down(key);try{await page.waitForFunction(predicate);}finally{await page.keyboard.up(key);}}
 async function tapScreen(page,u,v){const r=await page.locator('#device-stage canvas').boundingBox();await page.mouse.click(r.x+r.width/2+(u-.5)*r.width*.8*Math.cos(.22),r.y+r.height/2+(v-.5)*r.width*.8/1.5);}
 
-test('default handheld and persistent Don across all nine interfaces',async({page})=>{
- const errors=[];page.on('pageerror',e=>errors.push(e.message));await ready(page);await expect(page.locator('body')).toHaveAttribute('data-era','handheld');await page.locator('#device-stage canvas').focus();await holdUntil(page,'d',()=>Number(document.querySelector('#device-stage').dataset.playerX)>7.4);const x=await page.locator('#device-stage').getAttribute('data-player-x'),y=await page.locator('#device-stage').getAttribute('data-player-y');
- for(let i=1;i<eras.length;i++){await page.locator('#next-device').click();await expect(page.locator('body')).toHaveAttribute('data-era',eras[i]);await expect(page.locator('#device-stage')).toHaveAttribute('data-player-id','little-don');await expect(page.locator('#device-stage')).toHaveAttribute('data-player-x',x);await expect(page.locator('#device-stage')).toHaveAttribute('data-player-y',y);}await page.locator('#next-device').click();await expect(page.locator('body')).toHaveAttribute('data-era','handheld');expect(errors).toEqual([]);
+test('default blocks and persistent Don across all nine interfaces',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));await ready(page,false);await expect(page.locator('body')).toHaveAttribute('data-era','blocks');await page.locator('#device-stage canvas').focus();await holdUntil(page,'d',()=>Number(document.querySelector('#device-stage').dataset.playerX)>7.4);const x=await page.locator('#device-stage').getAttribute('data-player-x'),y=await page.locator('#device-stage').getAttribute('data-player-y');
+ for(let i=1;i<eras.length;i++){await page.locator('#next-device').click();await expect(page.locator('body')).toHaveAttribute('data-era',eras[(6+i)%eras.length]);await expect(page.locator('#device-stage')).toHaveAttribute('data-player-id','little-don');await expect(page.locator('#device-stage')).toHaveAttribute('data-player-x',x);await expect(page.locator('#device-stage')).toHaveAttribute('data-player-y',y);}await page.locator('#next-device').click();await expect(page.locator('body')).toHaveAttribute('data-era','blocks');expect(errors).toEqual([]);
 });
 
 test('WASD and Enter activate the in-game next-device portal',async({page})=>{

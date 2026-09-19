@@ -1,7 +1,7 @@
 # Don Allen III — Same human. New interface.
 
 An experimental playable portfolio on `codex/playable-world`, based on `main`.
-The first view is a 3D LCD handheld containing a live overhead pixel game.
+The first view is a wooden block world. Its 3D shapes land in place around a live pixel game, and Stack blocks opens a simple hands-on builder.
 Visitors guide **Little Don** through nine playable interfaces:
 
 1. A translucent indigo Game Boy Advance — story and learning.
@@ -87,7 +87,7 @@ npx playwright install chromium webkit
 npm test
 ```
 
-The suite checks default handheld rendering, WASD movement, actual 3D-screen
+The suite checks default block-world rendering, WASD movement, actual 3D-screen
 portal selection, character/collection continuity, all nine interfaces, touch
 controls, screen zoom, focus restoration, in-screen navigation and scrolling,
 book portal travel, reduced motion, sound opt-in, content
@@ -117,8 +117,10 @@ merges into `main` automatically; the draft PR remains for review.
 
 ## Personal objects
 
-The indigo translucent Game Boy Advance opens the journey. The iPad includes a pencil, and three new worlds join the original device and ink-book collection: wooden blocks from Don’s childhood, ocean rock stacking, and a playful robotic arm. Build a city, balance stones with real physics, or say hello using each world’s object action. These actions also work in the 2D fallback. Reduced motion keeps the ambient 3D objects still; character progress and portfolio screen navigation continue across all nine worlds.
+The wooden blocks open the journey; the indigo translucent Game Boy Advance remains available in the timeline. The iPad includes a pencil, and three new worlds join the original device and ink-book collection: wooden blocks from Don’s childhood, ocean rock stacking, and a playful robotic arm. Stack wooden blocks, balance stones with real physics, or say hello using each world’s object action. These actions also work in the 2D fallback. Reduced motion keeps the ambient 3D objects still; character progress and portfolio screen navigation continue across all nine worlds.
 
 ## Interview-driven play
 
 The blocks and shore now open tactile physics workshops inside the device screen, with Don’s personal field notes, mouse/touch/keyboard manipulation, soft gravity, rotation, pause, and retry. The studio shelf foregrounds Meta Connect and the official MasterClass series. A browser-generated postcard records each visitor’s explored worlds, and prominent links lead into the original collaboration form. See [PERSONAL-WORLDS.md](PERSONAL-WORLDS.md) for the interview-to-build decisions and the exact measurement boundary.
+
+The block builder starts with six freely falling wooden shapes on a plain surface. Drag to stack; extra keyboard controls and the story are collapsed below the canvas. Reduced motion opens with a settled arrangement. Robot hinge caps and arm surfaces have distinct depths to prevent flickering.

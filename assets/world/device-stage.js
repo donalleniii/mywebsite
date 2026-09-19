@@ -1,6 +1,6 @@
 import * as THREE from './vendor/three.module.min.js';
 
-export function createDeviceStage(container,game,{onFailure,onReady,onFocus,onScreenBounds,ambient=true,theme='light'}){
+export function createDeviceStage(container,game,{onFailure,onReady,onFocus,onScreenBounds,ambient=true,theme='light',initialIndex=0}){
   const scene=new THREE.Scene();
   const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'});
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setClearColor(0,0);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;
@@ -129,11 +129,11 @@ export function createDeviceStage(container,game,{onFailure,onReady,onFocus,onSc
       rounded(1.2,.55,1.2,.05,wood(),root,x,-2.1,.1);
     }
     const wedge=triangle(1.5,.9,1.15,root,2.5,-2.09,1.03);wedge.rotation.z=Math.PI/2;
-    rounded(1.0,.65,.9,.06,wood(),root,-2.6,-2.12,1.18);
-    triangle(1.7,.85,.85,root,-.8,2.52,0);mesh(new THREE.CylinderGeometry(.44,.44,.85,32),wood(),root,1.05,2.49,0);
-    const base=pieces.map(p=>p.position.clone());let arrangement=0;
-    function apply(){pieces.forEach((p,i)=>{const step=arrangement%3;p.position.x=base[i].x+(i<2?-1:1)*(step===1?.32:0);p.position.y=base[i].y+(i%2&&step===2?-.16:0);p.rotation.z=i%2?(step===2?Math.PI:0):(step===1?Math.PI/2:0);});}
-    return{root,display,controls,width:5.35,onAction(count){arrangement=count;apply();}};
+    pieces.push(wedge,rounded(1.0,.65,.9,.06,wood(),root,-2.6,-2.12,1.18));
+    pieces.push(triangle(1.7,.85,.85,root,-.8,2.52,0),mesh(new THREE.CylinderGeometry(.44,.44,.85,32),wood(),root,1.05,2.49,0));
+    const base=pieces.map(p=>({y:p.position.y,angle:p.rotation.z}));let landing=0;
+    function settle(){landing=3;pieces.forEach((p,i)=>{p.position.y=base[i].y;p.rotation.z=base[i].angle;});container.dataset.blocksLanding='settled';}
+    return{root,display,controls,width:5.35,settle,enter(instant){if(instant){settle();return;}landing=0;container.dataset.blocksLanding='falling';pieces.forEach((p,i)=>{p.position.y=base[i].y+2.4+i*.13;});},animate(t,dt){if(landing>=3)return;landing+=dt;pieces.forEach((p,i)=>{const u=Math.max(0,Math.min(1,(landing-i*.10)/.85)),fall=u<.78?1-(u/.78)**2:Math.sin((u-.78)/.22*Math.PI)*.085;p.position.y=base[i].y+fall*(2.4+i*.13);p.rotation.z=base[i].angle+(1-u)*Math.sin(i+1)*.12;});if(landing>1.7)settle();}};
   }
   function stone(parent,x,y,z,sx,sy,sz,seed){
     const geo=new THREE.SphereGeometry(1,16,10),p=geo.attributes.position;
@@ -154,9 +154,9 @@ export function createDeviceStage(container,game,{onFailure,onReady,onFocus,onSc
     rounded(3.05,.5,2.7,.2,mat('#858f97',.45,.55),root,-2.4,-3.05,0);
     mesh(new THREE.CylinderGeometry(.86,.96,.55,32),'#454f5b',root,-2.4,-2.6,0);
     const shoulder=new THREE.Group();shoulder.position.set(-2.4,-2.34,0);root.add(shoulder);
-    disc(.57,.85,'#b97542',shoulder,0,0,0);disc(.29,.91,'#ccd4d6',shoulder,0,0,.04);
-    const upper=rounded(.73,2.1,.78,.21,'#dadfdc',shoulder,-.3,1.10,0);upper.rotation.z=-.28;
-    const elbow=new THREE.Group();elbow.position.set(-.58,2.05,0);shoulder.add(elbow);disc(.49,.86,'#b97542',elbow,0,0,0);disc(.24,.91,'#626f7a',elbow,0,0,.04);
+    disc(.57,.96,'#b97542',shoulder,0,0,0);disc(.29,.10,'#ccd4d6',shoulder,0,0,.56);
+    const upper=rounded(.73,2.1,.68,.21,'#dadfdc',shoulder,-.3,1.10,0);upper.rotation.z=-.28;
+    const elbow=new THREE.Group();elbow.position.set(-.58,2.05,0);shoulder.add(elbow);disc(.49,.96,'#b97542',elbow,0,0,0);disc(.24,.10,'#626f7a',elbow,0,0,.56);
     const forearm=rounded(2.25,.62,.67,.18,'#d6dddc',elbow,1.05,.28,0);forearm.rotation.z=.25;
     const wrist=new THREE.Group();wrist.position.set(2.13,.54,0);elbow.add(wrist);disc(.32,.77,'#566574',wrist,0,0,0);
     for(const y of [-.35,.35]){rounded(.9,.15,.22,.05,'#abb5bc',wrist,.46,y,.18);rounded(.15,.37,.22,.04,'#566574',wrist,.88,y*.68,.18);}
@@ -166,7 +166,7 @@ export function createDeviceStage(container,game,{onFailure,onReady,onFocus,onSc
     let wave=0;return{root,display,controls,width:4.82,onAction(count,instant){wave=instant?0:3.6;wrist.rotation.z=instant?-.18:0;},animate(t,dt){wave=Math.max(0,wave-dt);shoulder.rotation.z=wave?Math.sin(wave*5)*.13:Math.sin(t*.65)*.018;elbow.rotation.z=wave?Math.sin(wave*5+.7)*.19:Math.sin(t*.85)*.025;wrist.rotation.z=wave?Math.sin(wave*9)*.30:Math.sin(t*.9)*.04;}};
   }
   const factories=[handheld,desktop,flip,modern,future,book,blocks,shore,robot];
-  function setDevice(index,immediate=false){if(currentIndex===index&&current)return;currentIndex=index;if(outgoing)stageRoot.remove(outgoing.root);outgoing=current;if(!built.has(index))built.set(index,factories[index]());current=built.get(index);stageRoot.add(current.root);transition=immediate||paused?1:0;targetYaw=index===4?-.1:-.22;targetPitch=.06;hoverYaw=hoverPitch=0;current.root.rotation.set(targetPitch,targetYaw-(1-transition)*1.65,0);if(transition===1&&outgoing){stageRoot.remove(outgoing.root);outgoing=null;}current.root.scale.setScalar(index===2?1.06:1);resize();onReady?.();}
+  function setDevice(index,immediate=false){if(currentIndex===index&&current)return;currentIndex=index;if(outgoing)stageRoot.remove(outgoing.root);outgoing=current;if(!built.has(index))built.set(index,factories[index]());current=built.get(index);current.enter?.(immediate||paused);stageRoot.add(current.root);transition=immediate||paused?1:0;targetYaw=index===4?-.1:-.22;targetPitch=.06;hoverYaw=hoverPitch=0;current.root.rotation.set(targetPitch,targetYaw-(1-transition)*1.65,0);if(transition===1&&outgoing){stageRoot.remove(outgoing.root);outgoing=null;}current.root.scale.setScalar(index===2?1.06:1);resize();onReady?.();}
   const cameraCenter=new THREE.Vector3(),cameraPosition=new THREE.Vector3(),cameraRotation=new THREE.Quaternion();
   const screenCorners=[new THREE.Vector3(),new THREE.Vector3()];
   function frameCamera(snap=false,dt=.04){
@@ -217,13 +217,13 @@ export function createDeviceStage(container,game,{onFailure,onReady,onFocus,onSc
       if(current.blob&&!paused){const attr=current.blob.geometry.attributes.position,base=current.blob.userData.base;for(let i=0;i<attr.count;i++){const x=base[i*3],y=base[i*3+1],z=base[i*3+2],wave=1+.045*Math.sin(x*1.3+time)+.035*Math.cos(y*1.5-time*.8);attr.setXYZ(i,x*wave,y*wave,z*wave);}attr.needsUpdate=true;current.blob.geometry.computeVertexNormals();current.inner.rotation.y=time*.07;}
     }frameCamera(false,dt);renderer.render(scene,camera);
   }
-  setDevice(0);raf=requestAnimationFrame(frame);
+  setDevice(initialIndex);raf=requestAnimationFrame(frame);
   return{setDevice,setTheme,objectAction(count){current?.onAction?.(count,paused||focus||reading);},readContent(value){
       if(value===reading)return;if(value)readingBeforeFocus=focus;
       reading=value;cameraSettling=true;container.parentElement.dataset.readerReady=String(!value||paused);focus=value||readingBeforeFocus;hoverYaw=hoverPitch=0;drag=null;releaseControl();
-      if(value){transition=1;if(outgoing){stageRoot.remove(outgoing.root);outgoing=null;}}
+      if(value){current?.settle?.();transition=1;if(outgoing){stageRoot.remove(outgoing.root);outgoing=null;}}
       resize();
-    },focusScreen(value){focus=value;frameCamera();onFocus?.(value);},pause(value){paused=value;game.setAmbient(!value);},canvas:renderer.domElement,
+    },focusScreen(value){if(value)current?.settle?.();focus=value;frameCamera();onFocus?.(value);},pause(value){if(value)current?.settle?.();paused=value;game.setAmbient(!value);},canvas:renderer.domElement,
     dispose(){cancelAnimationFrame(raf);observer.disconnect();document.removeEventListener('visibilitychange',visibility);for(const {root}of built.values())root.traverse(o=>{o.geometry?.dispose();if(o.material?.map&&o.material!==screenMaterial)o.material.dispose();});materials.forEach(m=>m.dispose());decalTextures.forEach(t=>t.dispose());screenMaterial.dispose();screenTexture.dispose();renderer.dispose();renderer.domElement.remove();}
   };
 }
