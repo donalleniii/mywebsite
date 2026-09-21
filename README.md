@@ -1,6 +1,6 @@
 # Don Allen III — Same human. New interface.
 
-An experimental playable portfolio on `codex/playable-world`, based on `main`.
+The approved playable portfolio for `donalleniii.me`.
 The first view is a wooden block world. Its 3D shapes land in place around a live pixel game, and Stack blocks opens a simple hands-on builder.
 Visitors guide **Little Don** through nine playable interfaces:
 
@@ -97,7 +97,7 @@ access, fallbacks, theme persistence and system preferences (including unavailab
 storage), static reduced-motion rendering, and portrait/landscape layouts. Chromium and WebKit are used.
 Physical phone and dual-screen hardware have not been certified.
 
-## Preview and branch isolation
+## Publishing and previews
 
 ```sh
 npm run export
@@ -111,11 +111,12 @@ https://donalleniii-playable-preview.vercel.app
 This project is independent of `donalleniii.me`. Vercel's “production” target
 refers only to the standalone demo project's stable URL.
 
-The original homepage remains byte-for-byte in `classic.html`. Existing product,
-support, legal, and resource routes remain available. `wrangler.json` and the
-original custom domain are unchanged. `.assetsignore` excludes development
-files if this branch is later served by the original Cloudflare setup. Nothing
-merges into `main` automatically; the draft PR remains for review.
+Production is hosted on Netlify. `netlify.toml` exports the public HTML and assets
+into `dist/`, preserving `_redirects` for resource and product routes. Publish
+from `main`; the Vercel project remains a separate preview. The previous homepage
+is preserved byte-for-byte in `classic.html`. The existing FormWright privacy
+update is retained. `wrangler.json` is legacy configuration, not the current
+custom-domain host. `.assetsignore` excludes development files if using it.
 
 ## Personal objects
 

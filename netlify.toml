@@ -1,0 +1,9 @@
+[build]
+  command = "node scripts/export.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[build.processing.html]
+  pretty_urls = true
