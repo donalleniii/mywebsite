@@ -21,6 +21,8 @@ follows the supplied drawing: tied-up locs, oversized square glasses, a full
 beard, open jacket, and sneakers, with a small alternating walk cycle. Game rooms
 use the muted overhead studio/gallery direction of the supplied reference.
 
+Readability rules, automated coverage, and manual-audit boundaries are documented in [ACCESSIBILITY.md](ACCESSIBILITY.md).
+
 ## Play
 
 - **WASD / arrows:** move Little Don.

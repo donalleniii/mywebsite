@@ -79,7 +79,17 @@ test('theme follows system preference until chosen, and works with storage block
 test('reduced motion keeps the device still when the mouse moves',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await ready(page);const canvas=page.locator('#device-stage canvas');
  const before=await canvas.screenshot();const r=await canvas.boundingBox();await page.mouse.move(r.x+r.width*.9,r.y+r.height*.2);await page.waitForTimeout(300);
- expect((await canvas.screenshot()).equals(before)).toBe(true);
+ // Compare rendered pixels, not PNG bytes. Chromium can round one channel by
+ // one level on a fractional overlay border after scrolling; that is not motion.
+ const after=await canvas.screenshot();
+ const difference=await page.evaluate(async urls=>{
+  const images=await Promise.all(urls.map(src=>new Promise(resolve=>{const image=new Image();image.onload=()=>resolve(image);image.src=src;})));
+  if(images[0].width!==images[1].width||images[0].height!==images[1].height)return 255;
+  const surface=document.createElement('canvas');surface.width=images[0].width;surface.height=images[0].height;const context=surface.getContext('2d');
+  const pixels=images.map(image=>{context.clearRect(0,0,surface.width,surface.height);context.drawImage(image,0,0);return context.getImageData(0,0,surface.width,surface.height).data;});
+  let maximum=0;for(let i=0;i<pixels[0].length;i++)maximum=Math.max(maximum,Math.abs(pixels[0][i]-pixels[1][i]));return maximum;
+ },[before,after].map(buffer=>'data:image/png;base64,'+buffer.toString('base64')));
+ expect(difference).toBeLessThanOrEqual(1);
 });
 
 test('content becomes the screen UI, with working tabs, scroll, classic links and return',async({page})=>{

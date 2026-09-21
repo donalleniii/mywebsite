@@ -16,6 +16,7 @@
     catch { document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
   </script>
   <link rel="stylesheet" href="assets/world/device.css">
+  <link rel="stylesheet" href="assets/world/accessibility.css">
 </head>
 <body>
   <a class="skip" href="#content-shortcuts">Skip to site content</a>
@@ -32,7 +33,7 @@
         <div class="stage-caption"><span id="device-caption">WOOD / SHAPES / FIRST IDEAS</span><span class="power-status"><i></i> HUMAN ONLINE</span></div>
         <div id="device-stage"></div>
         <section id="detail" class="screen-reader" role="dialog" aria-modal="true" aria-labelledby="detail-title" hidden>
-          <div class="reader-toolbar"><button id="close-detail" aria-label="Close content">← Back to play</button><span id="detail-tag"></span><a id="classic-content" href="classic.html">Classic / readable ↗</a></div>
+          <div class="reader-toolbar"><button id="close-detail" aria-label="Back to play">← Back to play</button><span id="detail-tag"></span><a id="classic-content" href="classic.html">Classic / readable ↗</a></div>
           <nav id="reader-nav" aria-label="Explore inside this screen"></nav>
           <div id="reader-scroll" tabindex="0" role="region" aria-label="Portfolio content"><div id="detail-content"></div></div>
           <div class="reader-footer"><span id="reader-medium"></span><span>DON ALLEN III · HUMAN ONLINE</span></div>
