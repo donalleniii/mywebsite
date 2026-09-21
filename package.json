@@ -1,0 +1,32 @@
+{
+  "name": "mywebsite",
+  "version": "1.0.0",
+  "description": "A playable journey through nine 3D devices and personal objects for Don Allen III",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "test": "playwright test",
+    "export": "node scripts/export.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donalleniii/mywebsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/donalleniii/mywebsite/issues"
+  },
+  "homepage": "https://github.com/donalleniii/mywebsite#readme",
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.63.0",
+    "agent-browser": "0.38.1",
+    "matter-js": "0.20.0",
+    "three": "0.180.0"
+  },
+  "private": true
+}
