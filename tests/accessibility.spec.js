@@ -15,7 +15,7 @@ for(const theme of ['light','dark']){
   for(let i=0;i<eras.length;i++){
    await page.locator(`[data-era="${i}"]`).click();
    await page.locator('[data-content="about"]').click();await expect(page.locator('[data-reader-ready="true"]')).toBeVisible();
-   for(const section of ['about','systems','omniii','keynotes','resources','connect']){
+   for(const section of ['about','systems','formwright','omniii','keynotes','resources','connect']){
     await page.locator(`[data-read="${section}"]`).click();await scan(page);
    }
    await page.locator('#close-detail').click();

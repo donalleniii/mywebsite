@@ -54,7 +54,7 @@ function closeContent(){
   window.scrollTo({top:readerScrollY,behavior:"instant"});lastFocus?.focus({preventScroll:true});
 }
 function renderCard(c,section){
- const video=videos[c.title],preview=section==='systems'?projectPreviews[c.title]:null;
+ const video=videos[c.title],preview=['systems','formwright'].includes(section)?projectPreviews[c.title]:null;
  let media='';
  if(video)media=`<a class="studio-media video-poster" href="${escape(c.url)}" target="_blank" rel="noopener noreferrer" aria-label="Watch ${escape(c.title)} on YouTube"><span class="media-placeholder" aria-hidden="true">${escape(video.label)}<strong>${escape(c.title)}</strong></span><img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" data-fallback="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" alt="${escape(c.title)} — video thumbnail" loading="lazy" width="1280" height="720"><span class="play-disc" aria-hidden="true">▶</span><span class="media-caption">WATCH ON YOUTUBE ↗</span></a>`;
  else if(preview)media=`<a class="studio-media project-poster" href="${escape(c.url)}"${c.url.startsWith('https:')?' target="_blank" rel="noopener noreferrer"':''} aria-label="Open ${escape(c.title)} project">${preview==='formwright'?'<img src="assets/formwright/painted-texture.jpg" alt="Painted FormWright 3D texture artwork" loading="lazy" width="640" height="360">':`<canvas data-preview="${preview}" aria-hidden="true" width="640" height="360"></canvas>`}<span class="project-name">${escape(c.title)}</span><span class="preview-caption">${preview==='formwright'?'3D / TEXTURE PAINTING':'ANIMATED STUDY'} <b>↗</b></span></a>`;
@@ -67,12 +67,12 @@ function openContent(id,opener=document.activeElement){
   outsideReader().forEach(el=>el.inert=true);$('#device-stage canvas')?.setAttribute('inert','');
   const e=eras[index];dialog.style.setProperty('--screen-paper',e.screen);dialog.style.setProperty('--screen-ink',e.ink);
   $('#detail-tag').textContent=d.short.toUpperCase();$('#reader-medium').textContent=e.id==='book'?'INK ON PAPER / TURN AN IDEA INTO SOMETHING':`${e.name.toUpperCase()} / DON OS`;
-  const hashes={connect:'services'};$('#classic-content').href=`classic.html#${personal[id]?'about':hashes[id]||id}`;
+  const hashes={connect:'services'};$('#classic-content').href=id==='formwright'?'formwright.html':`classic.html#${personal[id]?'about':hashes[id]||id}`;
   $('#reader-nav').innerHTML=(personal[id]?[personal[id],...destinations]:destinations).map(item=>`<button data-read="${item.id}" aria-current="${item.id===id?'page':'false'}">${escape(item.short)}</button>`).join('');
   $('#reader-nav').querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>openContent(button.dataset.read)));
   disposePreviews();
   const workshop=personal[id];
-  const gallery=['systems','keynotes'].includes(id);
+  const gallery=['systems','keynotes','formwright'].includes(id);
   const principle=workshop?'':`<div class="principle"><small>THE HUMAN PART</small><strong>${escape(d.principle)}</strong></div>`;
   $('#detail-content').dataset.section=id;
   $('#detail-content').innerHTML=workshop?`<h2 id="detail-title">${escape(d.title)}</h2><p role="status">Opening your little world…</p>`:`<p class="reader-kicker">${id==='systems'?'SYSTEMS I BUILD':escape(d.kicker)}</p><h2 id="detail-title">${escape(d.title)}</h2><p class="lead">${escape(d.lead)}</p>${gallery?'':`<p class="body-copy">${escape(d.body)}</p>`}${id==='connect'?`<a class="reader-cta" data-collaborate="connect-top" href="https://forms.gle/QVLGQnNdkHDoeVA77" target="_blank" rel="noopener noreferrer">Tell me what you’re imagining ↗<small>Start with the collaboration form</small></a>`:''}${['about','connect'].includes(id)?collaboratorWall():''}${gallery?'':principle}<div class="content-collection ${id==='systems'?'project-gallery':id==='keynotes'?'video-gallery':''}">${d.cards.map(c=>renderCard(c,id)).join('')}</div>${gallery?`<p class="body-copy">${escape(d.body)}</p>${principle}`:''}<div class="detail-links">${d.links.map(([label,url])=>link(label,url)).join('')}</div><button class="back-to-device" id="back-to-device">Back to Little Don →</button>`;

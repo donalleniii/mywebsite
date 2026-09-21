@@ -1,6 +1,6 @@
 # Playable preview accessibility checks
 
-This pass covers the playable homepage, its nine device palettes, all six portfolio reading sections, and the blocks/shore workshops. The preserved classic site and external destinations are outside this audit.
+This pass covers the playable homepage, its nine device palettes, all seven portfolio reading sections, and the blocks/shore workshops. The preserved classic site and external destinations are outside this audit.
 
 ## Readability changes
 
@@ -15,7 +15,7 @@ This pass covers the playable homepage, its nine device palettes, all six portfo
 
 Run `npx playwright test tests/accessibility.spec.js --workers=1`.
 
-The Chromium axe matrix checks WCAG 2 A/AA, 2.1 A/AA, and 2.2 AA rules on the home page and every portfolio section in every device, in both studio themes, plus both workshops (114 scans). Direct computed-style assertions also verify that reading text retains its device ink in both themes: overlapping WebGL surfaces can make axe’s contrast analysis inconclusive. Separate numerical checks cover the canvas label color pairs, since axe cannot inspect text drawn into WebGL/canvas. Chromium and WebKit reflow/keyboard checks cover 320px width, a 720px viewport representing a 1440px desktop at 200% zoom, and phone landscape. Existing device/studio/workshop tests cover movement, touch, modal focus, reduced motion, image fallbacks, and keyboard workshop controls.
+The Chromium axe matrix checks WCAG 2 A/AA, 2.1 A/AA, and 2.2 AA rules on the home page and every portfolio section in every device, in both studio themes, plus both workshops (132 scans). Direct computed-style assertions also verify that reading text retains its device ink in both themes: overlapping WebGL surfaces can make axe’s contrast analysis inconclusive. Separate numerical checks cover the canvas label color pairs, since axe cannot inspect text drawn into WebGL/canvas. Chromium and WebKit reflow/keyboard checks cover 320px width, a 720px viewport representing a 1440px desktop at 200% zoom, and phone landscape. Existing device/studio/workshop tests cover movement, touch, modal focus, reduced motion, image fallbacks, and keyboard workshop controls.
 
 Also visually review the actual rendered screens and thumbnail captions. The miniature game deliberately remains a small illustrative view until “Focus screen” or a portal is selected; portfolio reading content is semantic HTML, and equivalent content buttons do not require playing the game. A viewport-size reflow test does not replace testing actual browser text scaling or zoom with assistive technology.
 

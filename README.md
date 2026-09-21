@@ -7,7 +7,7 @@ Visitors guide **Little Don** through nine playable interfaces:
 1. A translucent indigo Game Boy Advance — story and learning.
 2. A beige 1990s CRT and keyboard — projects and creative process.
 3. An open flip phone — speaking and collaboration.
-4. An iPad with a pencil — OMNIII and current systems.
+4. An iPad with a pencil — FormWright and current systems.
 5. An animated organic, holographic interface — future possibilities.
 6. An open hardback sketchbook — ink-drawn Don, stories, and a curiosity library.
 7. Wooden building blocks — childhood curiosity and making.
