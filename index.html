@@ -822,7 +822,9 @@
     // Intro film: plays once, ends on the name card. Pause, play, and replay control.
     var video = document.getElementById('intro');
     var ctl = document.getElementById('film-ctl'), label = document.getElementById('film-label'), ico = document.getElementById('film-ico');
-        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var still = window.matchMedia('(max-width: 700px)').matches ? 'assets/video/don-intro-4x5-poster.jpg' : 'assets/video/don-intro-16x9-poster.jpg';
+    function showStill() { if (!video.getAttribute('poster')) video.poster = still; }
     var ICONS = {
         pause: '<rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor"/>',
         play: '<path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/>',
@@ -839,6 +841,11 @@
         var p = video.play && video.play();
         if (p && p.catch) p.catch(function () { setCtl('play'); });
     }
+    // If the film can't play here (unsupported, blocked, or a slow connection),
+    // show the name card as a still rather than an empty frame.
+    var sources = video.querySelectorAll('source');
+    sources[sources.length - 1].addEventListener('error', function () { showStill(); setCtl('play'); });
+    setTimeout(function () { if (video.readyState < 2 && document.visibilityState === 'visible') showStill(); }, 3500);
     video.addEventListener('play', function () { setCtl('pause'); });
     video.addEventListener('pause', function () { if (!video.ended) setCtl('play'); });
     video.addEventListener('ended', function () { setCtl('replay'); });
