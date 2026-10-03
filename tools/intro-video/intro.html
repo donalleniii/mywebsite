@@ -1,0 +1,559 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Don Allen III intro</title>
+<style>
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;
+  src:url(node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2) format('woff2-variations');}
+:root{
+  --ink:#17141F; --canvas:#F1F2F4; --muted:#6B6878; --orange:#FF5A1F; --violet:#6A4BFF;
+}
+html,body{margin:0;background:var(--canvas);}
+#stage{position:relative;overflow:hidden;background:var(--canvas);font-family:'Archivo',sans-serif;color:var(--ink);
+  -webkit-font-smoothing:antialiased;text-rendering:geometricPrecision;}
+#gl,#paint{position:absolute;inset:0;width:100%;height:100%;}
+#scrim{background:linear-gradient(90deg, rgba(241,242,244,0.92) 0%, rgba(241,242,244,0.78) 30%, rgba(241,242,244,0) 52%);opacity:0;}
+#stage.portrait #scrim{background:linear-gradient(180deg, rgba(241,242,244,0.95) 0%, rgba(241,242,244,0.8) 34%, rgba(241,242,244,0) 52%);}
+.layer{position:absolute;inset:0;pointer-events:none;}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding:0.06em 0.02em 0.1em;margin:-0.06em -0.02em -0.1em;}
+.w > span{display:inline-block;will-change:transform;}
+.line{display:block;white-space:nowrap;}
+
+/* Headline system (landscape) */
+.hl{position:absolute;left:var(--padx);top:var(--hl-top);font-weight:720;font-stretch:118%;
+  font-size:var(--hl-size);line-height:0.98;letter-spacing:-0.025em;}
+.cap{position:absolute;left:var(--padx);top:var(--cap-top);width:var(--cap-w);font-size:var(--cap-size);
+  line-height:1.38;font-weight:440;font-stretch:100%;color:var(--muted);letter-spacing:-0.003em;}
+.cap b{color:var(--ink);font-weight:680;font-stretch:108%;}
+.creds{position:absolute;left:var(--padx);top:var(--cap-top);font-size:var(--cred-size);font-weight:560;line-height:1.5;font-stretch:104%;}
+.creds .row{display:flex;align-items:center;gap:0.55em;}
+.creds .dot{display:inline-block;width:0.42em;height:0.42em;border-radius:50%;margin-right:0.6em;vertical-align:0.12em;}
+.marks{position:absolute;display:grid;grid-template-columns:repeat(4,auto);column-gap:var(--mark-gap);row-gap:var(--mark-row);
+  left:var(--padx);top:var(--marks-top);font-weight:640;font-stretch:120%;font-size:var(--mark-size);letter-spacing:-0.01em;}
+.marks .m{justify-self:start;}
+.marklbl{position:absolute;left:var(--padx);top:var(--cap-top);font-size:var(--cap-size);color:var(--muted);font-weight:500;}
+
+/* Opening and end card */
+.center{position:absolute;left:0;right:0;text-align:center;}
+#hi{top:var(--hi-top);font-size:var(--hi-size);font-weight:520;font-stretch:108%;color:var(--muted);}
+#name{top:var(--name-top);font-size:var(--name-size);font-weight:760;letter-spacing:-0.035em;line-height:1;}
+#role{top:var(--role-top);font-size:var(--role-size);font-weight:520;font-stretch:112%;}
+#url{top:var(--url-top);font-size:var(--url-size);font-weight:520;color:var(--muted);font-stretch:104%;}
+#triad{top:var(--triad-top);font-size:var(--triad-size);font-weight:640;font-stretch:120%;color:var(--ink);}
+#triad .w{margin-right:0.45em;}
+
+/* Chapter bar */
+#chapters{position:absolute;left:var(--padx);bottom:var(--chap-bottom);display:flex;gap:var(--chap-gap);font-size:var(--chap-size);font-weight:600;font-stretch:110%;}
+#chapters .c{position:relative;color:#B9B8C2;}
+#chapters .c i{position:absolute;left:0;bottom:-0.55em;height:3px;border-radius:2px;background:var(--orange);width:0;}
+</style>
+<script type="importmap">
+{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <div id="scrim" class="layer"></div>
+  <canvas id="paint"></canvas>
+  <div class="layer" id="type">
+    <!-- S1 -->
+    <div class="center" id="hi"><span class="w"><span>Hi,</span></span> <span class="w"><span>I'm</span></span></div>
+    <div class="center" id="name"><span class="w"><span>Don</span></span> <span class="w"><span>Allen</span></span> <span class="w"><span>III</span></span></div>
+
+    <!-- S2 build -->
+    <div class="hl" id="h-build"><span class="line"><span class="w"><span>I build tools</span></span></span><span class="line"><span class="w"><span>for creators.</span></span></span></div>
+    <div class="cap" id="c-build"><span class="w"><span><b>FormWright 3D</b> is my 3D modeling app for iPad.</span></span><br><span class="w"><span>Model it, paint it, export it. On the App Store now.</span></span></div>
+
+    <!-- S3 research -->
+    <div class="hl" id="h-research"><span class="line"><span class="w"><span>I research</span></span></span><span class="line"><span class="w"><span>what's next.</span></span></span></div>
+    <div class="cap" id="c-research"><span class="w"><span>I lead the <b>A.R.T. Department</b> at Asteria</span></span><br><span class="w"><span>and ship open-source tools for 3D capture</span></span><br><span class="w"><span>and Gaussian splats.</span></span></div>
+
+    <!-- S4 teach -->
+    <div class="hl" id="h-teach"><span class="line"><span class="w"><span>Then I teach it</span></span></span><span class="line"><span class="w"><span>to everyone.</span></span></span></div>
+    <div class="creds" id="c-teach">
+      <div class="row w"><span><span class="dot" style="background:#FF5A1F"></span>MasterClass instructor</span></div>
+      <div class="row w"><span><span class="dot" style="background:#FFB21A"></span>Former DreamWorks Animation trainer</span></div>
+      <div class="row w"><span><span class="dot" style="background:#2F6BFF"></span>Author of <i style="font-style:normal;font-weight:700">Make a Seat</i></span></div>
+      <div class="row w"><span><span class="dot" style="background:#6A4BFF"></span>A 245K+ community online</span></div>
+    </div>
+
+    <!-- S5 advise -->
+    <div class="hl" id="h-advise"><span class="line"><span class="w"><span>And I help teams</span></span></span><span class="line"><span class="w"><span>put it to work.</span></span></span></div>
+    <div class="marklbl" id="marklbl"><span class="w"><span>Advisor and collaborator</span></span></div>
+    <div class="marks" id="marks">
+      <span class="m w"><span>Meta</span></span><span class="m w"><span>WhatsApp</span></span><span class="m w"><span>Adobe</span></span><span class="m w"><span>OpenAI</span></span>
+      <span class="m w"><span>Apple</span></span><span class="m w"><span>MasterClass</span></span><span class="m w"><span>TED</span></span><span class="m w"><span>Snap</span></span>
+    </div>
+
+    <!-- S6 end card -->
+    <div class="center" id="triad"><span class="w"><span>Build.</span></span><span class="w"><span>Research.</span></span><span class="w"><span>Teach.</span></span></div>
+    <div class="center" id="role"><span class="w"><span>Creative technologist</span></span></div>
+    <div class="center" id="url"><span class="w"><span>donalleniii.me</span></span></div>
+
+    <div id="chapters"><span class="c" data-i="0">Build<i></i></span><span class="c" data-i="1">Research<i></i></span><span class="c" data-i="2">Teach<i></i></span><span class="c" data-i="3">Advise<i></i></span></div>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
+
+const params = new URLSearchParams(location.search);
+const W = +(params.get('w') || 1920), H = +(params.get('h') || 1080);
+const PORTRAIT = H > W;
+const DURATION = 22.0;
+const stage = document.getElementById('stage');
+stage.style.width = W + 'px'; stage.style.height = H + 'px';
+if (PORTRAIT) stage.classList.add('portrait');
+
+// ---------- layout tokens ----------
+const u = Math.min(W, H) / 1080; // unit scale
+function setVar(k, v){ stage.style.setProperty(k, v); }
+if (!PORTRAIT) {
+  setVar('--padx', 150*u+'px'); setVar('--hl-top', 330*u+'px'); setVar('--hl-size', 104*u+'px');
+  setVar('--cap-top', 585*u+'px'); setVar('--cap-w', 820*u+'px'); setVar('--cap-size', 31*u+'px');
+  setVar('--cred-size', 36*u+'px'); setVar('--mark-size', 46*u+'px'); setVar('--mark-gap', 64*u+'px'); setVar('--mark-row', 40*u+'px');
+  setVar('--marks-top', 650*u+'px');
+  setVar('--hi-top', 318*u+'px'); setVar('--hi-size', 44*u+'px');
+  setVar('--name-top', 392*u+'px'); setVar('--name-size', 170*u+'px');
+  setVar('--triad-top', 318*u+'px'); setVar('--triad-size', 40*u+'px');
+  setVar('--role-top', 690*u+'px'); setVar('--role-size', 44*u+'px');
+  setVar('--url-top', 762*u+'px'); setVar('--url-size', 30*u+'px');
+  setVar('--chap-bottom', 92*u+'px'); setVar('--chap-gap', 44*u+'px'); setVar('--chap-size', 22*u+'px');
+} else {
+  const s = W/1080;
+  setVar('--padx', 84*s+'px'); setVar('--hl-top', 150*s+'px'); setVar('--hl-size', 92*s+'px');
+  setVar('--cap-top', 385*s+'px'); setVar('--cap-w', 900*s+'px'); setVar('--cap-size', 33*s+'px');
+  setVar('--cred-size', 38*s+'px'); setVar('--mark-size', 50*s+'px'); setVar('--mark-gap', 44*s+'px'); setVar('--mark-row', 34*s+'px');
+  setVar('--marks-top', 470*s+'px');
+  setVar('--hi-top', 470*s+'px'); setVar('--hi-size', 46*s+'px');
+  setVar('--name-top', 545*s+'px'); setVar('--name-size', 128*s+'px');
+  setVar('--triad-top', 455*s+'px'); setVar('--triad-size', 40*s+'px');
+  setVar('--role-top', 840*s+'px'); setVar('--role-size', 46*s+'px');
+  setVar('--url-top', 912*s+'px'); setVar('--url-size', 32*s+'px');
+  setVar('--chap-bottom', 84*s+'px'); setVar('--chap-gap', 40*s+'px'); setVar('--chap-size', 26*s+'px');
+  // marks: 2 columns in portrait, left aligned under headline
+  const mk = document.getElementById('marks');
+  mk.style.gridTemplateColumns = 'repeat(2,auto)';
+  setVar('--marks-top', 450*s+'px');
+}
+
+// ---------- easing + timeline helpers ----------
+const clamp = (x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const lerp = (a,b,t)=>a+(b-a)*t;
+const prog = (t,a,b)=>clamp((t-a)/(b-a));
+const eOutExpo = x=> x>=1?1:1-Math.pow(2,-10*x);
+const eInExpo = x=> x<=0?0:Math.pow(2,10*x-10);
+const eInOutCubic = x=> x<0.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const eOutCubic = x=>1-Math.pow(1-x,3);
+const eInOutSine = x=>-(Math.cos(Math.PI*x)-1)/2;
+function smooth(x){ x=clamp(x); return x*x*(3-2*x); }
+
+// seeded rng
+let seed = 1337; function rnd(){ seed = (seed*16807)%2147483647; return (seed-1)/2147483646; }
+function gauss(){ let u=0,v=0; while(!u)u=rnd(); while(!v)v=rnd(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+
+// word reveal: each .w > span slides from below (in) and up and out (out)
+function words(el){ return [...el.querySelectorAll('.w > span')]; }
+function revealGroup(el, t, tin, tout, stagger=0.07, dur=0.75, outDur=0.45){
+  if(!el) return;
+  const ws = words(el);
+  let anyVisible=false;
+  ws.forEach((w,i)=>{
+    const a = tin + i*stagger;
+    const pin = eOutExpo(prog(t, a, a+dur));
+    const b = tout + i*stagger*0.5;
+    const pout = eInExpo(prog(t, b, b+outDur));
+    const y = (1-pin)*112 - pout*112;
+    w.style.transform = `translate3d(0,${y}%,0)`;
+    if (pin>0 && pout<1) anyVisible = true;
+  });
+  el.style.visibility = anyVisible ? 'visible':'hidden';
+}
+
+// ---------- 2D paint stroke ----------
+const pc = document.getElementById('paint');
+pc.width = W; pc.height = H;
+const px = pc.getContext('2d');
+const BRISTLES = 64, SAMPLES = 420;
+const bristle = [];
+seed = 99;
+for (let k=0;k<BRISTLES;k++){
+  bristle.push({ off: (k/(BRISTLES-1))*2-1 + (rnd()-0.5)*0.05, a: 0.25+rnd()*0.6, wJ: 0.6+rnd()*0.9, gap: rnd(), gapLen: 0.03+rnd()*0.08, lag: rnd()*0.06 });
+}
+function strokePath(s, variant){
+  // gentle swash across the frame. s in [0,1]
+  const cx = W/2, cy = PORTRAIT ? H*0.585 : H*0.585;
+  const len = PORTRAIT ? W*0.80 : W*0.50;
+  const x = cx - len/2 + len*s;
+  const y = cy + Math.sin(s*Math.PI*1.15 + 0.2)*(-26*u) + Math.sin(s*9.0)*3*u;
+  return [x,y];
+}
+const strokeCols = [[255,90,31],[255,138,40],[214,72,150],[106,75,255]];
+function strokeColor(s){
+  const n = strokeCols.length-1; const i = Math.min(n-1, Math.floor(s*n)); const f = s*n - i;
+  const a = strokeCols[i], b = strokeCols[i+1];
+  return [lerp(a[0],b[0],f), lerp(a[1],b[1],f), lerp(a[2],b[2],f)];
+}
+function drawStroke(p, alpha, variant){
+  if (p<=0 || alpha<=0) return;
+  const width = (PORTRAIT? 30: 34)*u;
+  for (const b of bristle){
+    const bp = clamp((p - b.lag)/(1-b.lag));
+    const end = Math.floor(bp*SAMPLES);
+    if (end<2) continue;
+    px.beginPath();
+    let pen=false;
+    for (let i=0;i<=end;i++){
+      const s = i/SAMPLES;
+      const taper = Math.pow(Math.sin(Math.PI*clamp(s*1.02)),0.55);
+      const dry = ((s + b.gap) % 1) < b.gapLen && s>0.25; // dry-brush skips
+      const [x,y] = strokePath(s, variant);
+      const yy = y + b.off*width*taper*b.wJ*0.62 + b.off*width*0.38*taper;
+      if (dry){ pen=false; continue; }
+      if (!pen){ px.moveTo(x,yy); pen=true; } else px.lineTo(x,yy);
+    }
+    const s0 = clamp(end/SAMPLES*0.5);
+    const g = px.createLinearGradient(strokePath(0,variant)[0],0,strokePath(1,variant)[0],0);
+    strokeCols.forEach((c,i)=>g.addColorStop(i/(strokeCols.length-1), `rgba(${c[0]},${c[1]},${c[2]},${b.a*alpha})`));
+    px.strokeStyle = g; px.lineWidth = 1.6*u; px.lineCap='round'; px.lineJoin='round';
+    px.stroke();
+  }
+}
+
+// ---------- three.js ----------
+const canvas = document.getElementById('gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, preserveDrawingBuffer:true, alpha:false });
+renderer.setPixelRatio(1); renderer.setSize(W, H, false);
+renderer.localClippingEnabled = true;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+const BG = new THREE.Color('#F1F2F4');
+const scene = new THREE.Scene(); scene.background = BG;
+scene.fog = new THREE.Fog(BG, 6, 17);
+const camera = new THREE.PerspectiveCamera(32, W/H, 0.05, 100);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.add(new THREE.HemisphereLight(0xffffff, 0xd9dbe2, 0.6));
+const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(3,5,4); scene.add(key);
+
+// viewport grid (fades with distance via fog)
+const gridGroup = new THREE.Group(); scene.add(gridGroup);
+function makeGrid(size, div, color, opacity){
+  const g = new THREE.GridHelper(size, div, color, color);
+  g.material.transparent = true; g.material.opacity = opacity; g.material.depthWrite = false;
+  return g;
+}
+const gridMinor = makeGrid(40, 160, 0xC9CBD3, 0.55);
+const gridMajor = makeGrid(40, 40, 0xB4B7C2, 0.75);
+gridGroup.add(gridMinor, gridMajor);
+// axis lines (viewport convention: x red, z blue), subtle
+function axisLine(a,b,color){ const g=new THREE.BufferGeometry().setFromPoints([a,b]); const m=new THREE.LineBasicMaterial({color,transparent:true,opacity:0.55,depthWrite:false}); return new THREE.Line(g,m); }
+const axX = axisLine(new THREE.Vector3(-20,0.002,0), new THREE.Vector3(20,0.002,0), 0xF2585A);
+const axZ = axisLine(new THREE.Vector3(0,0.002,-20), new THREE.Vector3(0,0.002,20), 0x5A82F2);
+gridGroup.add(axX, axZ);
+
+// model
+const modelRoot = new THREE.Group(); scene.add(modelRoot);
+const clipSurface = new THREE.Plane(new THREE.Vector3(0,-1,0), 0);
+const clipWire = new THREE.Plane(new THREE.Vector3(0,-1,0), 0);
+let surfaceMat, wireMat, vertMat, sampler, sampleCount = 7000;
+const local = new Float32Array(sampleCount*3), cols = new Float32Array(sampleCount*3), sizes = new Float32Array(sampleCount), phase = new Float32Array(sampleCount);
+let mesh;
+
+const gltf = await new GLTFLoader().loadAsync('../../assets/formwright/FormWrightPad-20260909-181947.glb');
+mesh = gltf.scene.getObjectByProperty('type','Mesh');
+const box = new THREE.Box3().setFromObject(gltf.scene);
+const center = box.getCenter(new THREE.Vector3()); const size = box.getSize(new THREE.Vector3());
+const scale = 2.3 / Math.max(size.x, size.z);
+const inner = new THREE.Group();
+inner.add(gltf.scene);
+gltf.scene.position.set(-center.x, -box.min.y, -center.z);
+inner.scale.setScalar(scale);
+modelRoot.add(inner);
+surfaceMat = mesh.material;
+surfaceMat.clippingPlanes = [clipSurface];
+surfaceMat.transparent = true;
+surfaceMat.side = THREE.DoubleSide;
+// wireframe: edges at a feature angle
+const edges = new THREE.EdgesGeometry(mesh.geometry, 12);
+wireMat = new THREE.LineBasicMaterial({ color: 0x17141F, transparent:true, opacity:0.0, clippingPlanes:[clipWire], depthWrite:false });
+const wire = new THREE.LineSegments(edges, wireMat);
+mesh.add(wire);
+// vertex dots (subsampled)
+{
+  const pos = mesh.geometry.attributes.position; const pts=[]; seed=7;
+  for (let i=0;i<pos.count;i+=9){ pts.push(pos.getX(i),pos.getY(i),pos.getZ(i)); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
+  vertMat = new THREE.PointsMaterial({ color:0xFF5A1F, size: 5*u, sizeAttenuation:false, transparent:true, opacity:0, clippingPlanes:[clipWire], depthWrite:false });
+  mesh.add(new THREE.Points(g, vertMat));
+}
+
+// surface samples for splats, colored from the painted texture
+{
+  const tex = surfaceMat.map; const img = tex.image;
+  const tc = document.createElement('canvas'); tc.width = img.width; tc.height = img.height;
+  const tctx = tc.getContext('2d'); tctx.drawImage(img,0,0); const data = tctx.getImageData(0,0,img.width,img.height).data;
+  sampler = new MeshSurfaceSampler(mesh).build();
+  const p = new THREE.Vector3(), n = new THREE.Vector3(), c = new THREE.Color(), uv = new THREE.Vector2();
+  seed = 4242;
+  // monkeypatch random to our seeded rng for determinism
+  sampler.randomFunction = rnd;
+  for (let i=0;i<sampleCount;i++){
+    sampler.sample(p, n, undefined, uv);
+    local[i*3]=p.x; local[i*3+1]=p.y; local[i*3+2]=p.z;
+    const tx = Math.floor(((uv.x%1+1)%1)*(img.width-1)), ty = Math.floor(((1-uv.y)%1+1)%1*(img.height-1));
+    // GLTF uses flipY=false: v maps directly
+    const ty2 = Math.floor((((uv.y)%1+1)%1)*(img.height-1));
+    const k = (ty2*img.width+tx)*4;
+    let r=data[k]/255,g=data[k+1]/255,b=data[k+2]/255;
+    if (data[k+3] < 10){ r=1; g=0.35; b=0.12; }
+    cols[i*3]=r; cols[i*3+1]=g; cols[i*3+2]=b;
+    sizes[i] = 0.6 + rnd()*0.9;
+    phase[i] = rnd();
+  }
+}
+
+// splat point cloud
+const splatGeo = new THREE.BufferGeometry();
+const splatPos = new Float32Array(sampleCount*3);
+const splatCol = new Float32Array(sampleCount*3);
+const splatSize = new Float32Array(sampleCount);
+splatGeo.setAttribute('position', new THREE.BufferAttribute(splatPos,3));
+splatGeo.setAttribute('color', new THREE.BufferAttribute(splatCol,3));
+splatGeo.setAttribute('psize', new THREE.BufferAttribute(splatSize,1));
+const splatMat = new THREE.ShaderMaterial({
+  transparent:true, depthWrite:false, vertexColors:true,
+  uniforms:{ uOpacity:{value:0}, uScale:{value: H*0.5}, uFogNear:{value:6}, uFogFar:{value:17}, uFogColor:{value:BG} },
+  vertexShader:`
+    attribute float psize; varying vec3 vCol; varying float vFog;
+    uniform float uScale; uniform float uFogNear; uniform float uFogFar;
+    void main(){
+      vCol = color;
+      vec4 mv = modelViewMatrix * vec4(position,1.0);
+      gl_PointSize = psize * uScale / -mv.z;
+      vFog = smoothstep(uFogNear, uFogFar, -mv.z);
+      gl_Position = projectionMatrix * mv;
+    }`,
+  fragmentShader:`
+    varying vec3 vCol; varying float vFog; uniform float uOpacity; uniform vec3 uFogColor;
+    void main(){
+      vec2 d = gl_PointCoord - 0.5; float r2 = dot(d,d)*4.0;
+      float a = exp(-r2*3.2);
+      if (a < 0.02) discard;
+      vec3 c = mix(vCol, uFogColor, vFog);
+      gl_FragColor = vec4(c, a*uOpacity*(1.0-vFog*0.9));
+      #include <colorspace_fragment>
+    }`
+});
+const splats = new THREE.Points(splatGeo, splatMat); splats.frustumCulled = false;
+scene.add(splats);
+
+// precompute cloud + grid targets
+const cloud = new Float32Array(sampleCount*3), cloudR = new Float32Array(sampleCount), cloudA = new Float32Array(sampleCount), cloudY = new Float32Array(sampleCount);
+const gridT = new Float32Array(sampleCount*3);
+seed = 2024;
+for (let i=0;i<sampleCount;i++){
+  cloudR[i] = 0.35 + Math.pow(rnd(),0.7)*1.95;
+  cloudA[i] = rnd()*Math.PI*2;
+  cloudY[i] = 0.85 + gauss()*0.2*(1.5 - cloudR[i]*0.35);
+}
+const GX = 100, GZ = 70;
+for (let i=0;i<sampleCount;i++){
+  const gx = i % GX, gz = Math.floor(i / GX);
+  gridT[i*3] = (gx/(GX-1)-0.5)*6.4;
+  gridT[i*3+1] = 0.02;
+  gridT[i*3+2] = (gz/(GZ-1)-0.5)*4.4;
+}
+
+// camera keyframes: time, azimuth(deg), elevation(deg), radius, target y, target x, view offset x (fraction of width)
+const camKeys = PORTRAIT ? [
+  [0.0,  -18, 38, 9.0, 0.6, 0, 0, 0],
+  [3.0,  -26, 26, 6.2, 0.22, 0, 0, 0.2],
+  [7.2,   18, 22, 5.8, 0.22, 0, 0, 0.2],
+  [8.6,   34, 20, 7.6, 0.85, 0, 0, 0.2],
+  [11.4,  66, 24, 7.8, 0.85, 0, 0, 0.2],
+  [12.6,  78, 40, 8.2, 0.1, 0, 0, 0.2],
+  [15.4, 100, 44, 8.4, 0.1, 0, 0, 0.2],
+  [18.6, 120, 48, 9.0, 0.1, 0, 0, 0.2],
+  [22.0, 136, 58, 10.0, 0.4, 0, 0, 0]
+] : [
+  [0.0,  -18, 38, 9.0, 0.6, 0, 0, 0],
+  [3.0,  -26, 26, 5.2, 0.2, 0, 0.245, 0],
+  [7.2,   18, 22, 4.9, 0.2, 0, 0.245, 0],
+  [8.6,   34, 20, 7.0, 0.85, 0, 0.22, 0],
+  [11.4,  66, 24, 7.2, 0.85, 0, 0.21, 0],
+  [12.6,  78, 40, 7.4, 0.1, 0, 0.21, 0],
+  [15.4, 100, 44, 7.6, 0.1, 0, 0.21, 0],
+  [18.6, 120, 48, 8.4, 0.1, 0, 0.21, 0],
+  [22.0, 136, 58, 10.0, 0.4, 0, 0.0, 0]
+];
+function camAt(t){
+  let i=0; while(i<camKeys.length-2 && t>camKeys[i+1][0]) i++;
+  const a=camKeys[i], b=camKeys[i+1];
+  const f = eInOutSine(prog(t,a[0],b[0]));
+  const v = a.map((x,k)=> k===0?t: lerp(x,b[k],f));
+  return v;
+}
+
+function setCamera(t){
+  const [, az, el, r, ty, tx, offX, offY] = camAt(t);
+  const A = THREE.MathUtils.degToRad(az), E = THREE.MathUtils.degToRad(el);
+  camera.position.set(tx + r*Math.cos(E)*Math.sin(A), ty + r*Math.sin(E), r*Math.cos(E)*Math.cos(A));
+  camera.lookAt(tx, ty, 0);
+  camera.setViewOffset(W, H, -offX*W, -offY*H, W, H);
+  camera.updateProjectionMatrix();
+}
+
+// ---------- chapters ----------
+const chapEls = [...document.querySelectorAll('#chapters .c')];
+const chapTimes = [[3.3,7.4],[7.4,11.5],[11.5,15.5],[15.5,19.0]];
+
+// ---------- frame ----------
+const tmp = new THREE.Vector3();
+const mtx = new THREE.Matrix4();
+window.renderFrame = function(t){
+  // ===== 2D layers =====
+  px.clearRect(0,0,W,H);
+  // S1 stroke under name
+  const s1p = eInOutCubic(prog(t, 0.15, 1.35));
+  const s1a = 1 - smooth(prog(t, 2.55, 3.15));
+  drawStroke(s1p, s1a, 0);
+  // S6 stroke
+  const s6p = eInOutCubic(prog(t, 19.35, 20.45));
+  drawStroke(s6p, 1, 1);
+
+  revealGroup(document.getElementById('hi'), t, 0.55, 2.55, 0.08);
+  revealGroup(document.getElementById('name'), t, 0.75, 2.6, 0.09, 0.9);
+  // name width breathes from condensed to wide
+  const nm = document.getElementById('name');
+  const ns = 19.0 <= t ? null : lerp(80, 118, eOutExpo(prog(t, 0.75, 1.9)));
+  if (t < 19.0) nm.style.fontStretch = ns + '%';
+  if (t >= 19.0){
+    // reuse name for end card
+    nm.style.fontStretch = lerp(80, 118, eOutExpo(prog(t, 19.55, 20.8))) + '%';
+    revealGroup(nm, t, 19.55, 99, 0.09, 0.9);
+  }
+
+  revealGroup(document.getElementById('h-build'), t, 3.35, 7.0, 0.1);
+  revealGroup(document.getElementById('c-build'), t, 4.35, 7.05, 0.12);
+  revealGroup(document.getElementById('h-research'), t, 7.55, 11.1, 0.1);
+  revealGroup(document.getElementById('c-research'), t, 8.4, 11.15, 0.1);
+  revealGroup(document.getElementById('h-teach'), t, 11.65, 15.1, 0.1);
+  revealGroup(document.getElementById('c-teach'), t, 12.35, 15.15, 0.2);
+  revealGroup(document.getElementById('h-advise'), t, 15.65, 18.75, 0.1);
+  revealGroup(document.getElementById('marklbl'), t, 16.1, 18.8, 0.1);
+  revealGroup(document.getElementById('marks'), t, 16.3, 18.85, 0.07);
+  revealGroup(document.getElementById('triad'), t, 19.25, 99, 0.12);
+  revealGroup(document.getElementById('role'), t, 20.35, 99, 0.1);
+  revealGroup(document.getElementById('url'), t, 20.6, 99, 0.1);
+
+  document.getElementById('scrim').style.opacity = smooth(prog(t, 3.0, 3.6)) * (1 - smooth(prog(t, 18.7, 19.3)));
+  // chapters
+  const chapIn = eOutCubic(prog(t, 3.3, 3.9)) * (1 - eInOutCubic(prog(t, 18.7, 19.2)));
+  document.getElementById('chapters').style.opacity = chapIn;
+  chapEls.forEach((c,i)=>{
+    const [a,b] = chapTimes[i];
+    const active = t>=a && t<b;
+    const done = t>=b;
+    c.style.color = active ? '#17141F' : (done ? '#8D8A99' : '#B9B8C2');
+    c.querySelector('i').style.width = active ? (prog(t,a,b)*100)+'%' : (done? '100%':'0%');
+    c.querySelector('i').style.opacity = active ? 1 : (done ? 0.0 : 0);
+  });
+
+  // ===== 3D =====
+  setCamera(t);
+  const gridOn = smooth(prog(t, 2.5, 3.6)) * (1 - 0.65*smooth(prog(t, 18.8, 20.0)));
+  gridMinor.material.opacity = 0.55*gridOn; gridMajor.material.opacity = 0.75*gridOn;
+  axX.material.opacity = axZ.material.opacity = 0.5*gridOn;
+  gridGroup.visible = gridOn > 0.001;
+
+  // model rotation
+  const rot = -0.6 + t*0.32;
+  modelRoot.rotation.y = rot;
+  const mScale = lerp(0.85, 1.0, eOutExpo(prog(t, 3.3, 4.6)));
+  modelRoot.scale.setScalar(mScale);
+  modelRoot.position.set(0,0,0);
+  modelRoot.updateMatrixWorld(true);
+
+  // model height range for clipping (world-space y 0..~0.6)
+  const hTop = 0.75;
+  const wireP = eInOutCubic(prog(t, 3.45, 4.75));
+  const surfP = eInOutCubic(prog(t, 4.85, 6.0));
+  clipWire.constant = lerp(-0.01, hTop, wireP);
+  clipSurface.constant = lerp(-0.01, hTop, surfP);
+  const modelFadeOut = 1 - smooth(prog(t, 7.6, 8.5));
+  wireMat.opacity = 0.42 * smooth(prog(t,3.45,3.9)) * (1 - smooth(prog(t, 5.6, 6.6))) ;
+  vertMat.opacity = 0.9 * smooth(prog(t,3.45,3.9)) * (1 - smooth(prog(t, 5.4, 6.2)));
+  surfaceMat.opacity = modelFadeOut;
+  modelRoot.visible = t >= 3.3 && modelFadeOut > 0.002;
+
+  // ===== splats =====
+  // phases: 7.3-8.6 surface->emerge, 8.6-11.6 cloud swirl, 11.6-12.8 to grid, 12.8-18.8 grid ripple, 18.8-19.5 converge
+  const emerge = smooth(prog(t, 7.25, 8.0));
+  const toCloud = prog(t, 7.9, 9.6);
+  const toGrid = prog(t, 11.55, 13.0);
+  const converge = prog(t, 18.75, 19.6);
+  splatMat.uniforms.uOpacity.value = emerge * (1 - smooth(prog(t, 19.3, 19.7)));
+  splats.visible = splatMat.uniforms.uOpacity.value > 0.002;
+  if (splats.visible){
+    mtx.copy(mesh.matrixWorld);
+    const swirl = t*0.11;
+    const dimAdvise = smooth(prog(t, 15.5, 16.3));
+    for (let i=0;i<sampleCount;i++){
+      const d = phase[i];
+      // surface position
+      tmp.set(local[i*3], local[i*3+1], local[i*3+2]).applyMatrix4(mtx);
+      let x=tmp.x, y=tmp.y, z=tmp.z;
+      // cloud
+      const ca = cloudA[i] + swirl*(1.4 - cloudR[i]*0.25);
+      const cr = cloudR[i];
+      const cx = Math.cos(ca)*cr, cz = Math.sin(ca)*cr, cy = cloudY[i] + Math.sin(t*0.9 + d*6.28)*0.05;
+      const pc = eInOutCubic(clamp((toCloud - d*0.35)/0.65));
+      x = lerp(x, cx, pc); y = lerp(y, cy, pc); z = lerp(z, cz, pc);
+      // grid with ripple
+      const gx = gridT[i*3], gz = gridT[i*3+2];
+      const dist = Math.hypot(gx, gz);
+      const ripple = Math.sin(dist*2.2 - t*3.2) * 0.09 * smooth(prog(t, 12.4, 13.4)) * Math.exp(-dist*0.18);
+      const pg = eInOutCubic(clamp((toGrid - d*0.4)/0.6));
+      x = lerp(x, gx, pg); y = lerp(y, 0.03 + ripple + 0.04, pg); z = lerp(z, gz, pg);
+      // converge to the paint origin
+      const pv = eInExpo(clamp((converge - d*0.3)/0.7));
+      x = lerp(x, 0, pv); y = lerp(y, 0.6, pv); z = lerp(z, 0, pv);
+      splatPos[i*3]=x; splatPos[i*3+1]=y; splatPos[i*3+2]=z;
+      // color: keep painted colors, in grid phase mix toward ink for most
+      const ink = pg * 0.82;
+      let r = lerp(cols[i*3],   0.09, ink), g = lerp(cols[i*3+1], 0.08, ink), b = lerp(cols[i*3+2], 0.12, ink);
+      // a wave of orange spreads out from the centre: knowledge moving through a crowd
+      const wave = Math.max(0, Math.sin(dist*2.2 - t*3.2)) ** 4 * smooth(prog(t, 12.4, 13.4)) * pg * (1 - dimAdvise*0.6);
+      r = lerp(r, 1.0, wave); g = lerp(g, 0.36, wave); b = lerp(b, 0.12, wave);
+      const fade = lerp(1, 0.6, dimAdvise*pg);
+      splatCol[i*3] = lerp(0.945, r, fade); splatCol[i*3+1] = lerp(0.95, g, fade); splatCol[i*3+2] = lerp(0.957, b, fade);
+      const sz = sizes[i] * lerp(0.035, 0.11, emerge) * lerp(1, 0.8, pg) * (1 + wave*0.9) * (1 - pv*0.8);
+      splatSize[i] = sz * (1 - (1-emerge)*0.5);
+    }
+    splatGeo.attributes.position.needsUpdate = true;
+    splatGeo.attributes.color.needsUpdate = true;
+    splatGeo.attributes.psize.needsUpdate = true;
+  }
+  renderer.render(scene, camera);
+};
+
+await document.fonts.ready;
+window.DURATION = DURATION;
+window.READY = true;
+if (params.get('play')) {
+  const t0 = performance.now();
+  const loop = ()=>{ const t = ((performance.now()-t0)/1000) % DURATION; renderFrame(t); requestAnimationFrame(loop); };
+  loop();
+} else {
+  renderFrame(+(params.get('t')||0));
+}
+</script>
+</body>
+</html>
