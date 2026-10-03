@@ -1,0 +1,17 @@
+{
+  "name": "don-intro-video",
+  "private": true,
+  "description": "Source for the homepage intro film. Renders frame by frame in headless Chromium, then encodes with ffmpeg.",
+  "type": "module",
+  "scripts": {
+    "serve": "cd ../.. && python3 -m http.server 8765",
+    "stills": "node stills.mjs 1920 1080 1.6 5.4 9.5 13.6 17.6 21.9",
+    "render:wide": "node render.mjs 1920 1080 master_16x9.mp4",
+    "render:tall": "node render.mjs 1080 1350 master_4x5.mp4"
+  },
+  "dependencies": {
+    "three": "0.169.0",
+    "@fontsource-variable/archivo": "^5.1.0",
+    "playwright": "^1.56.0"
+  }
+}
