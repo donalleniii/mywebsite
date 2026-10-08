@@ -1,0 +1,83 @@
+{
+  "updated": "2026-10-08",
+  "materialsURL": "https://donalleniii.me/formwright-open-source",
+  "rights": "FormWright-Open-Source-Rights",
+  "components": [
+    {
+      "id": "OCCT",
+      "name": "Open CASCADE Technology 8.0.1",
+      "summary": "Exact Solid geometry and STEP exchange. Copyright © 1999–2026 OPEN CASCADE S.A.S.; earlier portions © Matra Datavision and other contributors, as identified in the source. LGPL 2.1 with the OCCT additional exception. Source revision b8f597c677811d1f9f4d8a97f5ae2825c0353a42; no FormWright changes to OCCT source.",
+      "url": "https://github.com/Open-Cascade-SAS/OCCT/tree/V8_0_1",
+      "files": [
+        "OCCT-LICENSE-LGPL-21",
+        "OCCT-LGPL-EXCEPTION"
+      ]
+    },
+    {
+      "id": "earcut",
+      "name": "Mapbox Earcut",
+      "summary": "Polygon triangulation adapted to Swift. ISC license. Original upstream revision was not recorded; both the earlier and current Mapbox notices are retained.",
+      "url": "https://github.com/mapbox/earcut",
+      "files": [
+        "Earcut-2016-LICENSE",
+        "Earcut-LICENSE"
+      ]
+    },
+    {
+      "id": "ufbx",
+      "name": "ufbx 0.23.0",
+      "summary": "FBX import. © 2020 Samuli Raivio. Used under the MIT license (Alternative A). Revision fcc5d6ba444cfd3eb80677dba5e37e493941abe5.",
+      "url": "https://github.com/ufbx/ufbx",
+      "files": [
+        "ufbx-LICENSE"
+      ]
+    },
+    {
+      "id": "zstd",
+      "name": "Zstandard 1.5.7 and xxHash",
+      "summary": "Blender file decompression. © Meta Platforms, Inc. and affiliates; xxHash routines © Yann Collet – Meta Platforms, Inc. Used under the BSD license.",
+      "url": "https://github.com/facebook/zstd/tree/v1.5.7",
+      "files": [
+        "zstd-LICENSE",
+        "Zstandard-xxHash-NOTICE"
+      ]
+    },
+    {
+      "id": "delabella",
+      "name": "Delabella (within OCCT)",
+      "summary": "Triangulation. © 2018 GUMIX – Marcin Sokalski. MIT license.",
+      "url": "https://github.com/msokalski/delabella",
+      "files": [
+        "OCCT-delabella-LICENSE"
+      ]
+    },
+    {
+      "id": "strtod",
+      "name": "David M. Gay floating-point routines (within OCCT)",
+      "summary": "Number parsing. © 1991, 2000, 2001 Lucent Technologies. Permission notice and upstream OCCT adaptations retained.",
+      "url": "https://www.netlib.org/fp/",
+      "files": [
+        "OCCT-Strtod-LICENSE"
+      ]
+    },
+    {
+      "id": "flex",
+      "name": "FlexLexer (within OCCT)",
+      "summary": "STEP lexer interface. © 1993 The Regents of the University of California. BSD-style license.",
+      "url": "https://github.com/westes/flex",
+      "files": [
+        "OCCT-FlexLexer-LICENSE"
+      ]
+    },
+    {
+      "id": "bison",
+      "name": "GNU Bison parser skeleton (within OCCT)",
+      "summary": "Generated STEP parser; GNU Bison 3.7.4. © Free Software Foundation, Inc. GPL 3 or later with the Bison special exception allowing the generated parser in larger works under other terms. FormWright is not a parser generator.",
+      "url": "https://www.gnu.org/software/bison/",
+      "files": [
+        "OCCT-Bison-NOTICE",
+        "Bison-GPL-3"
+      ]
+    }
+  ]
+}
