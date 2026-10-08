@@ -1,7 +1,37 @@
 [
   {
-    "title": "FormWright 1.2 (417) \u2014 iPhone/iPad relinking kit",
-    "status": "Available now: source, compiled application objects, required resources and build/signing instructions for replacing OCCT. Tested with a modified library on a physical iPad. This is a development package, not an installable app update. Match it to the version and build shown in the app.",
+    "title": "FormWright 1.2 (417) \u2014 TestFlight iPhone/iPad relinking kit",
+    "status": "Use this package for the October 8 TestFlight release with Solid modeling, the unified ViewCube controls and Solid Undo/Redo and arc-point fixes. It contains matching application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed for this exact final archive. This is a developer package, not an installable app update. The manifest identifies original executable SHA-256 06a74a740add0ac51fc33c8232a2c47676b78c2ca85839e9790397cdc8942915.",
+    "downloads": [
+      {
+        "name": "Download complete TestFlight relinking kit (137 MB)",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-417-testflight-relink/FormWright-1.2-417-TestFlight-iOS-relink-kit.tar.gz",
+        "bytes": 136696325,
+        "sha256": "00a3e4db3323f4f9b2d4d9ec286fff5614ef3c181046818b2449787fb7fcc2a4"
+      },
+      {
+        "name": "Read build and signing instructions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-417-testflight-relink/README.txt",
+        "bytes": 5257,
+        "sha256": "46ff604e255a05ca7de82ef4ea505b6780cf54a7bacf865b656a94dae9874173"
+      },
+      {
+        "name": "Download checksum file",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-417-testflight-relink/SHA256SUMS.txt",
+        "bytes": 118,
+        "sha256": "60c7b5b5d673baf74bdb6dee5a3f7cedec205b74476bf881af285a83fed0034a"
+      },
+      {
+        "name": "Read application modification permissions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-417-testflight-relink/FormWright-Open-Source-Rights.txt",
+        "bytes": 1340,
+        "sha256": "c5b5d773f92d65f80bfd9180359f65320c34e0023a97e087b8145efde66b7fca"
+      }
+    ]
+  },
+  {
+    "title": "Earlier local CAD candidate \u2014 1.2 (417), before the TestFlight release",
+    "status": "Historical package for the local candidate installed before the ViewCube and Solid history fixes. This executable was never uploaded to TestFlight. TestFlight users should use the newer package above. Preserved for owners of that local copy; its manifest identifies original executable SHA-256 262d47ba1ac66c53106a6b00ca737fd33a3b5790be3bbfd3c4a68554d83afc81. That earlier library-replacement path was tested on a physical iPad.",
     "downloads": [
       {
         "name": "Download complete relinking kit (137 MB)",
