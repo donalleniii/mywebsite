@@ -1,5 +1,35 @@
 [
   {
+    "title": "FormWright 1.2 (418) \u2014 iPhone/iPad relinking kit",
+    "status": "Matching materials for build 418, prepared for App Review. Publication of this developer package does not mean Apple has approved or released the app. It contains application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed for this archive. This is not an installable app update. Original executable SHA-256 f4743953d2155d34780e6c7ca5510116bb44d029d4e4ef9d181a81898034b9d4.",
+    "downloads": [
+      {
+        "name": "Download complete build 418 relinking kit (137 MB)",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-418-relink/FormWright-1.2-418-iOS-relink-kit.tar.gz",
+        "bytes": 136672602,
+        "sha256": "6d70c3a4d451c50b383bb36471f84b5b9948403232047fc889b56312138ce8b2"
+      },
+      {
+        "name": "Read build and signing instructions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-418-relink/README.txt",
+        "bytes": 5257,
+        "sha256": "46ff604e255a05ca7de82ef4ea505b6780cf54a7bacf865b656a94dae9874173"
+      },
+      {
+        "name": "Download checksum file",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-418-relink/SHA256SUMS.txt",
+        "bytes": 107,
+        "sha256": "fb83dc8a471cbab54b16d86189a620d70c5209f70dff4ca1ce5e02651f475f00"
+      },
+      {
+        "name": "Read application modification permissions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-418-relink/FormWright-Open-Source-Rights.txt",
+        "bytes": 1340,
+        "sha256": "c5b5d773f92d65f80bfd9180359f65320c34e0023a97e087b8145efde66b7fca"
+      }
+    ]
+  },
+  {
     "title": "FormWright 1.2 (417) \u2014 TestFlight iPhone/iPad relinking kit",
     "status": "Use this package for the October 8 TestFlight release with Solid modeling, the unified ViewCube controls and Solid Undo/Redo and arc-point fixes. It contains matching application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed for this exact final archive. This is a developer package, not an installable app update. The manifest identifies original executable SHA-256 06a74a740add0ac51fc33c8232a2c47676b78c2ca85839e9790397cdc8942915.",
     "downloads": [
@@ -61,7 +91,7 @@
   },
   {
     "title": "OCCT 8.0.1 corresponding source",
-    "status": "Exact unmodified upstream source used by FormWright 1.2 (417). The complete application relinking kit above also includes this source.",
+    "status": "Exact unmodified upstream source used by FormWright 1.2 builds 417 and 418. The complete application relinking kits above also include this source.",
     "downloads": [
       {
         "name": "Download OCCT 8.0.1 source",
