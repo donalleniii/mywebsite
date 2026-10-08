@@ -1,7 +1,37 @@
 [
   {
+    "title": "FormWright 1.2 (417) \u2014 iPhone/iPad relinking kit",
+    "status": "Available now: source, compiled application objects, required resources and build/signing instructions for replacing OCCT. Tested with a modified library on a physical iPad. This is a development package, not an installable app update. Match it to the version and build shown in the app.",
+    "downloads": [
+      {
+        "name": "Download complete relinking kit (137 MB)",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-417-relink/FormWright-1.2-417-iOS-relink-kit.tar.gz",
+        "bytes": 137155307,
+        "sha256": "e08ef376a48eb08b68ed8f8d4e8c4de9c678ac95b4525da899847140c7f4c759"
+      },
+      {
+        "name": "Read build and signing instructions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-417-relink/README.txt",
+        "bytes": 5257,
+        "sha256": "46ff604e255a05ca7de82ef4ea505b6780cf54a7bacf865b656a94dae9874173"
+      },
+      {
+        "name": "Download checksum file",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-417-relink/SHA256SUMS.txt",
+        "bytes": 107,
+        "sha256": "034d4e82f110d7ed05e5a37d5b1c5d9b51d3592ad9667a85975dd280ebfb80bd"
+      },
+      {
+        "name": "Read application modification permissions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.2-417-relink/FormWright-Open-Source-Rights.txt",
+        "bytes": 1340,
+        "sha256": "c5b5d773f92d65f80bfd9180359f65320c34e0023a97e087b8145efde66b7fca"
+      }
+    ]
+  },
+  {
     "title": "OCCT 8.0.1 corresponding source",
-    "status": "Exact upstream source used by the local CAD candidate. This source-only download is not the complete FormWright relinking kit. The app-specific kit is being verified before CAD beta distribution.",
+    "status": "Exact unmodified upstream source used by FormWright 1.2 (417). The complete application relinking kit above also includes this source.",
     "downloads": [
       {
         "name": "Download OCCT 8.0.1 source",
