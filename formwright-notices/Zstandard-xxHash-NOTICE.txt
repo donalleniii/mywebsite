@@ -1,0 +1,4 @@
+xxHash routines included in the Zstandard decoder
+Copyright (c) Yann Collet - Meta Platforms, Inc
+
+These Zstandard adaptations are used under the BSD license reproduced in zstd-LICENSE.txt.

@@ -1,0 +1,9 @@
+Open-source component rights
+
+FormWright uses Open CASCADE Technology (OCCT), licensed under the GNU Lesser General Public License version 2.1 with the OCCT additional exception. You have the rights provided by those licenses for OCCT.
+
+For the FormWright application combined with OCCT, you may modify your copy for your own use and reverse engineer it for debugging such modifications, including replacing and relinking OCCT. Any FormWright restriction on those activities is inapplicable to that extent. The supplied FormWright object files and required resources may be used to relink and run your modified copy. These permissions do not grant a general right to redistribute FormWright's proprietary application code or assets. They do not limit any right granted by the licenses of its open-source components or by applicable law.
+
+FormWright's original application code and assets remain proprietary. Component copyright notices, license terms and warranty disclaimers follow. The corresponding OCCT source and build-specific relinking materials are listed at https://donalleniii.me/formwright-open-source. Use the package matching the version and build shown in the app.
+
+OCCT is provided without warranty under its license. The supplied notices do not imply that Open Cascade, Mapbox, or any other contributor endorses FormWright.
