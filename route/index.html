@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Route">
+<meta name="theme-color" content="#1C1917">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<title>Route Runner</title>
+<style>
+  :root {
+    --bg: #FAFAF9; --card: #FFFFFF; --text: #1C1917; --muted: #6B6560;
+    --border: #E7E2DD; --accent: #F97316; --accent-soft: #FFF1E6;
+    --ok: #15803D; --ok-soft: #E9F7EE; --warn: #B45309; --warn-soft: #FEF3E2;
+    --bad: #B91C1C; --bad-soft: #FDECEC; --info: #1D4ED8; --info-soft: #EAF0FE;
+    --shadow: 0 1px 3px rgba(28,25,23,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131110; --card: #1E1B19; --text: #F5F2EF; --muted: #A8A29E;
+      --border: #383330; --accent: #FB8C33; --accent-soft: #34251A;
+      --ok: #4ADE80; --ok-soft: #14291C; --warn: #FBBF24; --warn-soft: #2E2410;
+      --bad: #F87171; --bad-soft: #321616; --info: #93B4F8; --info-soft: #16203A;
+      --shadow: none;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { touch-action: manipulation; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 17px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    min-height: 100dvh; overscroll-behavior-y: none;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+  header {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  header img { width: 30px; height: 30px; border-radius: 8px; }
+  header h1 { font-size: 19px; font-weight: 700; flex: 1; letter-spacing: -0.02em; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 13px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent); white-space: nowrap;
+  }
+  .chip.ok { background: var(--ok-soft); color: var(--ok); }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); }
+  .chip.bad { background: var(--bad-soft); color: var(--bad); }
+  .chip.info { background: var(--info-soft); color: var(--info); }
+  .chip.plain { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .iconbtn { background: none; border: none; font-size: 22px; padding: 6px; color: var(--text); }
+
+  nav.tabs {
+    display: flex; margin: 12px 16px 4px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+  nav.tabs button {
+    flex: 1; padding: 12px; font-size: 16px; font-weight: 600;
+    border: none; background: transparent; color: var(--muted);
+  }
+  nav.tabs button.active { background: var(--accent); color: #fff; }
+
+  main { padding: 8px 16px 16px; max-width: 640px; margin: 0 auto; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px; margin: 10px 0; box-shadow: var(--shadow);
+  }
+  .card h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 8px; }
+  textarea {
+    width: 100%; min-height: 130px; font-size: 16px; line-height: 1.4;
+    border: 1.5px dashed var(--border); border-radius: 10px; padding: 10px;
+    background: var(--bg); color: var(--text); resize: vertical; font-family: inherit;
+  }
+  textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; padding: 12px 16px; border-radius: 12px; border: none;
+    font-size: 16px; font-weight: 700; background: var(--accent); color: #fff; width: 100%;
+  }
+  .btn:active { opacity: 0.85; }
+  .btn.secondary { background: var(--card); color: var(--text); border: 1.5px solid var(--border); font-weight: 600; }
+  .btn.small { min-height: 40px; padding: 8px 12px; font-size: 15px; width: auto; }
+  .btn.ghost { background: transparent; color: var(--accent); border: none; font-weight: 600; width: auto; min-height: 40px; }
+  .btnrow { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .btnrow .btn { flex: 1; min-width: 130px; }
+  details { margin-top: 10px; }
+  summary { font-weight: 600; color: var(--accent); font-size: 15px; padding: 6px 0; }
+  details ol { margin: 8px 0 4px 22px; font-size: 15px; color: var(--text); }
+  details li { margin: 6px 0; }
+  .hint { font-size: 14px; color: var(--muted); margin-top: 8px; }
+
+  .stop {
+    display: flex; gap: 10px; padding: 12px 4px; border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .stop:last-child { border-bottom: none; }
+  .stop.done .stop-name, .stop.done .stop-addr { text-decoration: line-through; opacity: 0.45; }
+  .stop-num {
+    min-width: 30px; height: 30px; border-radius: 999px; background: var(--accent-soft);
+    color: var(--accent); font-weight: 800; font-size: 14px;
+    display: flex; align-items: center; justify-content: center; margin-top: 2px;
+  }
+  .stop.done .stop-num { background: var(--ok-soft); color: var(--ok); }
+  .stop-main { flex: 1; min-width: 0; }
+  .stop-name { font-weight: 700; font-size: 16px; word-break: break-word; }
+  .stop-addr { font-size: 15px; color: var(--muted); word-break: break-word; }
+  .stop-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
+  .stop-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .stop-actions button {
+    border: 1.5px solid var(--border); background: var(--card); color: var(--text);
+    border-radius: 10px; min-width: 48px; min-height: 40px; font-size: 16px; font-weight: 700;
+  }
+  .stop-actions button.go { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .stop-actions button.check.checked { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .editform { width: 100%; display: grid; gap: 8px; }
+  .editform label { font-size: 13px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 2px; }
+  .editform input {
+    width: 100%; font-size: 16px; padding: 10px; border-radius: 10px;
+    border: 1.5px solid var(--border); background: var(--bg); color: var(--text);
+  }
+  .rowbtns { display: flex; gap: 6px; }
+  .rowbtns .btn { flex: 1; }
+  .updown { display: flex; gap: 6px; }
+  .updown button { min-width: 44px; }
+
+  .banner { border-radius: 12px; padding: 10px 12px; font-size: 15px; margin: 10px 0; }
+  .banner.info { background: var(--info-soft); color: var(--info); }
+  .banner.warn { background: var(--warn-soft); color: var(--warn); }
+
+  .seg { display: flex; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .seg button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--muted); font-size: 15px; font-weight: 600; }
+  .seg button.active { background: var(--accent); color: #fff; }
+  .setrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .setrow:last-child { border-bottom: none; }
+  .setrow label { font-size: 15px; font-weight: 600; }
+  .setrow input[type="number"], .setrow input[type="text"], .setrow input[type="time"] {
+    width: 120px; font-size: 16px; padding: 8px; border-radius: 8px;
+    border: 1.5px solid var(--border); background: var(--bg); color: var(--text); text-align: right;
+  }
+  .setrow input[type="text"] { width: 170px; }
+  .switch { position: relative; width: 52px; height: 32px; }
+  .switch input { opacity: 0; width: 100%; height: 100%; position: absolute; z-index: 2; }
+  .switch span {
+    position: absolute; inset: 0; background: var(--border); border-radius: 999px; transition: 0.15s;
+  }
+  .switch span::after {
+    content: ""; position: absolute; width: 26px; height: 26px; border-radius: 999px;
+    background: #fff; top: 3px; left: 3px; transition: 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  }
+  .switch input:checked + span { background: var(--ok); }
+  .switch input:checked + span::after { transform: translateX(20px); }
+
+  #bottombar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    background: var(--card); border-top: 1px solid var(--border);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  #bottombar .btn { width: 100%; font-size: 17px; }
+  #bottombar .fallback { text-align: center; font-size: 13px; margin-top: 6px; }
+  #bottombar .fallback a { color: var(--muted); }
+
+  #toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(110px + env(safe-area-inset-bottom)); z-index: 50;
+    background: var(--text); color: var(--bg); padding: 10px 18px; border-radius: 999px;
+    font-size: 15px; font-weight: 600; max-width: 90vw; text-align: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  #toast.show { opacity: 1; }
+  footer { text-align: center; font-size: 12px; color: var(--muted); padding: 20px 16px 8px; }
+  footer a { color: var(--muted); }
+  .empty { text-align: center; color: var(--muted); padding: 18px 8px; font-size: 15px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="icon-180.png" alt="">
+  <h1>Route Runner</h1>
+  <span id="progressChip" class="chip ok" hidden></span>
+  <button id="settingsBtn" class="iconbtn" aria-label="Settings">⚙️</button>
+</header>
+
+<nav class="tabs">
+  <button id="tabSheet" class="active" data-testid="tab-sheet">📋 Sheet</button>
+  <button id="tabRoute" data-testid="tab-route">🚚 Route</button>
+</nav>
+
+<main>
+
+  <!-- ── SETTINGS ── -->
+  <section id="viewSettings" hidden>
+    <div class="card">
+      <h2>Settings</h2>
+      <div class="setrow"><label>City for short addresses</label><input type="text" id="setCity" autocapitalize="words"></div>
+      <div class="setrow"><label>Average speed (mph)</label><input type="number" id="setSpeed" min="5" max="70" inputmode="numeric"></div>
+      <div class="setrow"><label>Minutes per stop</label><input type="number" id="setService" min="0" max="60" inputmode="numeric"></div>
+      <div class="setrow"><label>Navigate with</label>
+        <div class="seg" style="width:190px">
+          <button id="segGoogle">Google</button><button id="segApple">Apple</button>
+        </div>
+      </div>
+      <p class="hint">Speed + minutes per stop only tune the arrival-time estimates and time-window warnings.</p>
+    </div>
+    <div class="card">
+      <h2>Your data</h2>
+      <p class="hint" style="margin-top:0">Everything lives on this phone only. Copy a backup if you're deleting the app icon.</p>
+      <div class="btnrow">
+        <button class="btn secondary" id="backupBtn">Copy backup</button>
+        <button class="btn secondary" id="restoreBtn">Paste backup</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SHEET ── -->
+  <section id="viewSheet">
+    <div class="banner info" id="installBanner" hidden>
+      📲 Make this a real app: tap <b>Share</b> <span style="white-space:nowrap">(the square with ↑)</span> then <b>Add to Home Screen</b>.
+    </div>
+
+    <div class="card">
+      <h2>1 · Paste your route sheet</h2>
+      <textarea id="pasteBox" data-testid="paste-box" placeholder="Paste the copied text of your route sheet here…" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+      <div class="btnrow">
+        <button class="btn" id="pasteReadBtn" data-testid="paste-read">📋 Paste &amp; read</button>
+        <button class="btn secondary" id="readBtn" data-testid="read-stops">Read stops</button>
+      </div>
+      <details>
+        <summary>How to copy the sheet from a photo</summary>
+        <ol>
+          <li>Take a clear photo of the route sheet.</li>
+          <li>Open it in <b>Photos</b>.</li>
+          <li><b>Touch and hold</b> any word on the paper — your iPhone highlights the text.</li>
+          <li>Tap <b>Select All</b>, then <b>Copy</b>.</li>
+          <li>Come back here and tap <b>Paste &amp; read</b>.</li>
+        </ol>
+        <p class="hint">Works one page at a time — paste page 2 right after page 1, the stops add up. Scrambled result? Try selecting just the address column, one line per address.</p>
+      </details>
+      <button class="btn ghost" id="demoBtn" data-testid="load-demo">Try the demo sheet</button>
+    </div>
+
+    <div class="card" id="unparsedCard" hidden>
+      <h2>Couldn't read these lines</h2>
+      <div id="unparsedList" style="font-size:14px; color:var(--muted); white-space:pre-wrap; word-break:break-word;"></div>
+      <p class="hint">Nothing is thrown away silently — add any real stop from these by hand below.</p>
+    </div>
+
+    <div class="card">
+      <h2>2 · Your stops <span id="stopCount" class="chip plain" style="text-transform:none"></span></h2>
+      <div id="geoStatus" class="hint" hidden></div>
+      <div id="stopList" data-testid="stop-list"></div>
+      <div class="btnrow">
+        <button class="btn secondary" id="addStopBtn">＋ Add stop</button>
+        <button class="btn secondary" id="clearBtn">🗑 Start new sheet</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ROUTE ── -->
+  <section id="viewRoute" hidden>
+    <div class="card">
+      <h2>3 · Starting point</h2>
+      <div class="btnrow" style="margin-top:0">
+        <button class="btn secondary" id="gpsBtn">📍 Use my location</button>
+        <button class="btn secondary" id="typedStartBtn">⌨️ Type an address</button>
+      </div>
+      <div id="startLabel" class="hint"></div>
+      <div class="setrow" style="margin-top:6px"><label>Leave at</label><input type="time" id="departTime"></div>
+      <div class="setrow"><label>Return to start at the end</label>
+        <div class="switch"><input type="checkbox" id="roundTrip"><span></span></div>
+      </div>
+    </div>
+
+    <button class="btn" id="optimizeBtn" data-testid="optimize">⚡ Optimize stop order</button>
+    <div class="btnrow" style="margin-top:6px">
+      <button class="btn secondary small" id="sheetOrderBtn">Use sheet order instead</button>
+    </div>
+
+    <div class="card">
+      <h2>4 · Drive it <span id="routeSummary" class="chip plain" style="text-transform:none"></span></h2>
+      <div id="routeList" data-testid="route-list"></div>
+    </div>
+
+    <div class="card" id="legsCard" hidden>
+      <h2>Open whole legs in Google Maps</h2>
+      <p class="hint" style="margin-top:0">Google Maps takes at most 10 stops per trip, so long days are split into legs. Each leg starts from wherever you are.</p>
+      <div id="legBtns" class="btnrow"></div>
+    </div>
+  </section>
+
+  <footer>
+    Data stays on your phone — no accounts, no tracking.<br>
+    Address lookups: <a href="https://geocoding.geo.census.gov" rel="noopener">US Census</a>,
+    <a href="https://photon.komoot.io" rel="noopener">Photon</a> &amp;
+    <a href="https://nominatim.openstreetmap.org" rel="noopener">Nominatim</a>
+    — © OpenStreetMap contributors
+  </footer>
+</main>
+
+<div id="bottombar" hidden>
+  <button class="btn" id="nextStopBtn" data-testid="next-stop"></button>
+  <div class="fallback">Maps didn't open? <a id="nextStopFallback" href="#" target="_blank" rel="noopener">Use this link</a></div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script src="core.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.RouteCore;
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ── state ─────────────────────────────────────────────────────── */
+  var STATE_KEY = 'rr.state.v1';
+  var GEO_KEY = 'rr.geo.v1';
+
+  var state = {
+    stops: [],            // {id,seq,name,note,address,window,lat,lng,geoStatus,geoSrc,done}
+    order: null,          // [stopId] after optimize; null = list order
+    etas: {},             // stopId -> {arriveMin,status}
+    startPoint: null,     // {lat,lng,label}
+    departMin: null,      // minutes since midnight; null = now
+    settings: { city: 'Sacramento, CA', mph: 22, serviceMin: 5, roundTrip: false, mapsApp: 'google' },
+    nextId: 1
+  };
+  var geoCache = {};
+
+  function loadAll() {
+    try { var s = JSON.parse(localStorage.getItem(STATE_KEY)); if (s && s.stops) state = Object.assign(state, s); } catch (e) {}
+    try { geoCache = JSON.parse(localStorage.getItem(GEO_KEY)) || {}; } catch (e) { geoCache = {}; }
+  }
+  var saveTimer = null;
+  function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      try {
+        localStorage.setItem(STATE_KEY, JSON.stringify(state));
+        localStorage.setItem(GEO_KEY, JSON.stringify(geoCache));
+      } catch (e) {}
+    }, 200);
+  }
+
+  function stopById(id) { for (var i = 0; i < state.stops.length; i++) if (state.stops[i].id === id) return state.stops[i]; return null; }
+
+  function orderedStops() {
+    if (!state.order) return state.stops.slice();
+    var seen = {}, out = [];
+    state.order.forEach(function (id) { var s = stopById(id); if (s) { out.push(s); seen[id] = 1; } });
+    state.stops.forEach(function (s) { if (!seen[s.id]) out.push(s); });
+    return out;
+  }
+
+  /* ── toast ─────────────────────────────────────────────────────── */
+  var toastTimer = null;
+  function toast(msg, ms) {
+    var t = $('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, ms || 2600);
+  }
+
+  /* ── parsing & adding stops ────────────────────────────────────── */
+  function addParsed(result) {
+    var added = 0, dupes = 0;
+    result.stops.forEach(function (p) {
+      var dup = state.stops.some(function (s) {
+        return C.cacheKey(s.address) === C.cacheKey(p.address) && s.name === p.name;
+      });
+      if (dup) { dupes++; return; }
+      p.id = 'p' + (state.nextId++);
+      p.lat = null; p.lng = null; p.geoStatus = 'pending'; p.geoSrc = null; p.done = false;
+      state.stops.push(p); added++;
+    });
+    state.order = null; state.etas = {};
+    save(); renderAll();
+    var msg = added + ' stop' + (added === 1 ? '' : 's') + ' added';
+    if (dupes) msg += ' · ' + dupes + ' duplicate' + (dupes === 1 ? '' : 's') + ' skipped';
+    if (result.unparsed.length) msg += ' · ' + result.unparsed.length + ' line' + (result.unparsed.length === 1 ? '' : 's') + ' need a look';
+    toast(msg, 3200);
+    showUnparsed(result.unparsed);
+    if (added) queueGeocoding();
+  }
+
+  function showUnparsed(lines) {
+    var card = $('unparsedCard');
+    if (!lines || !lines.length) { card.hidden = true; return; }
+    card.hidden = false;
+    $('unparsedList').textContent = lines.join('\n');
+  }
+
+  function readFromBox() {
+    var text = $('pasteBox').value;
+    if (!text.trim()) { toast('Paste your sheet text first — long-press the box and tap Paste'); return; }
+    var result = C.parseSheet(text);
+    if (!result.stops.length) {
+      showUnparsed(result.unparsed);
+      toast('No stops found in that text — check the how-to below the box', 3500);
+      return;
+    }
+    $('pasteBox').value = '';
+    addParsed(result);
+  }
+
+  $('readBtn').addEventListener('click', readFromBox);
+  $('pasteReadBtn').addEventListener('click', function () {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      navigator.clipboard.readText().then(function (text) {
+        if (text && text.trim()) { $('pasteBox').value = text; readFromBox(); }
+        else { $('pasteBox').focus(); toast('Clipboard is empty — copy the sheet text first'); }
+      }).catch(function () {
+        $('pasteBox').focus();
+        toast('Long-press the box and tap Paste, then hit Read stops', 3500);
+      });
+    } else {
+      $('pasteBox').focus();
+      toast('Long-press the box and tap Paste, then hit Read stops', 3500);
+    }
+  });
+
+  /* ── demo sheet (fictional stops, offline coordinates) ─────────── */
+  var DEMO = [
+    ['RIVER CITY SSYAP', '2000 EVERGREEN AVE, SACRAMENTO, CA', '09:00-16:30', '', 38.556, -121.489],
+    ['CASHPOINT AM000101*', '4104 NORWOOD AVE, SACRAMENTO, CA', '06:00-18:00', 'AM/PM', 38.638, -121.457],
+    ['KIOSK ATM 22001', '8270 NORTHGATE BLVD, SACRAMENTO, CA', '06:00-18:00', 'SUPERCENTER3001', 38.641, -121.465],
+    ['CASHPOINT KR009001*', '6700 VALLEY HI DR, SACRAMENTO, CA', '06:00-18:00', 'QUICK STOP 12', 38.474, -121.421],
+    ['CASHPOINT AM020999*', '7465 RUSH RIVER DR, SACRAMENTO, CA', '05:00-18:00', 'AM/PM', 38.479, -121.533],
+    ['FIRST COAST PAI CS60001*', '3611 TRUXEL RD, SACRAMENTO, CA', '08:00-17:00', 'HOUSE OF GOODS', 38.612, -121.498],
+    ['GOLDEN BANK 00055*', '1234 FLORIN RD, SACRAMENTO, CA', '09:00-15:00', 'SOUTH POINTE', 38.501, -121.442],
+    ['GOLDEN ATM 0777G*', '1234 FLORIN RD, SACRAMENTO, CA', '06:00-16:00', 'SOUTH POINTE', 38.501, -121.442],
+    ['WOK EXPRESS 04321*', '5555 FREEPORT BLVD, SACRAMENTO, CA', '08:30-18:00', '', 38.533, -121.493],
+    ['EL MERCADO GRANDE', '5641 FREEPORT BLVD, SACRAMENTO, CA', '08:00-17:00', '', 38.535, -121.494],
+    ['GROCERY 704-501 ST', '2718 MARCONI AVE, SACRAMENTO, CA', '07:00-18:00', '', 38.618, -121.401],
+    ['HARDWARE OUTLET 0099*', '160 PROMENADE CIR, SACRAMENTO, CA', '06:00-18:00', 'QUICK STOP 3111', 38.663, -121.509]
+  ];
+  $('demoBtn').addEventListener('click', function () {
+    var added = 0;
+    DEMO.forEach(function (d, i) {
+      var dup = state.stops.some(function (s) { return C.cacheKey(s.address) === C.cacheKey(d[1]) && s.name === d[0]; });
+      if (dup) return;
+      var m = /(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/.exec(d[2]);
+      state.stops.push({
+        id: 'p' + (state.nextId++), seq: i + 1, name: d[0], address: d[1], note: d[3],
+        window: { start: +m[1] * 60 + +m[2], end: +m[3] * 60 + +m[4], raw: d[2] },
+        lat: d[4], lng: d[5], geoStatus: 'ok', geoSrc: 'demo', done: false
+      });
+      added++;
+    });
+    state.order = null; state.etas = {};
+    save(); renderAll();
+    toast(added ? 'Demo sheet loaded — try Optimize on the Route tab' : 'Demo already loaded', 3200);
+  });
+
+  /* ── geocoding queue ───────────────────────────────────────────── */
+  var geoRunning = false;
+
+  function fetchTimeout(url, ms) {
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = ctl && setTimeout(function () { ctl.abort(); }, ms || 10000);
+    return fetch(url, ctl ? { signal: ctl.signal } : {}).then(function (r) {
+      clearTimeout(timer);
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.json();
+    }, function (e) { clearTimeout(timer); throw e; });
+  }
+
+  function biasPoint() {
+    var ok = state.stops.filter(function (s) { return s.lat != null; });
+    if (!ok.length) return null;
+    return ok[Math.floor(ok.length / 2)];
+  }
+
+  var PROVIDERS = [
+    function census(q) {
+      return fetchTimeout('https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?benchmark=Public_AR_Current&format=json&address=' + encodeURIComponent(q))
+        .then(function (j) {
+          var m = j && j.result && j.result.addressMatches && j.result.addressMatches[0];
+          return m ? { lat: m.coordinates.y, lng: m.coordinates.x, src: 'census' } : null;
+        });
+    },
+    function photon(q) {
+      var b = biasPoint();
+      var url = 'https://photon.komoot.io/api/?limit=1&q=' + encodeURIComponent(q) + (b ? '&lat=' + b.lat + '&lon=' + b.lng : '');
+      return fetchTimeout(url).then(function (j) {
+        var f = j && j.features && j.features[0];
+        return f ? { lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0], src: 'photon' } : null;
+      });
+    },
+    function nominatim(q) {
+      return fetchTimeout('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&q=' + encodeURIComponent(q))
+        .then(function (j) {
+          var f = j && j[0];
+          return f ? { lat: parseFloat(f.lat), lng: parseFloat(f.lon), src: 'nominatim' } : null;
+        });
+    }
+  ];
+
+  function geocodeOne(q) {
+    var i = 0;
+    function tryNext() {
+      if (i >= PROVIDERS.length) return Promise.resolve(null);
+      var p = PROVIDERS[i++];
+      return p(q).catch(function () { return null; }).then(function (r) { return r || tryNext(); });
+    }
+    return tryNext();
+  }
+
+  function sanity(stop) {
+    var ok = state.stops.filter(function (s) { return s.lat != null && s.id !== stop.id && s.geoStatus === 'ok'; });
+    if (ok.length < 3) return true;
+    var lats = ok.map(function (s) { return s.lat; }).sort(function (a, b) { return a - b; });
+    var lngs = ok.map(function (s) { return s.lng; }).sort(function (a, b) { return a - b; });
+    var med = { lat: lats[Math.floor(lats.length / 2)], lng: lngs[Math.floor(lngs.length / 2)] };
+    return C.haversineKm(med, stop) <= 80;
+  }
+
+  function queueGeocoding() {
+    if (geoRunning) return;
+    geoRunning = true;
+    var line = $('geoStatus');
+
+    function next() {
+      var pending = state.stops.filter(function (s) { return s.geoStatus === 'pending'; });
+      var total = state.stops.length;
+      if (!pending.length) {
+        geoRunning = false;
+        var fails = state.stops.filter(function (s) { return s.geoStatus === 'fail'; }).length;
+        line.hidden = fails === 0;
+        if (fails) line.textContent = '⚠️ ' + fails + ' address' + (fails === 1 ? '' : 'es') + ' not found — tap them to fix the text.';
+        renderAll();
+        return;
+      }
+      var s = pending[0];
+      var q = C.geocodeQuery(s.address, state.settings.city);
+      var key = C.cacheKey(q);
+      line.hidden = false;
+      line.textContent = '📡 Looking up addresses… ' + (total - pending.length + 1) + '/' + total;
+
+      if (geoCache[key]) {
+        s.lat = geoCache[key].lat; s.lng = geoCache[key].lng; s.geoSrc = geoCache[key].src;
+        s.geoStatus = sanity(s) ? 'ok' : 'suspect';
+        save(); renderSheet();
+        setTimeout(next, 30); // cache hits are instant and free
+        return;
+      }
+      geocodeOne(q).then(function (r) {
+        if (r) {
+          s.lat = r.lat; s.lng = r.lng; s.geoSrc = r.src;
+          s.geoStatus = sanity(s) ? 'ok' : 'suspect';
+          geoCache[key] = { lat: r.lat, lng: r.lng, src: r.src, ts: Date.now() };
+        } else {
+          s.geoStatus = 'fail';
+        }
+        save(); renderSheet();
+        setTimeout(next, 1100); // stay polite: ~1 request/second across services
+      });
+    }
+    next();
+  }
+
+  /* ── rendering: sheet ──────────────────────────────────────────── */
+  var editingId = null;
+
+  function geoChip(s) {
+    if (s.geoStatus === 'ok') return '';
+    if (s.geoStatus === 'pending') return '<span class="chip plain">⏳ locating…</span>';
+    if (s.geoStatus === 'suspect') return '<span class="chip warn">📍 far away — tap to check</span>';
+    return '<span class="chip bad">⚠️ address not found — tap to fix</span>';
+  }
+
+  function windowChip(s) {
+    return s.window ? '<span class="chip info">🕐 ' + s.window.raw + '</span>' : '';
+  }
+
+  function esc(t) {
+    return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function renderSheet() {
+    var list = $('stopList');
+    $('stopCount').textContent = state.stops.length ? state.stops.length + ' stops' : '';
+    if (!state.stops.length) {
+      list.innerHTML = '<div class="empty">No stops yet.<br>Paste your sheet above — or try the demo.</div>';
+      return;
+    }
+    list.innerHTML = state.stops.map(function (s, i) {
+      if (s.id === editingId) return editFormHtml(s);
+      return '<div class="stop' + (s.done ? ' done' : '') + '" data-id="' + s.id + '">' +
+        '<div class="stop-num">' + (s.seq != null ? s.seq : i + 1) + '</div>' +
+        '<div class="stop-main" data-act="edit">' +
+          '<div class="stop-name">' + (esc(s.name) || 'Stop') + '</div>' +
+          '<div class="stop-addr">' + esc(s.address) + (s.note ? ' · ' + esc(s.note) : '') + '</div>' +
+          '<div class="stop-chips">' + windowChip(s) + geoChip(s) + '</div>' +
+        '</div>' +
+        '<div class="stop-actions"><div class="updown">' +
+          '<button data-act="up" aria-label="Move up">↑</button>' +
+          '<button data-act="down" aria-label="Move down">↓</button>' +
+        '</div></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function editFormHtml(s) {
+    return '<div class="stop" data-id="' + s.id + '"><form class="editform" data-id="' + s.id + '">' +
+      '<div><label>Name</label><input name="name" value="' + esc(s.name) + '" autocapitalize="characters"></div>' +
+      '<div><label>Address</label><input name="address" value="' + esc(s.address) + '" autocapitalize="characters"></div>' +
+      '<div><label>Time window (like 08:00-17:00)</label><input name="window" value="' + esc(s.window ? s.window.raw : '') + '" inputmode="numeric"></div>' +
+      '<div><label>Note</label><input name="note" value="' + esc(s.note) + '"></div>' +
+      '<div class="rowbtns"><button type="submit" class="btn small">Save</button>' +
+      '<button type="button" class="btn secondary small" data-act="cancel">Cancel</button>' +
+      '<button type="button" class="btn secondary small" data-act="delete" style="color:var(--bad)">Delete</button></div>' +
+    '</form></div>';
+  }
+
+  $('stopList').addEventListener('click', function (e) {
+    var row = e.target.closest('.stop'); if (!row) return;
+    var id = row.getAttribute('data-id');
+    var act = e.target.closest('[data-act]');
+    var idx = state.stops.findIndex(function (s) { return s.id === id; });
+    if (idx < 0) return;
+    if (act) {
+      var a = act.getAttribute('data-act');
+      if (a === 'edit') { editingId = id; renderSheet(); return; }
+      if (a === 'up' && idx > 0) { var t = state.stops[idx - 1]; state.stops[idx - 1] = state.stops[idx]; state.stops[idx] = t; }
+      if (a === 'down' && idx < state.stops.length - 1) { var t2 = state.stops[idx + 1]; state.stops[idx + 1] = state.stops[idx]; state.stops[idx] = t2; }
+      if (a === 'cancel') { editingId = null; }
+      if (a === 'delete') { state.stops.splice(idx, 1); editingId = null; state.order = null; }
+      save(); renderAll();
+    }
+  });
+
+  $('stopList').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target; var id = form.getAttribute('data-id');
+    var s = stopById(id); if (!s) return;
+    var addr = form.address.value.trim();
+    var addrChanged = C.cacheKey(addr) !== C.cacheKey(s.address);
+    s.name = form.name.value.trim();
+    s.note = form.note.value.trim();
+    s.address = addr;
+    var w = form.window.value.trim();
+    var m = /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/.exec(w);
+    s.window = m ? { start: +m[1] * 60 + +m[2], end: +m[3] * 60 + +m[4], raw: m[1] + ':' + m[2] + '-' + m[3] + ':' + m[4] } : null;
+    if (addrChanged || s.geoStatus === 'fail' || s.geoStatus === 'suspect') {
+      s.lat = null; s.lng = null; s.geoStatus = 'pending'; s.geoSrc = null;
+      var key = C.cacheKey(C.geocodeQuery(addr, state.settings.city));
+      delete geoCache[key]; // force a fresh lookup after a manual fix
+      queueGeocoding();
+    }
+    editingId = null; state.order = null; state.etas = {};
+    save(); renderAll();
+  });
+
+  $('addStopBtn').addEventListener('click', function () {
+    var s = { id: 'p' + (state.nextId++), seq: null, name: '', note: '', address: '', window: null, lat: null, lng: null, geoStatus: 'pending', geoSrc: null, done: false };
+    state.stops.unshift(s);
+    editingId = s.id;
+    renderSheet();
+  });
+
+  $('clearBtn').addEventListener('click', function () {
+    if (!state.stops.length) return;
+    if (!confirm('Start a new sheet? This clears the current stop list (your saved addresses stay remembered).')) return;
+    state.stops = []; state.order = null; state.etas = {}; editingId = null;
+    save(); renderAll();
+    showUnparsed([]);
+  });
+
+  /* ── route: start point, optimize, etas ────────────────────────── */
+  $('gpsBtn').addEventListener('click', function () {
+    if (!navigator.geolocation) { toast('Location not available — type a start address instead'); return; }
+    toast('Getting your location…');
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      state.startPoint = { lat: pos.coords.latitude, lng: pos.coords.longitude, label: 'My location' };
+      save(); renderRoute();
+      toast('Start set to your location ✓');
+    }, function () {
+      toast('Couldn’t get your location — allow it in Settings, or type an address', 3500);
+    }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+  });
+
+  $('typedStartBtn').addEventListener('click', function () {
+    var a = prompt('Start address (e.g. 160 Commerce Circle, Sacramento, CA):');
+    if (!a || !a.trim()) return;
+    var q = C.geocodeQuery(a, state.settings.city);
+    var key = C.cacheKey(q);
+    if (geoCache[key]) {
+      state.startPoint = { lat: geoCache[key].lat, lng: geoCache[key].lng, label: a.trim() };
+      save(); renderRoute(); toast('Start set ✓');
+      return;
+    }
+    toast('Looking up start address…');
+    geocodeOne(q).then(function (r) {
+      if (r) {
+        geoCache[key] = { lat: r.lat, lng: r.lng, src: r.src, ts: Date.now() };
+        state.startPoint = { lat: r.lat, lng: r.lng, label: a.trim() };
+        save(); renderRoute(); toast('Start set ✓');
+      } else {
+        toast('Couldn’t find that address — check the spelling', 3500);
+      }
+    });
+  });
+
+  $('roundTrip').addEventListener('change', function () {
+    state.settings.roundTrip = this.checked; save();
+  });
+
+  $('departTime').addEventListener('change', function () {
+    var m = /(\d{1,2}):(\d{2})/.exec(this.value);
+    state.departMin = m ? (+m[1] * 60 + +m[2]) : null;
+    save(); refreshEtas(); renderRoute();
+  });
+
+  function nowMin() { var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+
+  function refreshEtas() {
+    var ordered = orderedStops().filter(function (s) { return !s.done; });
+    var withCoords = ordered.filter(function (s) { return s.lat != null; });
+    var etas = C.buildEtas(withCoords, {
+      start: state.startPoint,
+      departMin: state.departMin != null ? state.departMin : nowMin(),
+      speedKmh: state.settings.mph * 1.609,
+      serviceMin: state.settings.serviceMin
+    });
+    state.etas = {};
+    etas.forEach(function (e) { state.etas[e.id] = e; });
+  }
+
+  $('optimizeBtn').addEventListener('click', function () {
+    var undone = state.stops.filter(function (s) { return !s.done; });
+    if (undone.length < 2) { toast('Add at least 2 stops first'); return; }
+    var located = undone.filter(function (s) { return s.lat != null; });
+    var missing = undone.length - located.length;
+    if (located.length < 2) { toast('Still locating addresses — give it a moment', 3000); return; }
+    if (missing && !confirm(missing + ' stop(s) don’t have a map position yet and will go to the end of the route. Optimize anyway?')) return;
+
+    var r = C.optimizeRoute(located, {
+      start: state.startPoint,
+      roundTrip: state.settings.roundTrip
+    });
+    var doneIds = state.stops.filter(function (s) { return s.done; }).map(function (s) { return s.id; });
+    var missingIds = undone.filter(function (s) { return s.lat == null; }).map(function (s) { return s.id; });
+    state.order = doneIds.concat(r.order, missingIds);
+    refreshEtas();
+    save(); renderAll();
+    var miles = Math.round(r.totalKm * 0.6214);
+    toast('Best order found — about ' + miles + ' mi of driving ✓', 3200);
+    showView('route');
+  });
+
+  $('sheetOrderBtn').addEventListener('click', function () {
+    state.order = null; refreshEtas(); save(); renderRoute();
+    toast('Using the sheet’s own order');
+  });
+
+  /* ── rendering: route ──────────────────────────────────────────── */
+  function navUrls(s) {
+    var u = C.mapsUrlsForStop(s.address);
+    return state.settings.mapsApp === 'apple' ? { main: u.apple, fallback: u.apple } : { main: u.scheme, fallback: u.web };
+  }
+
+  function etaChip(s) {
+    var e = state.etas[s.id];
+    if (!e || s.done) return '';
+    var t = C.fmtMin(e.arriveMin);
+    if (e.status === 'late') return '<span class="chip bad">⚠️ ~' + t + ' — after window closes</span>';
+    if (e.status === 'early') return '<span class="chip info">🕐 there ~' + t + ', waits for opening</span>';
+    return '<span class="chip ok">~' + t + '</span>';
+  }
+
+  function renderRoute() {
+    $('roundTrip').checked = !!state.settings.roundTrip;
+    $('startLabel').textContent = state.startPoint
+      ? 'Start: ' + state.startPoint.label
+      : 'No start set — you’ll get the shortest overall path. Set a start so it begins from where you are.';
+
+    var ordered = orderedStops();
+    var undone = ordered.filter(function (s) { return !s.done; });
+    var doneCount = ordered.length - undone.length;
+
+    $('routeSummary').textContent = ordered.length ? (doneCount + '/' + ordered.length + ' done') : '';
+    var list = $('routeList');
+    if (!ordered.length) {
+      list.innerHTML = '<div class="empty">Add stops on the Sheet tab first.</div>';
+    } else {
+      var pos = 0;
+      list.innerHTML = ordered.map(function (s) {
+        if (!s.done) pos++;
+        return '<div class="stop' + (s.done ? ' done' : '') + '" data-id="' + s.id + '">' +
+          '<div class="stop-num">' + (s.done ? '✓' : pos) + '</div>' +
+          '<div class="stop-main">' +
+            '<div class="stop-name">' + (esc(s.name) || 'Stop') + '</div>' +
+            '<div class="stop-addr">' + esc(s.address) + '</div>' +
+            '<div class="stop-chips">' + windowChip(s) + etaChip(s) + geoChip(s) + '</div>' +
+          '</div>' +
+          '<div class="stop-actions">' +
+            '<button class="go" data-act="nav" aria-label="Navigate">Go</button>' +
+            '<button class="check' + (s.done ? ' checked' : '') + '" data-act="check" aria-label="Done">✓</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    // whole-trip legs (Google only — Apple Maps has no multi-stop links)
+    var legsCard = $('legsCard');
+    if (undone.length > 1 && state.settings.mapsApp === 'google') {
+      legsCard.hidden = false;
+      var legs = C.chunkLegs(undone.map(function (s) { return s.address; }), 10);
+      $('legBtns').innerHTML = legs.map(function (leg, i) {
+        var a = i * 10 + 1, b = i * 10 + leg.length;
+        return '<a class="btn secondary" style="text-decoration:none" target="_blank" rel="noopener" href="' +
+          esc(C.mapsUrlForLeg(leg)) + '">🗺 Stops ' + a + '–' + b + '</a>';
+      }).join('');
+    } else {
+      legsCard.hidden = true;
+    }
+
+    // bottom "next stop" bar
+    var next = undone[0];
+    var bar = $('bottombar');
+    if (next) {
+      bar.hidden = false;
+      var urls = navUrls(next);
+      $('nextStopBtn').textContent = '▶ Next: ' + (next.name || next.address);
+      $('nextStopBtn').onclick = function () { location.href = urls.main; };
+      $('nextStopFallback').href = urls.fallback;
+    } else {
+      bar.hidden = true;
+    }
+
+    var chip = $('progressChip');
+    if (ordered.length && doneCount === ordered.length) { chip.hidden = false; chip.textContent = '🎉 Day done'; }
+    else if (ordered.length) { chip.hidden = false; chip.textContent = doneCount + '/' + ordered.length; }
+    else chip.hidden = true;
+  }
+
+  $('routeList').addEventListener('click', function (e) {
+    var row = e.target.closest('.stop'); if (!row) return;
+    var act = e.target.closest('[data-act]'); if (!act) return;
+    var s = stopById(row.getAttribute('data-id')); if (!s) return;
+    if (act.getAttribute('data-act') === 'check') {
+      s.done = !s.done;
+      refreshEtas(); save(); renderAll();
+    } else if (act.getAttribute('data-act') === 'nav') {
+      location.href = navUrls(s).main;
+    }
+  });
+
+  /* ── settings ──────────────────────────────────────────────────── */
+  function renderSettings() {
+    $('setCity').value = state.settings.city;
+    $('setSpeed').value = state.settings.mph;
+    $('setService').value = state.settings.serviceMin;
+    $('segGoogle').classList.toggle('active', state.settings.mapsApp !== 'apple');
+    $('segApple').classList.toggle('active', state.settings.mapsApp === 'apple');
+  }
+  $('setCity').addEventListener('change', function () { state.settings.city = this.value.trim() || 'Sacramento, CA'; save(); });
+  $('setSpeed').addEventListener('change', function () { state.settings.mph = Math.max(5, +this.value || 22); save(); refreshEtas(); });
+  $('setService').addEventListener('change', function () { state.settings.serviceMin = Math.max(0, +this.value || 0); save(); refreshEtas(); });
+  $('segGoogle').addEventListener('click', function () { state.settings.mapsApp = 'google'; save(); renderSettings(); renderRoute(); });
+  $('segApple').addEventListener('click', function () { state.settings.mapsApp = 'apple'; save(); renderSettings(); renderRoute(); });
+
+  $('backupBtn').addEventListener('click', function () {
+    var data = JSON.stringify({ state: state, geo: geoCache });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(data).then(function () { toast('Backup copied — paste it somewhere safe (Notes works)'); },
+        function () { prompt('Copy this backup text:', data); });
+    } else prompt('Copy this backup text:', data);
+  });
+  $('restoreBtn').addEventListener('click', function () {
+    var t = prompt('Paste your backup text:');
+    if (!t) return;
+    try {
+      var d = JSON.parse(t);
+      if (d.state && d.state.stops) { state = d.state; geoCache = d.geo || {}; save(); renderAll(); toast('Backup restored ✓'); }
+      else toast('That doesn’t look like a Route Runner backup', 3000);
+    } catch (e) { toast('That doesn’t look like a Route Runner backup', 3000); }
+  });
+
+  /* ── views ─────────────────────────────────────────────────────── */
+  function showView(name) {
+    $('viewSheet').hidden = name !== 'sheet';
+    $('viewRoute').hidden = name !== 'route';
+    $('viewSettings').hidden = name !== 'settings';
+    $('tabSheet').classList.toggle('active', name === 'sheet');
+    $('tabRoute').classList.toggle('active', name === 'route');
+    if (name === 'route') { refreshEtas(); renderRoute(); }
+    window.scrollTo(0, 0);
+  }
+  $('tabSheet').addEventListener('click', function () { showView('sheet'); });
+  $('tabRoute').addEventListener('click', function () { showView('route'); });
+  $('settingsBtn').addEventListener('click', function () {
+    if ($('viewSettings').hidden) { renderSettings(); showView('settings'); }
+    else showView('sheet');
+  });
+
+  function renderAll() { renderSheet(); renderRoute(); }
+
+  /* ── boot ──────────────────────────────────────────────────────── */
+  loadAll();
+
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  $('installBanner').hidden = standalone;
+
+  var d = new Date();
+  $('departTime').value = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+
+  renderSettings();
+  renderAll();
+  queueGeocoding(); // resume lookups for anything still pending from last session
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+})();
+</script>
+</body>
+</html>
