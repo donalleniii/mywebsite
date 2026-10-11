@@ -1,5 +1,35 @@
 [
   {
+    "title": "FormWright 1.3 (419) \u2014 TestFlight iPhone/iPad relinking kit",
+    "status": "Matching materials for the October 11 TestFlight candidate with rigging, weight painting, animation performance and sculpt surface fixes. Contains application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed for this final archive. This developer package is not an installable app update and does not imply Apple approval. Original executable SHA-256 aa082c2d47ba7190025e6143de0507e62b7c4d9e6c04e608ed4752e77d114ef5.",
+    "downloads": [
+      {
+        "name": "Download complete TestFlight 419 relinking kit",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-419-testflight-relink/FormWright-1.3-419-TestFlight-iOS-relink-kit.tar.gz",
+        "bytes": 140236824,
+        "sha256": "df6caf3ec4cff967c54485490c520a34b1f52c6655d8f11ffd3ea5a6fcfea962"
+      },
+      {
+        "name": "Read build and signing instructions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-419-testflight-relink/README.txt",
+        "bytes": 5257,
+        "sha256": "46ff604e255a05ca7de82ef4ea505b6780cf54a7bacf865b656a94dae9874173"
+      },
+      {
+        "name": "Download checksum file",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-419-testflight-relink/SHA256SUMS.txt",
+        "bytes": 118,
+        "sha256": "489981f060fbb5dbab6ae9fcf08ba25240dbb87212e356cfcddadf1eb7c84781"
+      },
+      {
+        "name": "Read application modification permissions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-419-testflight-relink/FormWright-Open-Source-Rights.txt",
+        "bytes": 1340,
+        "sha256": "c5b5d773f92d65f80bfd9180359f65320c34e0023a97e087b8145efde66b7fca"
+      }
+    ]
+  },
+  {
     "title": "FormWright 1.2 (418) \u2014 iPhone/iPad relinking kit",
     "status": "Matching materials for build 418, prepared for App Review. Publication of this developer package does not mean Apple has approved or released the app. It contains application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed for this archive. This is not an installable app update. Original executable SHA-256 f4743953d2155d34780e6c7ca5510116bb44d029d4e4ef9d181a81898034b9d4.",
     "downloads": [
@@ -91,7 +121,7 @@
   },
   {
     "title": "OCCT 8.0.1 corresponding source",
-    "status": "Exact unmodified upstream source used by FormWright 1.2 builds 417 and 418. The complete application relinking kits above also include this source.",
+    "status": "Exact unmodified upstream source used by FormWright 1.2 builds 417 and 418 and 1.3 build 419. The complete application relinking kits above also include this source.",
     "downloads": [
       {
         "name": "Download OCCT 8.0.1 source",
