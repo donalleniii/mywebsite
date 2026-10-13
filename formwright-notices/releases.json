@@ -1,5 +1,35 @@
 [
   {
+    "title": "FormWright 1.3 (421) \u2014 TestFlight iPhone/iPad relinking kit",
+    "status": "Matching materials for the October 12 TestFlight candidate with centered torus pivots, duplication in place, and alignment fixes. Includes application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed against this archive. This developer package is not an installable app and does not imply Apple approval. Original executable SHA-256 d176cc2f5f1546b0b08ccee17f50050b845968f1e4d87c3bc72f25b1d40f96be.",
+    "downloads": [
+      {
+        "name": "Download complete TestFlight 421 relinking kit",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-421-testflight-relink/FormWright-1.3-421-TestFlight-iOS-relink-kit.tar.gz",
+        "bytes": 143448006,
+        "sha256": "48b950773f6653db529d9edf9ffde31b9359e322e57e5b770ba13d02877ad681"
+      },
+      {
+        "name": "Read build and signing instructions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-421-testflight-relink/README.txt",
+        "bytes": 5257,
+        "sha256": "46ff604e255a05ca7de82ef4ea505b6780cf54a7bacf865b656a94dae9874173"
+      },
+      {
+        "name": "Download checksum file",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-421-testflight-relink/SHA256SUMS.txt",
+        "bytes": 118,
+        "sha256": "dfdc677c39a1919dd4527c15c4a2d454c83e8b9175f8202f8522a6c619d2bc72"
+      },
+      {
+        "name": "Read application modification permissions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-421-testflight-relink/FormWright-Open-Source-Rights.txt",
+        "bytes": 1340,
+        "sha256": "c5b5d773f92d65f80bfd9180359f65320c34e0023a97e087b8145efde66b7fca"
+      }
+    ]
+  },
+  {
     "title": "FormWright 1.3 (420) \u2014 TestFlight iPhone/iPad relinking kit",
     "status": "Matching materials for the October 12 TestFlight candidate with the current rigging and timeline revision, photo references, and keyframed Physics Move. Includes application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed against this archive. This developer package is not an installable app and does not imply Apple approval. Original executable SHA-256 596ee1cf82351f9de3b157c1abac92bc1c52ec88b513a3c44b4c87b718f6fcd4.",
     "downloads": [
