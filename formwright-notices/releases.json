@@ -1,5 +1,35 @@
 [
   {
+    "title": "FormWright 1.3 (422) \u2014 TestFlight iPhone/iPad relinking kit",
+    "status": "Matching materials for the October 13 TestFlight candidate with DA3 project files, corrected project import routes, and the retained torus/duplicate/alignment fixes. Includes application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed against this archive. This developer package is not an installable app and does not imply Apple approval. Original executable SHA-256 c1e5de084d24220f7fc9816d5497789fc1fb91fbb8ae9970dbbe571bbd1cac74.",
+    "downloads": [
+      {
+        "name": "Download complete TestFlight 422 relinking kit",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-422-testflight-relink/FormWright-1.3-422-TestFlight-iOS-relink-kit.tar.gz",
+        "bytes": 143466494,
+        "sha256": "31eeb0761db342235ecc4a004a811ce18a08c84a6ba673507775fed4f071d997"
+      },
+      {
+        "name": "Read build and signing instructions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-422-testflight-relink/README.txt",
+        "bytes": 5299,
+        "sha256": "2b8e9c7685b59138a22b38ca97676e13cb9e50163853e287aa5eaeec6a525be4"
+      },
+      {
+        "name": "Download checksum file",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-422-testflight-relink/SHA256SUMS.txt",
+        "bytes": 118,
+        "sha256": "06e17c356afd8a1562d5e766d3ff452eb87c5e687837b43f3ca494993f94daa2"
+      },
+      {
+        "name": "Read application modification permissions",
+        "url": "https://github.com/donalleniii/mywebsite/releases/download/formwright-1.3-422-testflight-relink/FormWright-Open-Source-Rights.txt",
+        "bytes": 1340,
+        "sha256": "c5b5d773f92d65f80bfd9180359f65320c34e0023a97e087b8145efde66b7fca"
+      }
+    ]
+  },
+  {
     "title": "FormWright 1.3 (421) \u2014 TestFlight iPhone/iPad relinking kit",
     "status": "Matching materials for the October 12 TestFlight candidate with centered torus pivots, duplication in place, and alignment fixes. Includes application objects, resources, OCCT source and relinking/signing instructions. Baseline and modified-library relinks passed against this archive. This developer package is not an installable app and does not imply Apple approval. Original executable SHA-256 d176cc2f5f1546b0b08ccee17f50050b845968f1e4d87c3bc72f25b1d40f96be.",
     "downloads": [
