@@ -13,3 +13,6 @@
 
 # Clean URL for the FormWright landing page.
 /formwright   /formwright.html   200
+
+# Clean URL for the beAR landing page.
+/bear   /bear.html   200
