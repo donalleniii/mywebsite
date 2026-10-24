@@ -14,5 +14,15 @@
 # Clean URL for the FormWright landing page.
 /formwright   /formwright.html   200
 
-# Clean URL for the beAR landing page.
-/bear   /bear.html   200
+# Clean URL for the PuppetWright landing page.
+/puppetwright   /puppetwright.html   200
+
+# PuppetWright was called beAR before launch; keep the old links working.
+/bear                /puppetwright               301
+/bear.html           /puppetwright               301
+/bear-privacy        /puppetwright-privacy       301
+/bear-privacy.html   /puppetwright-privacy       301
+/bear-support        /puppetwright-support       301
+/bear-support.html   /puppetwright-support       301
+/bear-open-source        /puppetwright-open-source   301
+/bear-open-source.html   /puppetwright-open-source   301
