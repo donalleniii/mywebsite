@@ -1,53 +1,836 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PuppetWright</title>
-<meta name="description" content="PuppetWright: play an animated creature in augmented reality while you film. On-device, no account, no tracking.">
-<link rel="canonical" href="https://donalleniii.me/puppetwright">
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
-      background: #0c0a09;
-      color: #d6d3d1;
-      line-height: 1.7;
-      padding: 40px 20px;
-    }
-    .container { max-width: 680px; margin: 0 auto; }
-    .logo { font-size: 32px; font-weight: 700; color: #F5B700; letter-spacing: -0.5px; margin-bottom: 4px; }
-    .subtitle { font-size: 14px; color: #a8a29e; margin-bottom: 16px; }
-    .site-nav { margin-bottom: 48px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 12px 20px; }
-    h1 { font-size: 28px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
-    .effective { font-size: 13px; color: #a8a29e; margin-bottom: 40px; }
-    h2 { font-size: 18px; font-weight: 600; color: #F5B700; margin: 36px 0 12px; }
-    p, li { margin-bottom: 16px; font-size: 15px; }
-    ul { padding-left: 22px; }
-    .highlight {
-      background: rgba(245, 183, 0, 0.08);
-      border-left: 3px solid #F5B700;
-      padding: 16px 20px;
-      border-radius: 0 8px 8px 0;
-      margin: 20px 0;
-    }
-    .highlight p { margin-bottom: 0; }
-    a { color: #F5B700; text-decoration: underline; text-underline-offset: 3px; }
-    a:focus-visible { outline: 3px solid #fcd34d; outline-offset: 5px; }
-    .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid #1c1917; font-size: 13px; color: #a8a29e; }
-</style></head><body><main class="container">
-    <div class="logo"><a href="https://donalleniii.me/puppetwright" style="color:inherit;text-decoration:none">PuppetWright</a></div>
-    <div class="subtitle">AR creature performance</div>
-    <nav class="site-nav" aria-label="PuppetWright"><a href="https://donalleniii.me/puppetwright">App</a><a href="https://donalleniii.me/puppetwright-privacy">Privacy</a><a href="https://donalleniii.me/puppetwright-support">Support</a><a href="https://donalleniii.me/puppetwright-open-source">Credits and licenses</a><a href="https://donalleniii.me/">Don Allen III</a></nav>
-    <h1>Play a creature in your room</h1><p class="effective">An AR performance app by Don Allen Stevenson III</p>
-    <div class="highlight"><p>Puppeteer a bear, cat, raptor, whale, eagle, crab or horse in augmented reality while you film. Everything happens on your device.</p></div>
-    <section><h2>What it does</h2><ul>
-      <li>Seven animated creatures with weight, follow-through and natural motion.</li>
-      <li>Touch sticks or a game controller, with walk, run, turns and dozens of actions.</li>
-      <li>LiDAR room scanning so creatures walk on your floor and stop at walls.</li>
-      <li>Front camera mode to put yourself in the shot.</li>
-      <li>Record clean video, and save 3D scenes of each take for your 3D tools.</li>
-      <li>Bring your own rigged characters.</li>
-      <li>On Apple Vision Pro: your creature in your room, with look and pinch or a game controller.</li>
-    </ul></section>
-    <section><h2>Privacy</h2><p>No account, no ads, no tracking, no analytics. Read the <a href="https://donalleniii.me/puppetwright-privacy">privacy policy</a>.</p></section>
-    <section><h2>Help</h2><p>See <a href="https://donalleniii.me/puppetwright-support">Support</a> or email <a href="mailto:donallenthethird@gmail.com?subject=PuppetWright">donallenthethird@gmail.com</a>.</p></section>
-    <footer class="footer">&copy; 2026 Don Allen Stevenson III.</footer>
-</main></body></html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PuppetWright · Play a creature in your room</title>
+    <meta name="description" content="PuppetWright lets you play an animated creature in augmented reality while you film. A bear, cat, raptor, horse, whale, eagle or crab, on your real floor. Coming soon to the App Store for iPhone, iPad and Apple Vision Pro.">
+    <meta property="og:title" content="PuppetWright · Play a creature in your room">
+    <meta property="og:description" content="Drive an animated creature across your real floor and film the whole performance. Coming soon to the App Store. Get notified first.">
+    <meta property="og:url" content="https://donalleniii.me/puppetwright">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://donalleniii.me/assets/puppetwright/icon-256.png">
+    <link rel="canonical" href="https://donalleniii.me/puppetwright">
+    <link rel="icon" type="image/png" href="assets/puppetwright/icon-256.png">
+    <link rel="apple-touch-icon" href="assets/puppetwright/apple-touch-icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            primary: '#F5B700',
+                            accent: '#F97316',
+                            dark: '#1C1917',
+                            surface: '#FAFAF9',
+                        }
+                    },
+                    animation: {
+                        'fade-up': 'fadeUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0C0A09; color: #FAFAF9; }
+        .gradient-text {
+            background: linear-gradient(to right, #F5B700, #F97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+        .glow {
+            background: radial-gradient(circle at 70% 55%, rgba(249,115,22,0.20), rgba(245,183,0,0.10) 40%, transparent 70%);
+        }
+        /* The creatures are dark, so the stage borrows the app icon's warm orange. */
+        .stage {
+            background:
+                radial-gradient(ellipse 70% 45% at 50% 78%, rgba(255,255,255,0.22), transparent 70%),
+                linear-gradient(160deg, #F7B23B 0%, #F08A24 55%, #D9620F 100%);
+        }
+        #stage { width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: grab; }
+        #stage:active { cursor: grabbing; }
+        .card { background: #1C1917; border: 1px solid rgba(255,255,255,0.07); }
+        .card:hover { border-color: rgba(255,255,255,0.16); }
+        .chip-scroll { scrollbar-width: none; }
+        .chip-scroll::-webkit-scrollbar { display: none; }
+        .creature-chip[aria-pressed="true"] { background: #1C1917; color: #FAFAF9; border-color: #1C1917; }
+        .pick input:checked + span { background: rgba(245,183,0,0.14); border-color: #F5B700; color: #FAFAF9; }
+        .pick .tick { display: none; }
+        .pick input:checked + span .tick { display: inline-block; }
+        .pick input:focus-visible + span { outline: 3px solid #fcd34d; outline-offset: 2px; }
+        .field { background: #0C0A09; border: 1px solid rgba(255,255,255,0.12); }
+        .field:focus { outline: none; border-color: #F5B700; box-shadow: 0 0 0 3px rgba(245,183,0,0.25); }
+        a:focus-visible, button:focus-visible { outline: 3px solid #fcd34d; outline-offset: 3px; }
+        details summary { list-style: none; }
+        details summary::-webkit-details-marker { display: none; }
+        details[open] .faq-icon { transform: rotate(45deg); }
+        html { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .animate-fade-up, .animate-pulse { animation: none !important; opacity: 1 !important; }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- NAV -->
+    <nav class="fixed top-0 inset-x-0 z-50 border-b border-white/5 bg-[#0C0A09]/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-6 min-w-0">
+                <a href="./" class="hidden sm:inline text-stone-500 hover:text-white text-sm font-medium transition-colors"><i class="fas fa-arrow-left mr-2 text-xs"></i>donalleniii.me</a>
+                <span class="hidden sm:inline text-white/10">|</span>
+                <a href="#top" class="flex items-center gap-2.5 font-display font-bold text-lg tracking-tight text-white">
+                    <img src="assets/puppetwright/icon-256.png" alt="" class="w-7 h-7 rounded-lg">PuppetWright
+                </a>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-400">
+                <a href="#why" class="hover:text-white transition-colors">Why</a>
+                <a href="#what" class="hover:text-white transition-colors">What it does</a>
+                <a href="#how" class="hover:text-white transition-colors">How it works</a>
+                <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+            </div>
+            <a href="#waitlist" class="shrink-0 bg-brand-primary hover:bg-amber-400 text-stone-950 px-4 py-2 rounded-lg text-sm font-bold transition-colors">Get notified</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header id="top" class="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden grid-bg">
+        <div class="absolute inset-0 glow pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-10 items-center">
+                <div class="animate-fade-up">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-bold uppercase tracking-widest text-stone-300 mb-8">
+                        <span class="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></span>
+                        Coming soon to the App Store
+                    </div>
+                    <h1 class="font-display font-bold text-5xl sm:text-6xl lg:text-7xl leading-[1.02] tracking-tight mb-6">
+                        Play a <span class="gradient-text">creature</span> in your room.
+                    </h1>
+                    <p class="text-lg sm:text-xl text-stone-400 leading-relaxed max-w-xl mb-10">
+                        Put an animated bear, cat, raptor, horse, whale, eagle or crab on your real floor. Drive it like a game character, trigger its moves, and film the whole performance. All on your iPhone or iPad.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 sm:items-center">
+                        <a href="#waitlist" class="inline-flex items-center justify-center whitespace-nowrap bg-brand-primary hover:bg-amber-400 text-stone-950 px-8 py-4 rounded-xl font-bold text-base transition-all hover:-translate-y-0.5 shadow-lg shadow-amber-500/20">
+                            Get notified at launch <i class="fas fa-arrow-right ml-3 text-sm"></i>
+                        </a>
+                        <span class="text-sm text-stone-500 sm:ml-2">iPhone, iPad and Apple Vision Pro.</span>
+                    </div>
+                </div>
+
+                <div class="relative animate-fade-up" style="animation-delay:0.15s">
+                    <div class="stage aspect-[4/5] rounded-3xl overflow-hidden relative shadow-2xl shadow-orange-900/30">
+                        <div class="absolute inset-x-0 top-0 bottom-[104px]">
+                        <canvas id="stage" role="img" aria-label="An animated PuppetWright creature rig, drawn as rainbow bones and joints. Drag to orbit."></canvas>
+                        </div>
+
+                        <div class="absolute top-4 left-4 text-[11px] font-bold uppercase tracking-widest text-stone-900/70 pointer-events-none" aria-live="polite">
+                            <span id="stage-name">Bear</span> · <span id="stage-move">Idle</span>
+                        </div>
+
+                        <div class="absolute bottom-0 inset-x-0 p-4 space-y-3">
+                            <div class="flex gap-2">
+                                <button type="button" data-mode="walk" class="stage-btn flex-1 bg-stone-950/85 hover:bg-stone-950 text-white text-sm font-bold py-2.5 rounded-xl transition-colors"><i class="fas fa-shoe-prints mr-2 text-xs"></i>Walk</button>
+                                <button type="button" data-mode="move" class="stage-btn flex-1 bg-stone-950/85 hover:bg-stone-950 text-white text-sm font-bold py-2.5 rounded-xl transition-colors"><i class="fas fa-bolt mr-2 text-xs"></i>Play a move</button>
+                                <button type="button" data-mode="idle" class="stage-btn bg-stone-950/85 hover:bg-stone-950 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors" aria-label="Stop and idle"><i class="fas fa-pause text-xs"></i></button>
+                            </div>
+                            <div class="chip-scroll flex gap-1.5 overflow-x-auto -mx-1 px-1" role="group" aria-label="Pick a creature" id="creature-chips"></div>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex items-start justify-between gap-4 text-xs text-stone-500">
+                        <span><i class="fas fa-hand-pointer mr-1.5"></i>The real rig from the app. Drag to orbit.</span>
+                        <span id="credit" class="text-right">Bear model by <a class="underline underline-offset-2 hover:text-stone-300" href="https://sketchfab.com/3d-models/bear-ce0d5eb86cf5459bb6bd20244cb44b27" target="_blank" rel="noopener">Nyilonelycompany</a>, <a class="underline underline-offset-2 hover:text-stone-300" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- STATUS -->
+    <section class="py-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 shrink-0 rounded-xl bg-amber-500/10 text-brand-primary flex items-center justify-center"><i class="fas fa-hourglass-half"></i></div>
+                <div>
+                    <p class="font-display font-bold text-xl">Almost on the App Store.</p>
+                    <p class="text-stone-400">PuppetWright is built, tested and going through Apple's review. Join the list and you'll get one email the day it goes live.</p>
+                </div>
+            </div>
+            <a href="#waitlist" class="shrink-0 text-brand-primary font-bold hover:text-amber-300">Join the waitlist →</a>
+        </div>
+    </section>
+
+    <!-- WHY -->
+    <section id="why" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-5">
+                    <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">The idea</div>
+                    <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">
+                        You're the puppeteer <span class="text-stone-500">and</span> the camera.
+                    </h2>
+                </div>
+                <div class="lg:col-span-7 space-y-6 text-lg text-stone-400 leading-relaxed">
+                    <p>
+                        Most AR creatures are stickers. They float in the middle of the shot, play one loop, and never feel like they're <em class="text-stone-200 not-italic font-medium">in</em> the room with you.
+                    </p>
+                    <p>
+                        PuppetWright is the opposite. Each creature has weight and follow-through. It walks on your actual floor, stops at your actual walls, and does what you tell it to, the moment you tell it. Left thumb moves it, right thumb turns it, the buttons trigger its moves, and your phone records the take.
+                    </p>
+                    <p class="text-stone-200 font-medium">
+                        It's puppetry for the camera in your pocket. Point, perform, and walk away with a take that has real timing, real blocking and a real room behind it.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLIPS: raw PuppetWright takes next to the same takes restyled in a separate AI video app. -->
+    <section id="clips" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-8 mb-12">
+                <div class="lg:col-span-6">
+                    <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">From take to finished shot</div>
+                    <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">Perform it here. Style it anywhere.</h2>
+                </div>
+                <div class="lg:col-span-6 space-y-4 text-lg text-stone-400 leading-relaxed">
+                    <p>PuppetWright records your performance as a <span class="text-stone-200 font-medium">rainbow skeleton</span> moving through your real room: every step, turn and move exactly where you put it.</p>
+                    <p>That take is a motion guide. Feed it to an AI video style-transfer app and the skeleton becomes a bear in your office or a crab in the fog.</p>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <figure class="card rounded-3xl overflow-hidden">
+                    <div class="grid md:grid-cols-2">
+                        <div class="relative">
+                            <video class="clip w-full aspect-video object-cover bg-black" src="assets/puppetwright/clips/bear-take.mp4" poster="assets/puppetwright/clips/bear-take.jpg" muted loop playsinline preload="none" aria-label="Bear in the office: the raw PuppetWright take, a rainbow skeleton performing in a real room"></video>
+                            <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-stone-950/85 text-white text-xs font-bold px-2.5 py-1.5 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-brand-primary"></span>PuppetWright output</span>
+                        </div>
+                        <div class="relative">
+                            <video class="clip w-full aspect-video object-cover bg-black" src="assets/puppetwright/clips/bear-final.mp4" poster="assets/puppetwright/clips/bear-final.jpg" muted loop playsinline preload="none" aria-label="Bear in the office: the same take restyled into a realistic creature by a separate AI video app"></video>
+                            <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-white/90 text-stone-900 text-xs font-bold px-2.5 py-1.5 rounded-full"><i class="fas fa-wand-magic-sparkles text-[10px]"></i>Restyled in a separate AI video app</span>
+                        </div>
+                    </div>
+                    <figcaption class="px-6 py-4 text-sm text-stone-400"><span class="text-stone-200 font-semibold">Bear in the office.</span> Driven with a game controller while filming a selfie.</figcaption>
+                </figure>
+                <figure class="card rounded-3xl overflow-hidden">
+                    <div class="grid md:grid-cols-2">
+                        <div class="relative">
+                            <video class="clip w-full aspect-video object-cover bg-black" src="assets/puppetwright/clips/crab-take.mp4" poster="assets/puppetwright/clips/crab-take.jpg" muted loop playsinline preload="none" aria-label="Crab in the fog: the raw PuppetWright take, a rainbow skeleton performing in a real room"></video>
+                            <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-stone-950/85 text-white text-xs font-bold px-2.5 py-1.5 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-brand-primary"></span>PuppetWright output</span>
+                        </div>
+                        <div class="relative">
+                            <video class="clip w-full aspect-video object-cover bg-black" src="assets/puppetwright/clips/crab-final.mp4" poster="assets/puppetwright/clips/crab-final.jpg" muted loop playsinline preload="none" aria-label="Crab in the fog: the same take restyled into a realistic creature by a separate AI video app"></video>
+                            <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-white/90 text-stone-900 text-xs font-bold px-2.5 py-1.5 rounded-full"><i class="fas fa-wand-magic-sparkles text-[10px]"></i>Restyled in a separate AI video app</span>
+                        </div>
+                    </div>
+                    <figcaption class="px-6 py-4 text-sm text-stone-400"><span class="text-stone-200 font-semibold">Crab in the fog.</span> Walked across a real floor at night.</figcaption>
+                </figure>
+            </div>
+            <p class="mt-6 text-sm text-stone-500 leading-relaxed max-w-3xl"><i class="fas fa-circle-info mr-1.5"></i>The realistic versions were made in a separate AI video app, not in PuppetWright. PuppetWright gives you the performance; you choose the look.</p>
+        </div>
+    </section>
+
+    <!-- SOCIAL PROOF: the first public look on Instagram. -->
+    <section id="buzz" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-6">
+                    <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">The first look</div>
+                    <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight mb-5">People already want one.</h2>
+                    <p class="text-lg text-stone-400 mb-10">The first PuppetWright clip on Instagram passed <span class="text-stone-200 font-semibold">5,000 likes</span> and more than <span class="text-stone-200 font-semibold">100 comments</span> in two days.</p>
+                    <div class="space-y-4">
+                        <blockquote class="card rounded-2xl p-6">
+                            <p class="font-display text-2xl font-bold mb-2">&ldquo;How do i run this at home? Do i download an app?&rdquo;</p>
+                            <footer class="text-sm text-stone-500">@macintufts, on Instagram. <a href="#waitlist" class="text-brand-primary font-semibold">Yes. Coming soon.</a></footer>
+                        </blockquote>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <blockquote class="card rounded-2xl p-6">
+                                <p class="font-display text-xl font-bold mb-2">&ldquo;Very cool!!! 🔥&rdquo;</p>
+                                <footer class="text-sm text-stone-500">@sirwrender</footer>
+                            </blockquote>
+                            <blockquote class="card rounded-2xl p-6">
+                                <p class="font-display text-xl font-bold mb-2">&ldquo;So sick&rdquo;</p>
+                                <footer class="text-sm text-stone-500">@kevinpeterhe</footer>
+                            </blockquote>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/reel/De1JJDYTzJw/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-8 text-brand-primary font-bold hover:text-amber-300"><i class="fab fa-instagram"></i>Watch it on Instagram →</a>
+                </div>
+                <div class="lg:col-span-6 flex justify-center">
+                    <div class="w-full max-w-[400px] rounded-2xl overflow-hidden bg-white">
+                        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/De1JJDYTzJw/" data-instgrm-version="14" style="margin:0;min-width:280px;max-width:400px;width:100%;border:0;">
+                            <a href="https://www.instagram.com/reel/De1JJDYTzJw/" target="_blank" rel="noopener" style="display:block;padding:24px;color:#1C1917;font:600 15px Inter,sans-serif;text-align:center;">View this post on Instagram</a>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT -->
+    <section id="what" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-2xl mb-16">
+                <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">What it does</div>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight mb-5">Place it. Play it. Film it.</h2>
+                <p class="text-lg text-stone-400">Seven creatures, a game-style controller, and a camera that knows where your floor and walls are.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-paw"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Seven creatures</h3>
+                    <p class="text-stone-400">A bear, cat, raptor, horse, whale, eagle and crab, each animated with weight, follow-through and natural motion.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-gamepad"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Drive it like a game</h3>
+                    <p class="text-stone-400">Touch sticks or a game controller. Walk, run, turn and stop, plus dozens of actions: roar, pounce, rear, breach, snap.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-border-all"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">It knows your room</h3>
+                    <p class="text-stone-400">On LiDAR devices, a room scan lets creatures walk on your floor, stop at walls and hide behind furniture. Other devices use floor detection.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-user"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Get in the shot</h3>
+                    <p class="text-stone-400">Flip to the front camera and perform next to your creature. It turns its head toward you.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-video"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Clean takes, plus 3D</h3>
+                    <p class="text-stone-400">Record clean video straight to Photos. Each take also saves a 3D scene you can open in your 3D tools.</p>
+                </div>
+                <div class="card rounded-2xl p-7 transition-colors">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-brand-primary flex items-center justify-center text-lg mb-5"><i class="fas fa-file-import"></i></div>
+                    <h3 class="font-display font-bold text-xl mb-2">Bring your own characters</h3>
+                    <p class="text-stone-400">Import a rigged USDZ character and puppet it the same way.</p>
+                </div>
+            </div>
+
+            <div class="card rounded-2xl p-7 mt-5 flex flex-col sm:flex-row sm:items-center gap-5">
+                <div class="w-11 h-11 shrink-0 rounded-xl bg-amber-500/10 text-brand-primary flex items-center justify-center text-lg"><i class="fas fa-vr-cardboard"></i></div>
+                <div>
+                    <h3 class="font-display font-bold text-xl mb-1">Also on Apple Vision Pro</h3>
+                    <p class="text-stone-400">Your creature in your room, life size. Look and pinch to place it and send it around, or pick up a game controller.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="how" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-2xl mb-16">
+                <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">How it works</div>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">Three steps to your first take.</h2>
+            </div>
+            <ol class="grid md:grid-cols-3 gap-5">
+                <li class="card rounded-2xl p-7">
+                    <div class="font-display font-bold text-5xl text-brand-primary/90 mb-6">01</div>
+                    <h3 class="font-display font-bold text-xl mb-2">Find the floor</h3>
+                    <p class="text-stone-400">Move your phone slowly until a ring appears on the floor. On LiDAR devices the room is scanned as you go.</p>
+                </li>
+                <li class="card rounded-2xl p-7">
+                    <div class="font-display font-bold text-5xl text-brand-primary/90 mb-6">02</div>
+                    <h3 class="font-display font-bold text-xl mb-2">Place and play</h3>
+                    <p class="text-stone-400">Tap to drop a creature. Left stick moves, right stick turns, and the action buttons trigger its moves.</p>
+                </li>
+                <li class="card rounded-2xl p-7">
+                    <div class="font-display font-bold text-5xl text-brand-primary/90 mb-6">03</div>
+                    <h3 class="font-display font-bold text-xl mb-2">Record the take</h3>
+                    <p class="text-stone-400">Hit record and perform. The video lands in Photos and the 3D scene in Files.</p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- WHO -->
+    <section id="who" class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-2xl mb-16">
+                <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">Who it's for</div>
+                <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-tight tracking-tight">Anyone who wants a co-star.</h2>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="card rounded-2xl p-7">
+                    <h3 class="font-display font-bold text-lg mb-2">Creators</h3>
+                    <p class="text-stone-400">A raptor sneaking up behind you is a better hook than another talking head.</p>
+                </div>
+                <div class="card rounded-2xl p-7">
+                    <h3 class="font-display font-bold text-lg mb-2">Filmmakers</h3>
+                    <p class="text-stone-400">Block out a creature shot in the real location, with real camera moves, before anyone opens a 3D app.</p>
+                </div>
+                <div class="card rounded-2xl p-7">
+                    <h3 class="font-display font-bold text-lg mb-2">Families</h3>
+                    <p class="text-stone-400">A horse in the living room. A whale over the couch. Hand someone the controller and watch.</p>
+                </div>
+                <div class="card rounded-2xl p-7">
+                    <h3 class="font-display font-bold text-lg mb-2">3D and animation folks</h3>
+                    <p class="text-stone-400">Every take saves a 3D scene, so a performance can become the start of a real animation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WAITLIST -->
+    <section id="waitlist" class="py-24 border-t border-white/5 relative overflow-hidden grid-bg scroll-mt-16">
+        <div class="absolute inset-0 glow pointer-events-none"></div>
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center mb-10">
+                <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">Coming soon</div>
+                <h2 class="font-display font-bold text-4xl sm:text-5xl leading-tight tracking-tight mb-5">Be first in the room.</h2>
+                <p class="text-lg text-stone-400 max-w-xl mx-auto">PuppetWright is going through Apple's review now. Leave your email and I'll send you the link the day it's live.</p>
+            </div>
+
+            <div class="card rounded-3xl p-6 sm:p-10">
+                <form id="waitlist-form" novalidate>
+                    <div class="grid sm:grid-cols-2 gap-5 mb-7">
+                        <div>
+                            <label for="wl-email" class="block text-sm font-semibold mb-2">Email <span class="text-brand-primary">*</span></label>
+                            <input id="wl-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com" class="field w-full rounded-xl px-4 py-3 text-base text-white placeholder-stone-600">
+                        </div>
+                        <div>
+                            <label for="wl-name" class="block text-sm font-semibold mb-2">First name <span class="text-stone-500 font-normal">(optional)</span></label>
+                            <input id="wl-name" name="name" type="text" autocomplete="given-name" maxlength="80" class="field w-full rounded-xl px-4 py-3 text-base text-white placeholder-stone-600">
+                        </div>
+                    </div>
+
+                    <fieldset class="mb-7">
+                        <legend class="text-sm font-semibold mb-3">What will you use it on?</legend>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="pick cursor-pointer"><input type="checkbox" name="devices" value="iPhone" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>iPhone</span></label>
+                            <label class="pick cursor-pointer"><input type="checkbox" name="devices" value="iPad" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>iPad</span></label>
+                            <label class="pick cursor-pointer"><input type="checkbox" name="devices" value="Apple Vision Pro" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>Apple Vision Pro</span></label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="mb-8">
+                        <legend class="text-sm font-semibold mb-3">What are you excited to do? <span class="text-stone-500 font-normal">(pick any)</span></legend>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="pick cursor-pointer"><input type="checkbox" name="interests" value="Social videos" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>Make social videos</span></label>
+                            <label class="pick cursor-pointer"><input type="checkbox" name="interests" value="Filmmaking" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>Filmmaking and previs</span></label>
+                            <label class="pick cursor-pointer"><input type="checkbox" name="interests" value="Family fun" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>Play with my family</span></label>
+                            <label class="pick cursor-pointer"><input type="checkbox" name="interests" value="3D and animation" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>3D scenes for animation</span></label>
+                            <label class="pick cursor-pointer"><input type="checkbox" name="interests" value="Own characters" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>Bring my own characters</span></label>
+                            <label class="pick cursor-pointer"><input type="checkbox" name="interests" value="Teaching" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>Teaching or the classroom</span></label>
+                            <label class="pick cursor-pointer"><input type="checkbox" name="interests" value="Vision Pro" class="sr-only"><span class="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-2 text-sm text-stone-300 transition-colors"><i class="tick fas fa-check text-brand-primary text-xs"></i>Creatures in Vision Pro</span></label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Spam trap: people never see or fill this field. -->
+                    <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
+                        <label for="wl-website">Website</label>
+                        <input id="wl-website" name="website" type="text" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <button id="wl-submit" type="submit" class="w-full inline-flex items-center justify-center bg-brand-primary hover:bg-amber-400 disabled:opacity-60 text-stone-950 px-8 py-4 rounded-xl font-bold text-base transition-colors">
+                        Notify me at launch <i class="fas fa-arrow-right ml-3 text-sm"></i>
+                    </button>
+                    <p id="wl-error" class="hidden mt-4 text-sm text-red-300" role="alert"></p>
+                    <p class="mt-5 text-xs text-stone-500 leading-relaxed">
+                        I'll only use your email to tell you when PuppetWright launches and about big updates to it. Never sold or shared. Reply to any email to be removed. This sign-up is separate from the app, which collects no data.
+                    </p>
+                </form>
+
+                <div id="waitlist-done" class="hidden text-center py-6" tabindex="-1">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/15 text-brand-primary flex items-center justify-center text-2xl mb-5"><i class="fas fa-check"></i></div>
+                    <h3 class="font-display font-bold text-3xl mb-3">You're on the list.</h3>
+                    <p class="text-stone-400 max-w-md mx-auto">I'll email you the moment PuppetWright is on the App Store. Until then, go find a good spot on your floor for a bear.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-24 border-t border-white/5">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">Questions</div>
+            <h2 class="font-display font-bold text-3xl sm:text-4xl leading-tight tracking-tight mb-10">Good to know.</h2>
+            <div class="divide-y divide-white/5 border-y border-white/5">
+                <details class="py-5">
+                    <summary class="flex items-center justify-between gap-4 cursor-pointer font-semibold text-lg">When does it come out?<i class="faq-icon fas fa-plus text-sm text-stone-500 transition-transform"></i></summary>
+                    <p class="mt-3 text-stone-400">As soon as Apple finishes its review. Join the waitlist and you'll hear the same day.</p>
+                </details>
+                <details class="py-5">
+                    <summary class="flex items-center justify-between gap-4 cursor-pointer font-semibold text-lg">Does PuppetWright make the realistic creature videos?<i class="faq-icon fas fa-plus text-sm text-stone-500 transition-transform"></i></summary>
+                    <p class="mt-3 text-stone-400">No. PuppetWright records the performance: a rainbow skeleton moving through your real room, plus a 3D scene of the take. The realistic bear and crab in the clips above came from running those takes through a separate AI video style-transfer app. PuppetWright doesn't include or connect to one; you bring your own.</p>
+                </details>
+                <details class="py-5">
+                    <summary class="flex items-center justify-between gap-4 cursor-pointer font-semibold text-lg">What devices does it run on?<i class="faq-icon fas fa-plus text-sm text-stone-500 transition-transform"></i></summary>
+                    <p class="mt-3 text-stone-400">iPhone and iPad with iOS or iPadOS 18 or later, and Apple Vision Pro with visionOS 26 or later.</p>
+                </details>
+                <details class="py-5">
+                    <summary class="flex items-center justify-between gap-4 cursor-pointer font-semibold text-lg">Do I need LiDAR?<i class="faq-icon fas fa-plus text-sm text-stone-500 transition-transform"></i></summary>
+                    <p class="mt-3 text-stone-400">No. LiDAR (on Pro iPhones and iPad Pro) adds the room scan, so creatures stop at walls and hide behind furniture. Other supported devices find your floor and work without it.</p>
+                </details>
+                <details class="py-5">
+                    <summary class="flex items-center justify-between gap-4 cursor-pointer font-semibold text-lg">Does the app need an account?<i class="faq-icon fas fa-plus text-sm text-stone-500 transition-transform"></i></summary>
+                    <p class="mt-3 text-stone-400">No account, no ads, no tracking, no analytics. Everything happens on your device. Read the <a class="text-brand-primary underline underline-offset-2" href="puppetwright-privacy">privacy policy</a>.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="font-display font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-6">Your floor. <span class="gradient-text">Their stage.</span></h2>
+            <p class="text-lg text-stone-400 max-w-xl mx-auto mb-10">PuppetWright is almost here. Get the link the day it lands.</p>
+            <a href="#waitlist" class="inline-flex items-center justify-center bg-brand-primary hover:bg-amber-400 text-stone-950 px-8 py-4 rounded-xl font-bold text-base transition-all hover:-translate-y-0.5 shadow-lg shadow-amber-500/20">
+                Get notified at launch <i class="fas fa-arrow-right ml-3 text-sm"></i>
+            </a>
+            <div class="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-stone-500">
+                <span><i class="fas fa-mobile-screen mr-2"></i>iPhone and iPad, iOS 18 or later</span>
+                <span><i class="fas fa-vr-cardboard mr-2"></i>Apple Vision Pro</span>
+                <span><i class="fas fa-user-slash mr-2"></i>No account required</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/5 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between gap-6 text-sm text-stone-500">
+            <p>&copy; 2026 Don Allen Stevenson III. PuppetWright is an independent project.</p>
+            <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="PuppetWright">
+                <a href="puppetwright-privacy" class="hover:text-white transition-colors">Privacy</a>
+                <a href="puppetwright-support" class="hover:text-white transition-colors">Support</a>
+                <a href="puppetwright-open-source" class="hover:text-white transition-colors">Credits and licenses</a>
+                <a href="./" class="hover:text-white transition-colors">donalleniii.me</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script async src="https://www.instagram.com/embed.js"></script>
+    <script>
+        // Sign-ups go to the "PuppetWright Waitlist" Google Form, which fills the linked Google Sheet.
+        // The entry numbers are the Form's question IDs; they change only if a question is deleted and re-added.
+        const WAITLIST_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeqNsWeh6HG2l-raX545N-0vTM-7i6V9WmWuzW2HjqIckdFEQ/formResponse';
+        const WAITLIST_FIELDS = {
+            email: 'entry.899359092',
+            name: 'entry.1176632498',
+            devices: 'entry.488298370',
+            interests: 'entry.1726408059',
+            source: 'entry.761829275',
+            referrer: 'entry.1250468583',
+        };
+
+        // Clips play only while on screen, and never on their own for reduced-motion visitors.
+        const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const clipObserver = new IntersectionObserver(entries => entries.forEach(({ target, isIntersecting }) => {
+            if (isIntersecting) target.play().catch(() => {});
+            else target.pause();
+        }), { threshold: 0.35 });
+        document.querySelectorAll('video.clip').forEach(v => {
+            if (reduceMotion) { v.controls = true; v.preload = 'metadata'; }
+            else clipObserver.observe(v);
+        });
+
+        // Waitlist: posts the fields to the Google Form, which adds a row to the Google Sheet.
+        const form = document.getElementById('waitlist-form');
+        const done = document.getElementById('waitlist-done');
+        const errorEl = document.getElementById('wl-error');
+        const submit = document.getElementById('wl-submit');
+        const submitLabel = submit.innerHTML;
+
+        function showError(msg) {
+            errorEl.textContent = msg;
+            errorEl.classList.remove('hidden');
+        }
+
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            errorEl.classList.add('hidden');
+            const data = new FormData(form);
+            const email = String(data.get('email') || '').trim();
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('Please enter a valid email address.');
+                document.getElementById('wl-email').focus();
+                return;
+            }
+            if (data.get('website')) return;
+            const params = new URLSearchParams(location.search);
+            const values = {
+                email,
+                name: String(data.get('name') || '').trim(),
+                devices: data.getAll('devices').join(', '),
+                interests: data.getAll('interests').join(', '),
+                source: params.get('utm_source') || params.get('src') || params.get('ref') || '',
+                referrer: document.referrer || '',
+            };
+            const body = new URLSearchParams();
+            for (const [key, value] of Object.entries(values)) body.append(WAITLIST_FIELDS[key], value);
+            submit.disabled = true;
+            submit.textContent = 'Adding you…';
+            try {
+                // Google Forms sends no CORS headers, so the response is opaque.
+                // A resolved request reached Google; a network failure throws.
+                await fetch(WAITLIST_URL, { method: 'POST', mode: 'no-cors', body });
+                form.classList.add('hidden');
+                done.classList.remove('hidden');
+                done.focus();
+            } catch {
+                submit.disabled = false;
+                submit.innerHTML = submitLabel;
+                showError("That didn't go through. Check your connection and try again.");
+            }
+        });
+    </script>
+    <script type="module">
+        // Hero stage: draws each creature's real rig from the app as rainbow bones and joints,
+        // the same look PuppetWright records. The creature meshes load but stay hidden.
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        const CREATURES = [
+            { id: 'bear',   name: 'Bear',   idle: 'quad_idle',  walk: 'quad_walk',   moves: ['roar', 'sit', 'eat', 'wave', 'slow_dance'] },
+            { id: 'cat',    name: 'Cat',    idle: 'quad_idle',  walk: 'quad_walk',   moves: ['meow', 'stretch', 'groom', 'pounce', 'loaf'] },
+            { id: 'raptor', name: 'Raptor', idle: 'biped_idle', walk: 'biped_walk',  moves: ['screech', 'sniff', 'tilt', 'tail_whip', 'pounce'] },
+            { id: 'horse',  name: 'Horse',  idle: 'quad_idle',  walk: 'quad_trot',   moves: ['whinny', 'head_toss', 'paw_ground', 'rear', 'buck'] },
+            { id: 'whale',  name: 'Whale',  idle: 'swim_idle',  walk: 'swim',        moves: ['call', 'roll', 'tail_slap', 'breach'] },
+            { id: 'bird',   name: 'Eagle',  idle: 'perch_idle', walk: 'fly',         moves: ['call', 'wing_stretch', 'preen', 'peck', 'hop'] },
+            { id: 'crab',   name: 'Crab',   idle: 'quad_idle',  walk: 'side_walk_R', moves: ['claw_wave', 'snap_both', 'threat', 'eye_wipe'] },
+        ];
+        const pretty = s => s.replace(/_(R|L)$/, '').replace(/^(quad|biped|swim|perch|side)_/, '').replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
+
+        const canvas = document.getElementById('stage');
+        const chips = document.getElementById('creature-chips');
+        const stageName = document.getElementById('stage-name');
+        const stageMove = document.getElementById('stage-move');
+        const credit = document.getElementById('credit');
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(30, 1, 0.01, 100);
+        scene.add(new THREE.HemisphereLight(0xffffff, 0x8a4a12, 2.2));
+        const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+        sun.position.set(2, 4, 3);
+        scene.add(sun);
+
+        const controls = new OrbitControls(camera, canvas);
+        controls.enableDamping = true;
+        controls.enablePan = false;
+        controls.enableZoom = false;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.8;
+        controls.minPolarAngle = Math.PI * 0.25;
+        controls.maxPolarAngle = Math.PI * 0.55;
+        canvas.style.touchAction = 'pan-y';
+
+        // Soft contact shadow under the rig.
+        const shadowTex = (() => {
+            const c = document.createElement('canvas');
+            c.width = c.height = 128;
+            const g = c.getContext('2d');
+            const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+            grad.addColorStop(0, 'rgba(60,20,0,0.35)');
+            grad.addColorStop(1, 'rgba(60,20,0,0)');
+            g.fillStyle = grad;
+            g.fillRect(0, 0, 128, 128);
+            return new THREE.CanvasTexture(c);
+        })();
+        const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
+        shadow.rotation.x = -Math.PI / 2;
+        scene.add(shadow);
+
+        const loader = new GLTFLoader();
+        const cache = new Map();
+        const stickGeo = new THREE.CylinderGeometry(1, 1, 1, 12, 1).translate(0, 0.5, 0);
+        const ballGeo = new THREE.SphereGeometry(1, 16, 12);
+        const up = new THREE.Vector3(0, 1, 0);
+        const a = new THREE.Vector3(), b = new THREE.Vector3(), dir = new THREE.Vector3();
+
+        let current = CREATURES[0];
+        let rig = null;          // { root, mixer, actions, sticks, balls }
+        let active = null;
+        let moveIndex = 0;
+        let loadToken = 0;
+
+        function buildRig(gltf) {
+            const root = gltf.scene;
+            const skinned = [];
+            root.traverse(o => { if (o.isSkinnedMesh) skinned.push(o); if (o.isMesh) o.visible = false; });
+            const bones = skinned[0].skeleton.bones;
+            root.updateMatrixWorld(true);
+
+            const extent = measure(bones).getSize(new THREE.Vector3()).length() * 0.6;
+            const radius = extent * 0.018;
+
+            const group = new THREE.Group();
+            const sticks = [], balls = [];
+            const drawn = bones.filter(bn => bn.name !== 'root');
+            drawn.forEach((bn, i) => {
+                const color = new THREE.Color().setHSL((i / drawn.length) * 0.92, 0.85, 0.55);
+                const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.45, metalness: 0.05 });
+                const ball = new THREE.Mesh(ballGeo, mat);
+                ball.scale.setScalar(radius * 1.7);
+                group.add(ball);
+                balls.push({ bone: bn, mesh: ball });
+                if (bn.parent && bn.parent.isBone && bn.parent.name !== 'root') {
+                    const stick = new THREE.Mesh(stickGeo, mat);
+                    group.add(stick);
+                    sticks.push({ from: bn.parent, to: bn, mesh: stick, radius });
+                }
+            });
+
+            const mixer = new THREE.AnimationMixer(root);
+            const actions = {};
+            gltf.animations.forEach(clip => { actions[clip.name] = mixer.clipAction(clip); });
+            mixer.addEventListener('finished', () => play(current.idle));
+            return { root, group, mixer, actions, sticks, balls, bones, extent };
+        }
+
+        function measure(bones) {
+            const box = new THREE.Box3();
+            bones.forEach(bn => { if (bn.name !== 'root') box.expandByPoint(bn.getWorldPosition(a)); });
+            return box;
+        }
+
+        // Frame the creature in its idle pose, which can differ a lot from the rest pose.
+        function frame(r) {
+            r.mixer.update(0);
+            r.root.updateMatrixWorld(true);
+            const box = measure(r.bones);
+            const size = box.getSize(new THREE.Vector3());
+            r.extent = Math.max(size.x, size.y, size.z);
+            const center = box.getCenter(new THREE.Vector3());
+            controls.target.copy(center);
+            resize();
+            const dist = r.extent * 2.3 / Math.min(camera.aspect, 1);
+            const theta = THREE.MathUtils.degToRad(-35), phi = THREE.MathUtils.degToRad(76);
+            camera.position.set(center.x + dist * Math.sin(theta) * Math.sin(phi), center.y + dist * Math.cos(phi), center.z + dist * Math.cos(theta) * Math.sin(phi));
+            camera.near = r.extent / 100;
+            camera.far = r.extent * 20;
+            camera.updateProjectionMatrix();
+            shadow.position.set(center.x, box.min.y - r.extent * 0.01, center.z);
+            shadow.scale.setScalar(r.extent * 1.1);
+            controls.update();
+        }
+
+        function play(name, once) {
+            if (!rig) return;
+            const next = rig.actions[name];
+            if (!next) return;
+            next.reset();
+            next.setLoop(once ? THREE.LoopOnce : THREE.LoopRepeat, Infinity);
+            next.clampWhenFinished = !!once;
+            next.play();
+            if (active && active !== next) next.crossFadeFrom(active, 0.35, false);
+            active = next;
+            stageMove.textContent = pretty(name);
+        }
+
+        async function show(c) {
+            const token = ++loadToken;
+            stageName.textContent = c.name;
+            stageMove.textContent = 'Loading';
+            credit.style.visibility = c.id === 'bear' ? 'visible' : 'hidden';
+            let r = cache.get(c.id);
+            if (!r) {
+                const gltf = await loader.loadAsync(`assets/puppetwright/${c.id}.glb`);
+                r = buildRig(gltf);
+                cache.set(c.id, r);
+            }
+            if (token !== loadToken) return;
+            if (rig) { scene.remove(rig.root, rig.group); rig.mixer.stopAllAction(); }
+            rig = r;
+            active = null;
+            moveIndex = 0;
+            scene.add(r.root, r.group);
+            play(c.idle);
+            frame(r);
+        }
+
+        CREATURES.forEach((c, i) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'creature-chip shrink-0 border border-stone-900/25 bg-white/35 hover:bg-white/55 text-stone-900 text-xs font-bold px-3 py-1.5 rounded-full transition-colors';
+            btn.textContent = c.name;
+            btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+            btn.addEventListener('click', () => {
+                if (c === current) return;
+                current = c;
+                chips.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === btn ? 'true' : 'false'));
+                show(c);
+            });
+            chips.appendChild(btn);
+        });
+
+        document.querySelectorAll('.stage-btn').forEach(btn => btn.addEventListener('click', () => {
+            const mode = btn.dataset.mode;
+            if (mode === 'walk') play(current.walk);
+            else if (mode === 'idle') play(current.idle);
+            else play(current.moves[moveIndex++ % current.moves.length], true);
+        }));
+
+        function resize() {
+            const { clientWidth: w, clientHeight: h } = canvas;
+            if (canvas.width !== Math.floor(w * renderer.getPixelRatio()) || canvas.height !== Math.floor(h * renderer.getPixelRatio())) {
+                renderer.setSize(w, h, false);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+        }
+
+        // Only animate while the stage is on screen.
+        let visible = true;
+        new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) controls.autoRotate = false;
+
+        const clock = new THREE.Clock();
+        renderer.setAnimationLoop(() => {
+            const dt = clock.getDelta();
+            if (!visible || !rig) return;
+            resize();
+            rig.mixer.update(dt);
+            rig.root.updateMatrixWorld(true);
+            for (const { from, to, mesh, radius } of rig.sticks) {
+                from.getWorldPosition(a);
+                to.getWorldPosition(b);
+                dir.subVectors(b, a);
+                const len = dir.length();
+                mesh.position.copy(a);
+                mesh.quaternion.setFromUnitVectors(up, len > 1e-6 ? dir.normalize() : up);
+                mesh.scale.set(radius, len, radius);
+            }
+            for (const { bone, mesh } of rig.balls) bone.getWorldPosition(mesh.position);
+            controls.update();
+            renderer.render(scene, camera);
+        });
+
+        show(current);
+    </script>
+</body>
+</html>
